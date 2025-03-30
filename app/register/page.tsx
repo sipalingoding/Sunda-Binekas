@@ -202,7 +202,10 @@ const Register = () => {
 
               <h1 className="text-base">
                 Tos Kagungan Akun?{" "}
-                <span className="font-bold text-lg hover:cursor-pointer">
+                <span
+                  className="font-bold text-lg hover:cursor-pointer"
+                  onClick={() => router.replace("/login")}
+                >
                   Lebet
                 </span>
               </h1>
