@@ -51,7 +51,9 @@ const Register = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     registerUser(values)
-      .then(() => router.replace("/login"))
+      .then(() => {
+        router.replace("/login");
+      })
       .catch((error) =>
         toast({
           title: "Terjadi Kesalahan",
