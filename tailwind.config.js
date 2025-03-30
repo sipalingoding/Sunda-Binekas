@@ -1,4 +1,5 @@
 import forms from "@tailwindcss/forms";
+import autoprefixer from "autoprefixer";
 
 module.exports = {
   content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
@@ -13,6 +14,6 @@ module.exports = {
       },
     },
   },
-  plugins: [forms],
+  plugins: [forms, autoprefixer],
   safelist: ["animate-spin"],
 };
