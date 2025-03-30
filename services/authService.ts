@@ -1,3 +1,4 @@
+import { supabase } from "@/lib/supabase";
 import axios from "axios";
 
 export const registerUser = async (userData: {
@@ -16,12 +17,18 @@ export const registerUser = async (userData: {
 
 export async function authLogin(userData: { email: string; password: string }) {
   try {
-    console.log(userData);
     const response = await axios.post("/api/auth/login", userData);
-    console.log(response);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error || { error: "Terjadi kesalahan" };
   }
 }
+
+export const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw new Error();
+  } else {
+    console.log("User logged out successfully!");
+  }
+};
