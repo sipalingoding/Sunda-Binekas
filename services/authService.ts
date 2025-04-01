@@ -32,3 +32,14 @@ export const logout = async () => {
     console.log("User logged out successfully!");
   }
 };
+
+export const handleGoogleLogin = async () => {
+  try {
+    const response = await axios.post("/api/auth/google", {
+      provider: "google",
+    });
+    window.location.href = response.data.url;
+  } catch (error) {
+    console.error("Google login failed:", error);
+  }
+};

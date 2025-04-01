@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { registerUser } from "@/services/authService";
+import { handleGoogleLogin, registerUser } from "@/services/authService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -197,7 +197,11 @@ const Register = () => {
             <div className="flex flex-col justify-center items-center gap-2">
               <div className="flex gap-2 items-center">
                 <h1 className="text-base">Atanapi daptar nganggo</h1>
-                <FcGoogle size={25} className="hover:cursor-pointer" />
+                <FcGoogle
+                  size={25}
+                  className="hover:cursor-pointer"
+                  onClick={handleGoogleLogin}
+                />
               </div>
 
               <h1 className="text-base">
