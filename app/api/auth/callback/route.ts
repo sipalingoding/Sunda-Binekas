@@ -1,22 +1,23 @@
-import { NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(res: NextApiResponse) {
+export async function GET(request: NextRequest) {
+  // Ambil user dari Supabase
   const { data, error } = await supabase.auth.getUser();
 
   if (error || !data.user) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { id, user_metadata } = data.user;
   const email = data?.user?.email ?? "";
 
   try {
-    // Cek apakah user sudah ada
+    // Cek apakah user sudah ada di database
     let user = await prisma.user.findUnique({ where: { email } });
 
-    // Jika belum ada, simpan user baru
+    // Jika user belum ada, buat user baru
     if (!user) {
       user = await prisma.user.create({
         data: {
@@ -29,8 +30,14 @@ export async function GET(res: NextApiResponse) {
       });
     }
 
-    return res.status(200).json({ message: "User logged in", user });
+    return NextResponse.json(
+      { message: "User logged in", user },
+      { status: 200 }
+    );
   } catch (error) {
-    return res.status(500).json({ error });
+    return NextResponse.json(
+      { error: error || "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
