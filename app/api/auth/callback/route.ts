@@ -2,7 +2,7 @@ import { NextApiResponse } from "next";
 import { supabase } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(res: NextApiResponse) {
+export async function GET(res: NextApiResponse) {
   const { data, error } = await supabase.auth.getUser();
 
   if (error || !data.user) {
