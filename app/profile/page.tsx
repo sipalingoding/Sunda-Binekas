@@ -1,12 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { redirect } from "next/navigation";
 import ClientProfile from "./clientProfile";
-import { getSession } from "../api/auth/session/route";
+import { createClient } from "@/lib/supabase/server";
 
 const prisma = new PrismaClient();
 
 export default async function ProfilePage() {
-  const session = await getSession();
+  const supabase = await createClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   console.log(session);
 
