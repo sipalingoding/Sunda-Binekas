@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
-  console.log(req);
   try {
     const body = await req.json();
     const { email, password, username, gender } = body;
@@ -61,7 +60,6 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json({ error: error }, { status: 500 });
   }
 }
