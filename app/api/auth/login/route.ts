@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -23,6 +24,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 401 });
     }
 
+    const cookieStore = await cookies(); // ✅ await di sini
+    cookieStore.set("sb-access-token", data.session.access_token);
+    cookieStore.set("sb-refresh-token", data.session.refresh_token);
+
     return NextResponse.json(
       {
         message: "Login berhasil",
@@ -32,7 +37,6 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error: unknown) {
-    console.error("Error saat login:", error);
     return NextResponse.json(
       { error: error || "Terjadi kesalahan" },
       { status: 500 }
