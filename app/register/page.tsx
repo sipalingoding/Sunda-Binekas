@@ -36,6 +36,7 @@ const formSchema = registerSchema;
 const Register = () => {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -50,6 +51,7 @@ const Register = () => {
   const router = useRouter();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     registerUser(values)
       .then(() => {
         router.replace("/login");
@@ -60,7 +62,10 @@ const Register = () => {
           description: error.response?.data?.error,
           variant: "destructive",
         })
-      );
+      )
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
@@ -189,8 +194,12 @@ const Register = () => {
                 type="submit"
                 className="bg-green-700 rounded-full px-4 py-2 text-white w-[155px] font-semibold gap-4 h-[44px]"
               >
-                <span className="font-semibold text-lg">Lebet</span>{" "}
-                <FaArrowRight />
+                <span className="font-semibold text-lg">Lebet</span>
+                {loading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <FaArrowRight />
+                )}
               </Button>
             </div>
 
