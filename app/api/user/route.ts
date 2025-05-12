@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/supabase/session";
 import { NextResponse } from "next/server";
-import { getSession } from "../auth/session/route";
 
 export async function GET(req: Request) {
   try {
