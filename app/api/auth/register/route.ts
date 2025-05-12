@@ -45,9 +45,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     // ✅ Simpan user ke database Prisma
     await prisma.user.create({
       data: {
+        id: user?.id,
         email,
         username,
         gender,

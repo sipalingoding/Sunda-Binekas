@@ -34,6 +34,7 @@ export const logout = async () => {
 };
 
 export const handleGoogleLogin = async () => {
+  console.log("click");
   try {
     const response = await axios.post("/api/auth/google", {
       provider: "google",
