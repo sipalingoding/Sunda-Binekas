@@ -5,7 +5,6 @@ import { getSession } from "../auth/session/route";
 export async function GET(req: Request) {
   try {
     const session = await getSession();
-    console.log("session", session);
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
