@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import ProfileForm from "./profileForm"; // kita buat di bawah
+import { redirect } from "next/navigation";
 
 export default async function ProfilePage() {
   const supabase = createClient();
@@ -9,13 +10,13 @@ export default async function ProfilePage() {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    return <div>Silakan login terlebih dahulu.</div>;
+    redirect("/login");
   }
 
   const { data: user, error } = await supabase
     .from("user")
     .select("id, username, email, gender")
-    .eq("id", session.user.id)
+    .eq("id", session?.user?.id)
     .single();
 
   if (error || !user) {
