@@ -12,9 +12,11 @@ export async function POST(req: Request) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/v1/callback`,
       },
     });
+
+    console.log(data, error);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

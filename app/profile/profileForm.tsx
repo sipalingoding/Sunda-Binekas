@@ -23,11 +23,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Image from "next/image";
-import { FaArrowRight, FaEyeSlash } from "react-icons/fa6";
+import { FaArrowRight } from "react-icons/fa6";
 import Sidebar from "@/components/sidebar";
 import { IoMdArrowDropright } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { logout } from "@/services/authService";
 
 type User = {
   id: string;
@@ -69,7 +70,14 @@ export default function ProfileForm({ user }: { user: User }) {
         email: values.email,
       }),
     })
-      .then(() => router.replace("/"))
+      .then(() => {
+        toast({
+          title: "Berhasil Submit",
+          description: "Update profile berhasil",
+          variant: "success",
+        });
+        router.replace("/");
+      })
       .catch((error) =>
         toast({
           title: "Terjadi Kesalahan",
@@ -79,6 +87,10 @@ export default function ProfileForm({ user }: { user: User }) {
       )
       .finally(() => setLoading(false));
   }
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="relative min-h-screen p-12 flex items-center justify-center ">
@@ -208,7 +220,9 @@ export default function ProfileForm({ user }: { user: User }) {
           </div>
         </div>
         <Button className="flex justify-between py-2 px-8 bg-red-700 self-start">
-          <span className="text-white">Kaluar Akun</span>
+          <span className="text-white" onClick={handleLogout}>
+            Kaluar Akun
+          </span>
           <IoMdArrowDropright color="white" />
         </Button>
       </div>

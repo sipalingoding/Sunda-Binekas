@@ -1,4 +1,3 @@
-import { supabase } from "@/lib/supabase";
 import axios from "axios";
 
 export const registerUser = async (userData: {
@@ -25,16 +24,15 @@ export async function authLogin(userData: { email: string; password: string }) {
 }
 
 export const logout = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    throw new Error();
-  } else {
-    console.log("User logged out successfully!");
+  try {
+    const response = await axios.post("/api/auth/logout");
+    return response.data;
+  } catch (error) {
+    throw error || { error: "Terjadi kesalahan" };
   }
 };
 
 export const handleGoogleLogin = async () => {
-  console.log("click");
   try {
     const response = await axios.post("/api/auth/google", {
       provider: "google",

@@ -8,11 +8,13 @@ import { IoShareSocialOutline } from "react-icons/io5";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/services/authService";
 
 const Sidebar = () => {
   const router = useRouter();
+  const usepathname = usePathname();
+  console.log(usepathname);
   const handleLogout = () => {
     logout();
     router.push("/login");
@@ -26,43 +28,52 @@ const Sidebar = () => {
       }}
     >
       <GoHome
-        size={24}
+        size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
       <IoSaveOutline
-        size={24}
+        size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
       <FaMoneyBills
-        size={24}
+        size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
       <BsCalendar4Event
-        size={24}
+        size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
       <IoShareSocialOutline
-        size={24}
+        size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
       <IoMdInformationCircleOutline
-        size={24}
+        size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
-      <FaRegUser
-        size={24}
-        strokeWidth={1}
-        className="text-green-800 hover:cursor-pointer"
-        onClick={() => router.push("/profile")}
-      />
+      <div
+        className={`${
+          usepathname == "/profile" ? "bg-green-800" : "bg-transparent"
+        } px-4 py-2 rounded-md`}
+      >
+        <FaRegUser
+          size={18}
+          strokeWidth={1}
+          className={`${
+            usepathname == "/profile" ? "text-white" : "text-green-800"
+          } hover:cursor-pointer`}
+          onClick={() => router.push("/profile")}
+        />
+      </div>
+
       <IoLogOut
-        size={24}
+        size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
         onClick={handleLogout}

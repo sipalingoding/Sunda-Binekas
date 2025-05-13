@@ -1,43 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
+// app/auth/callback/page.tsx
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
-  // Ambil user dari Supabase
-  const { data, error } = await supabase.auth.getUser();
+export default function AuthCallback() {
+  const router = useRouter();
 
-  if (error || !data.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  useEffect(() => {
+    const handleAuth = async () => {
+      // Ambil session setelah redirect dari Google OAuth
+      const { data, error } = await supabase.auth.getSession();
 
-  const { id, user_metadata } = data.user;
-  const email = data?.user?.email ?? "";
+      if (error || !data.session) {
+        console.error("Gagal mendapatkan session:", error);
+        router.push("/login"); // Redirect jika terjadi error
+      } else {
+        // Session ditemukan, user berhasil login
+        router.push("/profile"); // Redirect ke halaman profil atau halaman tujuan lainnya
+      }
+    };
 
-  try {
-    // Cek apakah user sudah ada di database
-    let user = await prisma.user.findUnique({ where: { email } });
-
-    // Jika user belum ada, buat user baru
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          id,
-          email,
-          username: user_metadata.full_name || "User",
-          password: "",
-          gender: "Not Specified",
-        },
-      });
-    }
-
-    return NextResponse.json(
-      { message: "User logged in", user },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { error: error || "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+    handleAuth();
+  }, [router]);
 }
