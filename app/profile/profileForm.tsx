@@ -51,7 +51,7 @@ export default function ProfileForm({ user }: { user: User }) {
     defaultValues: {
       username: user.username,
       email: user.email,
-      gender: user.gender as "" | "laki-laki" | "perempuan",
+      gender: user.gender as undefined | "laki-laki" | "perempuan",
     },
   });
 

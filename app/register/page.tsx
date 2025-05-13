@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { handleGoogleLogin, registerUser } from "@/services/authService";
+import { registerUser } from "@/services/authService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,6 +30,7 @@ import { FaEyeSlash } from "react-icons/fa";
 import { IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const formSchema = registerSchema;
 
@@ -43,7 +44,7 @@ const Register = () => {
     defaultValues: {
       username: "",
       email: "",
-      gender: "",
+      gender: undefined,
       password: "",
     },
   });
@@ -67,6 +68,17 @@ const Register = () => {
         setLoading(false);
       });
   }
+
+  const handleLoginGoogle = async () => {
+    const supabase = createClientComponentClient();
+
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+  };
 
   return (
     <div className="relative min-h-screen grid grid-cols-2">
@@ -209,7 +221,7 @@ const Register = () => {
                 <FcGoogle
                   size={25}
                   className="hover:cursor-pointer"
-                  onClick={handleGoogleLogin}
+                  onClick={handleLoginGoogle}
                 />
               </div>
 
