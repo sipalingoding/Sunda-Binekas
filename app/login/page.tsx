@@ -67,6 +67,8 @@ const LoginPage = () => {
         redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
       },
     });
+
+    console.log("redirectTo:", process.env.NEXT_PUBLIC_APP_URL);
   };
 
   return (
