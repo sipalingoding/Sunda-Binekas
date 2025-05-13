@@ -61,14 +61,14 @@ const LoginPage = () => {
   const handleLoginGoogle = async () => {
     const supabase = createClientComponentClient();
 
+    console.log("redirectTo:", process.env.NEXT_PUBLIC_APP_URL);
+
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
       },
     });
-
-    console.log("redirectTo:", process.env.NEXT_PUBLIC_APP_URL);
   };
 
   return (
