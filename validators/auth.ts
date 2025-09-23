@@ -21,3 +21,9 @@ export const updateProfileSchema = z.object({
     errorMap: () => ({ message: "Gender wajib dipilih" }),
   }),
 });
+
+export const sumbanganSchema = z.object({
+  name: z.string().min(3, "Username minimal 3 karakter"),
+  isAnonim: z.boolean(),
+  saran: z.string().min(1, "Pesan saran wajib diisi"),
+});

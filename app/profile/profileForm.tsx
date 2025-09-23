@@ -26,7 +26,7 @@ import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa6";
 import Sidebar from "@/components/sidebar";
 import { IoMdArrowDropright } from "react-icons/io";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { logout } from "@/services/authService";
 
@@ -90,10 +90,11 @@ export default function ProfileForm({ user }: { user: User }) {
 
   const handleLogout = () => {
     logout();
+    redirect("/login");
   };
 
   return (
-    <div className="relative min-h-screen p-12 flex items-center justify-center ">
+    <div className="relative min-h-screen p-12 flex justify-center ">
       <Image
         src="/images/BACKGROUND-WEBSUN.jpeg"
         alt="Background"

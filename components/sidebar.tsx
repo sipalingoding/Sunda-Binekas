@@ -14,7 +14,6 @@ import { logout } from "@/services/authService";
 const Sidebar = () => {
   const router = useRouter();
   const usepathname = usePathname();
-  console.log(usepathname);
   const handleLogout = () => {
     logout();
     router.push("/login");
@@ -37,11 +36,21 @@ const Sidebar = () => {
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
+            <div
+        className={`${
+          usepathname == "/sumbangan" ? "bg-green-800" : "bg-transparent"
+        } px-4 py-2 rounded-md`}
+      >
       <FaMoneyBills
         size={18}
         strokeWidth={1}
-        className="text-green-800 hover:cursor-pointer"
+        className={`${
+          usepathname == "/sumbangan" ? "text-white" : "text-green-800"
+        } hover:cursor-pointer`}
+        onClick={()=> router.push("/sumbangan")}
       />
+      </div>
+
       <BsCalendar4Event
         size={18}
         strokeWidth={1}
