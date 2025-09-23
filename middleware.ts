@@ -14,5 +14,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile"], // Atau semua route jika perlu
+  matcher: ["/profile", "/sumbangan"], // Atau semua route jika perlu
 };
