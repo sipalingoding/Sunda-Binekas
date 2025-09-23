@@ -61,6 +61,7 @@ const Sidebar = () => {
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
       />
+      
       <IoMdInformationCircleOutline
         size={18}
         strokeWidth={1}
