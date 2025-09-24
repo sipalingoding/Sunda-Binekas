@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Sidebar from "@/components/sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
+import { FcHome } from "react-icons/fc";
+import { FaSearch } from "react-icons/fa";
 
 const dataKeterangan = [
   {
@@ -54,6 +56,13 @@ const dataKeterangan = [
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMaca, setIsMaca] = useState<boolean>(false);
+  const [query, setQuery] = useState("");
+  const [isDetail, setIsDetail] = useState<boolean>(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
@@ -61,45 +70,113 @@ export default function Home() {
     );
   };
 
+  useEffect(() => {
+    if (!isMaca) {
+      setIsDetail(false);
+    }
+  }, [isMaca]);
+
   const handlePrev = () => {
     setCurrentIndex((prev) =>
       prev === 0 ? dataKeterangan.length - 1 : prev - 1
     );
   };
 
+  const handleClickButton = (id: any) => {
+    if (id === 2) {
+      setIsMaca(true);
+    }
+  };
+
+  const handleDetail = () => {
+    setIsDetail(true);
+  };
+
   const currentData = dataKeterangan[currentIndex];
   return (
-    <div className="flex min-h-screen p-12 bg-[#96C4C2]">
-      <Sidebar setCurrentIndex={setCurrentIndex} />
-      <div className="ml-20 flex justify-around gap-5 p-12 w-full">
-        <Image
-          src="/images/peta.png"
-          alt="Background"
-          width={450}
-          height={750}
-          className="object-contain"
+    <div className="flex min-h-screen p-12 bg-[#96C4C2] relative">
+      <Sidebar setCurrentIndex={setCurrentIndex} setIsMaca={setIsMaca} />
+
+      {/* Background dengan ukuran kecil */}
+      <div
+        className="absolute top-20 left-40 w-[1700px] h-[800px] bg-no-repeat bg-contain"
+        style={{ backgroundImage: "url('/images/INTRO.png')" }}
+      />
+
+      {isMaca && (
+        <FcHome
+          size={50}
+          className="absolute z-20 left-96 top-64 cursor-pointer"
+          onClick={handleDetail}
         />
-        <div className="w-[800px] h-[400px] bg-[#abd7d3] rounded-xl p-10 flex gap-4 items-center">
-          <FaCircleArrowLeft
-            size={30}
-            className="cursor-pointer"
-            onClick={handlePrev}
-          />
-          <div className="flex flex-col gap-5 flex-1">
-            <span className="font-bold text-2xl">{currentData.title}</span>
-            <span className="text-lg">{currentData.description}</span>
-            {currentData.button && (
-              <Button className="bg-[#96c3c1] w-36 self-center">
-                {currentData.button}
-              </Button>
+      )}
+
+      {/* Konten utama */}
+      <div className="flex justify-end gap-5 p-12 w-full relative z-10">
+        {!isMaca ? (
+          <div className="w-[800px] h-[400px] bg-[#abd7d3] rounded-xl p-10 flex gap-4 items-center">
+            <FaCircleArrowLeft
+              size={30}
+              className="cursor-pointer"
+              onClick={handlePrev}
+            />
+            <div className="flex flex-col gap-5 flex-1">
+              <span className="font-bold text-2xl">{currentData.title}</span>
+              <span className="text-lg">{currentData.description}</span>
+              {currentData.button && (
+                <Button
+                  className="bg-[#96c3c1] w-36 self-center"
+                  onClick={() => handleClickButton(currentData.id)}
+                >
+                  {currentData.button}
+                </Button>
+              )}
+            </div>
+            <FaCircleArrowRight
+              size={30}
+              className="cursor-pointer"
+              onClick={handleNext}
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-10 items-end">
+            <form
+              onSubmit={handleSearch}
+              className="flex items-center border border-black rounded-full px-4 py-2 w-[300px] h-[30px]"
+            >
+              {/* Icon search */}
+              <FaSearch className="text-black mr-2" />
+
+              {/* Input text */}
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="flex-1 bg-transparent text-black border-none outline-none focus:ring-0"
+              />
+            </form>{" "}
+            {isDetail && (
+              <div className="w-[800px] h-[400px] bg-[#abd7d3] rounded-xl p-10 flex gap-4 items-center">
+                <div className="flex flex-col gap-5 flex-1">
+                  <span className="font-bold text-2xl">Kawunglarang</span>
+                  <span className="text-lg">
+                    Aya hiji kulawarga anu pagawéanana nyadap legén ka kebon.
+                    Dina hiji poé patani éta manggihan hiji tangkal kawung, anu
+                    satuluyna ku manéhana tuluy disadap, tapi ku anéhna
+                    sababaraha kali di sadap teu kaluar waé caina. Nepi ka tilu
+                    kalina patani éta nyobaan nyadap angger teu kaluar kénéh,
+                    nepi ka patani éta ragrag ucap saperti kieu “Ari manéh
+                    larang larang teuing kuring ngala legén didieu”. Ti harita
+                    éta lembur dingaranan Kawunglarang. Artina tangkal kawung
+                    anu larang atawa teu ngijinan di ala. Jeung kacaritakeun
+                    tangkal kawung anu teu kaluar cai legénna téh tempatna
+                    nyaéta anu ayeuna jadi balé désa Kawunglarang.
+                  </span>
+                </div>
+              </div>
             )}
           </div>
-          <FaCircleArrowRight
-            size={30}
-            className="cursor-pointer"
-            onClick={handleNext}
-          />
-        </div>
+        )}
       </div>
     </div>
   );
