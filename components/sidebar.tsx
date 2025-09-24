@@ -11,15 +11,21 @@ import { usePathname, useRouter } from "next/navigation";
 // Tambah tipe prop
 const Sidebar = ({
   setCurrentIndex,
+  setIsMaca,
 }: {
   setCurrentIndex: (index: number) => void;
+  setIsMaca: (isMaca: boolean) => void;
 }) => {
   const router = useRouter();
   const usepathname = usePathname();
+  const handleClick = (index: number) => {
+    setCurrentIndex(index);
+    setIsMaca(false);
+  };
 
   return (
     <div
-      className="flex flex-col w-[96px] h-[600px] items-center justify-between rounded-2xl py-6 px-2 gap-6 absolute left-12"
+      className="flex flex-col w-[96px] h-[600px] items-center justify-between rounded-2xl py-6 px-2 gap-6 absolute left-12 z-20"
       style={{
         backgroundColor: "#abd7d3",
       }}
@@ -29,7 +35,7 @@ const Sidebar = ({
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => setCurrentIndex(0)}
+        onClick={() => handleClick(0)}
       />
 
       {/* Maos Dongéng -> id:2 -> index 1 */}
@@ -37,7 +43,7 @@ const Sidebar = ({
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => setCurrentIndex(1)}
+        onClick={() => handleClick(1)}
       />
 
       {/* Udunan -> id:5 -> index 4 */}
@@ -52,7 +58,7 @@ const Sidebar = ({
           className={`${
             usepathname == "/sumbangan" ? "text-white" : "text-green-800"
           } hover:cursor-pointer`}
-          onClick={() => setCurrentIndex(4)}
+          onClick={() => handleClick(4)}
         />
       </div>
 
@@ -61,7 +67,7 @@ const Sidebar = ({
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => setCurrentIndex(2)}
+        onClick={() => handleClick(2)}
       />
 
       {/* Nyiarkeun -> id:4 */}
@@ -69,7 +75,7 @@ const Sidebar = ({
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => setCurrentIndex(3)}
+        onClick={() => handleClick(3)}
       />
 
       {/* Warta -> id:6 */}
@@ -77,7 +83,7 @@ const Sidebar = ({
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => setCurrentIndex(5)}
+        onClick={() => handleClick(5)}
       />
     </div>
   );
