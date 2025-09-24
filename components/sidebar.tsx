@@ -6,86 +6,79 @@ import { FaMoneyBills } from "react-icons/fa6";
 import { BsCalendar4Event } from "react-icons/bs";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { FaRegUser } from "react-icons/fa";
-import { IoLogOut } from "react-icons/io5";
 import { usePathname, useRouter } from "next/navigation";
-import { logout } from "@/services/authService";
 
-const Sidebar = () => {
+// Tambah tipe prop
+const Sidebar = ({
+  setCurrentIndex,
+}: {
+  setCurrentIndex: (index: number) => void;
+}) => {
   const router = useRouter();
   const usepathname = usePathname();
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
+
   return (
     <div
       className="flex flex-col w-[96px] h-[600px] items-center justify-between rounded-2xl py-6 px-2 gap-6 absolute left-12"
       style={{
-        background: "rgba(255, 255, 255, 0.70)", // 🔥 Background transparan
-        backdropFilter: "blur(2px)", // 🔥 Efek blur kaca
+        background: "rgba(255, 255, 255, 0.70)",
+        backdropFilter: "blur(2px)",
       }}
     >
+      {/* Home -> id:1 -> index 0 */}
       <GoHome
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
+        onClick={() => setCurrentIndex(0)}
       />
+
+      {/* Maos Dongéng -> id:2 -> index 1 */}
       <IoSaveOutline
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
+        onClick={() => setCurrentIndex(1)}
       />
-            <div
+
+      {/* Udunan -> id:5 -> index 4 */}
+      <div
         className={`${
           usepathname == "/sumbangan" ? "bg-green-800" : "bg-transparent"
         } px-4 py-2 rounded-md`}
       >
-      <FaMoneyBills
-        size={18}
-        strokeWidth={1}
-        className={`${
-          usepathname == "/sumbangan" ? "text-white" : "text-green-800"
-        } hover:cursor-pointer`}
-        onClick={()=> router.push("/sumbangan")}
-      />
+        <FaMoneyBills
+          size={18}
+          strokeWidth={1}
+          className={`${
+            usepathname == "/sumbangan" ? "text-white" : "text-green-800"
+          } hover:cursor-pointer`}
+          onClick={() => setCurrentIndex(4)}
+        />
       </div>
 
+      {/* Event -> misal id:3 */}
       <BsCalendar4Event
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
+        onClick={() => setCurrentIndex(2)}
       />
+
+      {/* Nyiarkeun -> id:4 */}
       <IoShareSocialOutline
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
+        onClick={() => setCurrentIndex(3)}
       />
+
+      {/* Warta -> id:6 */}
       <IoMdInformationCircleOutline
         size={18}
         strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-      />
-      <div
-        className={`${
-          usepathname == "/profile" ? "bg-green-800" : "bg-transparent"
-        } px-4 py-2 rounded-md`}
-      >
-        <FaRegUser
-          size={18}
-          strokeWidth={1}
-          className={`${
-            usepathname == "/profile" ? "text-white" : "text-green-800"
-          } hover:cursor-pointer`}
-          onClick={() => router.push("/profile")}
-        />
-      </div>
-
-      <IoLogOut
-        size={18}
-        strokeWidth={1}
-        className="text-green-800 hover:cursor-pointer"
-        onClick={handleLogout}
+        onClick={() => setCurrentIndex(5)}
       />
     </div>
   );

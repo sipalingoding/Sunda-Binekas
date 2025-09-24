@@ -72,17 +72,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen grid grid-cols-2">
+    <div className="relative min-h-screen grid grid-cols-2 bg-[#96C4C2]">
       {/* Background Image Fullscreen */}
-      <div className="col-span-1">
-        <Image
-          src="/images/BACKGROUND-WEBSUN.jpeg"
-          alt="Background"
-          className="absolute z-[-1] w-full h-full object-cover"
-          fill
-          sizes="100vw"
-        />
-      </div>
+      <div className="col-span-1"></div>
 
       {/* Form Section (posisi tengah kanan) */}
       <div
