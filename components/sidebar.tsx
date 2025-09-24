@@ -21,8 +21,7 @@ const Sidebar = ({
     <div
       className="flex flex-col w-[96px] h-[600px] items-center justify-between rounded-2xl py-6 px-2 gap-6 absolute left-12"
       style={{
-        background: "rgba(255, 255, 255, 0.70)",
-        backdropFilter: "blur(2px)",
+        backgroundColor: "#abd7d3",
       }}
     >
       {/* Home -> id:1 -> index 0 */}
