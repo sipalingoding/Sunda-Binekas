@@ -39,7 +39,7 @@ const SumbanganForm = () => {
         fill
         sizes="100vw"
       />
-      <Sidebar />
+      {/* <Sidebar /> */}
       <div
         className="w-[1155px] h-[874px] rounded-md flex flex-col justify-start p-9 items-center gap-8"
         style={{
