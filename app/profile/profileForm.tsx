@@ -102,7 +102,7 @@ export default function ProfileForm({ user }: { user: User }) {
         fill
         sizes="100vw"
       />
-      <Sidebar />
+      {/* <Sidebar setCurrentIndex={1}/> */}
       <div
         className="w-[805px] h-[754px] rounded-md flex flex-col justify-start p-9 items-center gap-8"
         style={{
