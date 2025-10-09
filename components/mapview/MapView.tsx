@@ -18,7 +18,6 @@ type MapViewType = {
 };
 
 export default function MapView({ data }: MapViewType) {
-  console.log(data);
   return (
     <MapContainer
       center={[-6.9218457, 107.6070833]} // contoh: Garut
