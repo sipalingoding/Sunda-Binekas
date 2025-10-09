@@ -27,3 +27,11 @@ export const sumbanganSchema = z.object({
   isAnonim: z.boolean(),
   saran: z.string().min(1, "Pesan saran wajib diisi"),
 });
+
+export const formSubmitDongengSchema = z.object({
+  kabupaten: z.string().nonempty("Kabupaten kudu diisi!"),
+  kecamatan: z.string().nonempty("Kecamatan kudu diisi!"),
+  desa: z.string().nonempty("Desa kudu diisi!"),
+  judul: z.string().nonempty("Judul kudu diisi!"),
+  eusi: z.string().nonempty("eusi kudu diisi!"),
+});

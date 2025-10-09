@@ -1,89 +1,59 @@
 "use client";
 
 import { GoHome } from "react-icons/go";
-import { IoSaveOutline } from "react-icons/io5";
-import { FaMoneyBills } from "react-icons/fa6";
-import { BsCalendar4Event } from "react-icons/bs";
-import { IoShareSocialOutline } from "react-icons/io5";
-import { IoMdInformationCircleOutline } from "react-icons/io";
-import { usePathname, useRouter } from "next/navigation";
+import { FaBookReader } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
+import { FaShareNodes } from "react-icons/fa6";
+import { FaGift } from "react-icons/fa6";
+import { HiInformationCircle } from "react-icons/hi";
+import { useRouter } from "next/navigation";
 
 // Tambah tipe prop
-const Sidebar = ({
-  setCurrentIndex,
-  setIsMaca,
-}: {
-  setCurrentIndex: (index: number) => void;
-  setIsMaca: (isMaca: boolean) => void;
-}) => {
+const Sidebar = () => {
   const router = useRouter();
-  const usepathname = usePathname();
-  const handleClick = (index: number) => {
-    setCurrentIndex(index);
-    setIsMaca(false);
-  };
-
   return (
     <div
-      className="flex flex-col w-[96px] h-[600px] items-center justify-between rounded-2xl py-6 px-2 gap-6 absolute left-12 z-20"
+      className="flex flex-col w-[96px] h-[700px] items-center justify-between rounded-2xl py-6 px-2 gap-6 absolute left-8 top-28 z-20"
       style={{
         backgroundColor: "#abd7d3",
       }}
     >
-      {/* Home -> id:1 -> index 0 */}
       <GoHome
         size={18}
-        strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => handleClick(0)}
+        onClick={() => router.push("/")}
       />
 
-      {/* Maos Dongéng -> id:2 -> index 1 */}
-      <IoSaveOutline
+      <FaBookReader
         size={18}
-        strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => handleClick(1)}
+        onClick={() => router.push("/maos")}
       />
 
-      {/* Udunan -> id:5 -> index 4 */}
-      <div
-        className={`${
-          usepathname == "/sumbangan" ? "bg-green-800" : "bg-transparent"
-        } px-4 py-2 rounded-md`}
-      >
-        <FaMoneyBills
+      <div>
+        <FaEdit
           size={18}
-          strokeWidth={1}
-          className={`${
-            usepathname == "/sumbangan" ? "text-white" : "text-green-800"
-          } hover:cursor-pointer`}
-          onClick={() => handleClick(4)}
+          className="text-green-800 hover:cursor-pointer"
+          onClick={() => router.push("/nyerat")}
         />
       </div>
 
-      {/* Event -> misal id:3 */}
-      <BsCalendar4Event
+      <FaShareNodes
         size={18}
-        strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => handleClick(2)}
+        onClick={() => router.push("/nyiarkeun")}
       />
 
-      {/* Nyiarkeun -> id:4 */}
-      <IoShareSocialOutline
+      <FaGift
         size={18}
-        strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => handleClick(3)}
+        onClick={() => router.push("/rereongan")}
       />
 
-      {/* Warta -> id:6 */}
-      <IoMdInformationCircleOutline
+      <HiInformationCircle
         size={18}
-        strokeWidth={1}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => handleClick(5)}
+        onClick={() => router.push("/warta")}
       />
     </div>
   );

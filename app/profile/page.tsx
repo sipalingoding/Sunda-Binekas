@@ -1,27 +1,14 @@
-import { createClient } from "@/lib/supabase/server";
-import ProfileForm from "./profileForm"; // kita buat di bawah
-import { redirect } from "next/navigation";
+import BoxExplanation from "@/components/box-explanation/boxExplanation";
+import React from "react";
 
-export default async function ProfilePage() {
-  const supabase = createClient();
+const ProfilePage = () => {
+  return (
+    <BoxExplanation
+      judul="Identitas"
+      deskripsi="Idéntitas didieu maksudna data diri pikeun ngawanohkeun diri ka user séjén, sangkan bisa leuwih interaktif silih méré koméntar jeung sajabana."
+      buttonText="Lengkapan Identitas"
+    />
+  );
+};
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/login");
-  }
-
-  const { data: user, error } = await supabase
-    .from("user")
-    .select("id, username, email, gender")
-    .eq("id", session?.user?.id)
-    .single();
-
-  if (error || !user) {
-    return <div>Gagal mengambil data user.</div>;
-  }
-
-  return <ProfileForm user={user} />;
-}
+export default ProfilePage;
