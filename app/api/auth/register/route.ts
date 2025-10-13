@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -17,10 +14,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Cek apakah email sudah ada di database
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const { data: existingUser, error: fetchError } = await supabase
+      .from("user")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (fetchError) {
+      return NextResponse.json(
+        { error: "Gagal memeriksa email: " + fetchError.message },
+        { status: 500 }
+      );
+    }
 
     if (existingUser) {
       return NextResponse.json(
@@ -33,7 +38,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // ✅ Daftarkan user ke Supabase Auth
-    const { error } = await supabase.auth.signUp({
+    const { error: ErrorSignUp } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -41,30 +46,46 @@ export async function POST(req: Request) {
       },
     });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (ErrorSignUp) {
+      return NextResponse.json({ error: ErrorSignUp.message }, { status: 400 });
     }
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    // ✅ Simpan user ke database Prisma
-    await prisma.user.create({
-      data: {
-        id: user?.id,
-        email,
-        username,
-        gender,
-        password: hashedPassword, // Simpan password yang sudah di-hash
-      },
-    });
+    const { data, error } = await supabase
+      .from("user")
+      .insert([
+        {
+          id: user?.id,
+          email,
+          username,
+          gender,
+          password: hashedPassword,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message || "error" },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json(
-      { message: "Registrasi berhasil" },
+      { message: "Registrasi berhasil", data },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: error || "Terjadi kesalahan pada server",
+        details: JSON.stringify(error, Object.getOwnPropertyNames(error)),
+      },
+      { status: 500 }
+    );
   }
 }

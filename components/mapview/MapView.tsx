@@ -3,6 +3,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 // Fix icon Leaflet tidak muncul di Next.js
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -18,6 +19,7 @@ type MapViewType = {
 };
 
 export default function MapView({ data }: MapViewType) {
+  const router = useRouter();
   return (
     <MapContainer
       center={[-6.9218457, 107.6070833]} // contoh: Garut
@@ -35,7 +37,12 @@ export default function MapView({ data }: MapViewType) {
             <Popup>
               <div className="flex flex-col justify-center items-center gap-2">
                 <span className="text-lg font-bold italic">{item.judul}</span>
-                <Button variant="white">Maca</Button>
+                <Button
+                  variant="white"
+                  onClick={() => router.replace(`/maos/detail/${item.id}`)}
+                >
+                  Maca
+                </Button>
               </div>
             </Popup>
           </Marker>

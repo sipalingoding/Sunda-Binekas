@@ -84,13 +84,13 @@ const Register = () => {
     <div className="relative min-h-screen grid grid-cols-2">
       {/* Background Image Fullscreen */}
       <div className="col-span-1">
-        <Image
+        {/* <Image
           src="/images/BACKGROUND-WEBSUN.jpeg"
           alt="Background"
           className="absolute z-[-1] w-full h-full object-cover"
           fill
           sizes="100vw"
-        />
+        /> */}
       </div>
 
       {/* Form Section (posisi tengah kanan) */}
