@@ -33,6 +33,7 @@ const FormPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [latitude, setLatitude] = useState<string>();
   const [langitude, setLangitude] = useState<string>();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -158,7 +159,6 @@ const FormPage = () => {
         const data = await res.json();
 
         if (data.length > 0) {
-          console.log(data[0]);
           setLatitude(data[0].lat);
           setLangitude(data[0].lon);
         } else {

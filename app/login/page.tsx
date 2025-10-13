@@ -59,9 +59,6 @@ const LoginPage = () => {
 
   const handleLoginGoogle = async () => {
     const supabase = createClientComponentClient();
-
-    console.log("redirectTo:", process.env.NEXT_PUBLIC_APP_URL);
-
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -71,7 +68,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen grid grid-cols-2 bg-[#96C4C2]">
+    <div className="relative grid grid-cols-2 bg-[#96C4C2]">
       {/* Background Image Fullscreen */}
       <div className="col-span-1"></div>
 
