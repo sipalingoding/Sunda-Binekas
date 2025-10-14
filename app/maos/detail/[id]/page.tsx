@@ -78,16 +78,17 @@ export default async function DetailMaosPage({
               <CardTitle>Biodata</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6">
-              {data && data.user_id ? ( // Pastikan data.users ada (tidak null)
+              {data && data.user_id ? (
                 <div>
                   <p>
-                    <strong>Ngaran:</strong> {data.user_id.username}
+                    <strong>Ngaran:</strong> {(data.user_id as any).username}
                   </p>
                   <p>
-                    <strong>Email:</strong> {data.user_id.email}
+                    <strong>Email:</strong> {(data.user_id as any).email}
                   </p>
                   <p>
-                    <strong>Jenis Kelamin:</strong> {data.user_id.gender}
+                    <strong>Jenis Kelamin:</strong>{" "}
+                    {(data.user_id as any).gender}
                   </p>
                 </div>
               ) : (
