@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest) {
   }
 
   const { error: userError } = await supabase
-    .from("user")
+    .from("users")
     .update({ username, gender })
     .eq("id", user?.id);
 

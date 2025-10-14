@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     }
 
     const { data: existingUser, error: fetchError } = await supabase
-      .from("user")
+      .from("users")
       .select("id")
       .eq("email", email)
       .maybeSingle();
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     const { data, error } = await supabase
-      .from("user")
+      .from("users")
       .insert([
         {
           id: user?.id,

@@ -6,6 +6,10 @@ export async function POST(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const body = await req.json();
   const { kabupaten, kecamatan, desa, judul, eusi, lat, lan } = body;
 
@@ -24,7 +28,7 @@ export async function POST(req: NextRequest) {
     .from("dongeng")
     .insert([
       {
-        // user_id: user.id,
+        user_id: user?.id,
         kabupaten,
         kecamatan,
         desa,
@@ -47,15 +51,6 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
-
-  // const {
-  //   data: { user },
-  //   error: getUserError,
-  // } = await supabase.auth.getUser();
-
-  // if (getUserError || !user) {
-  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  // }
 
   const { data, error } = await supabase
     .from("dongeng")
