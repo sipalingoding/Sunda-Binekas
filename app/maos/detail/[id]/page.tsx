@@ -3,6 +3,15 @@ import { createServerClient } from "@supabase/ssr";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import KomentarForm from "./komentar/KomentarForm";
+
+interface Komentar {
+  id: string;
+  isi: string;
+  user_id: string;
+  created_at: string;
+}
+
 export default async function DetailMaosPage({
   params,
 }: {
@@ -98,11 +107,13 @@ export default async function DetailMaosPage({
           </Card>
         </TabsContent>
         <TabsContent value="komentar">
-          <Card>
+          <Card className="h-[600px] flex flex-col">
             <CardHeader>
               <CardTitle>Komentar</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-6"></CardContent>
+            <CardContent className="flex-1 overflow-y-auto">
+              <KomentarForm dongengId={data.id} />
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
