@@ -24,16 +24,15 @@ export default function AuthCallbackPage() {
 
       // Cek apakah user sudah ada di table 'user'
       const { data: existingUser, error: userError } = await supabase
-        .from("user")
+        .from("users")
         .select("*")
         .eq("id", user.id)
         .single();
-      console.log(userError);
 
       if (!existingUser) {
         // Jika belum ada, simpan user ke database
         const { data, error: insertError } = await supabase
-          .from("user")
+          .from("users")
           .insert([
             {
               id: user.id,
@@ -42,7 +41,6 @@ export default function AuthCallbackPage() {
               gender: "",
             },
           ]);
-        console.log(data);
 
         if (insertError) {
           console.error("Error saving user:", insertError);

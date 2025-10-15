@@ -24,13 +24,10 @@ export async function authLogin(userData: { email: string; password: string }) {
 }
 
 export const logout = async () => {
-  console.log("masuk logout");
   try {
     const response = await axios.post("/api/auth/logout");
-    console.log(response);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error || { error: "Terjadi kesalahan" };
   }
 };
