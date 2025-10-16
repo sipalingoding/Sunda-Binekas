@@ -15,6 +15,8 @@ import { logout } from "@/services/authService";
 const Header = () => {
   const router = useRouter();
 
+  
+
   const handleLogout = () => {
     logout()
       .then(() => router.push("/login"))
@@ -48,7 +50,7 @@ const Header = () => {
       <MdOutlineSupportAgent
         size={30}
         className="text-green-800 hover:cursor-pointer"
-        onClick={() => router.push("/modul")}
+        onClick={() => router.push("/admin")}
       />
     </div>
   );

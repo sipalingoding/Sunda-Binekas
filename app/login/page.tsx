@@ -23,11 +23,13 @@ import { IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 
 const formSchema = loginSchema;
 
 const LoginPage = () => {
   const { toast } = useToast();
+  const supabase = createClientComponentClient();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,20 +43,19 @@ const LoginPage = () => {
 
   const router = useRouter();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    authLogin(values)
-      .then(() => router.replace("/"))
-      .catch((error) =>
-        toast({
-          title: "Terjadi Kesalahan",
-          description: error.response?.data?.error,
-          variant: "destructive",
-        })
-      )
-      .finally(() => {
-        setLoading(false);
-      });
+    const { data, error } = await supabase.auth.signInWithPassword(values);
+
+    console.log(data);
+
+    if (error) {
+      alert(error.message);
+      setLoading(false);
+    } else {
+      window.location.href = "/";
+      setLoading(false);
+    }
   }
 
   const handleLoginGoogle = async () => {

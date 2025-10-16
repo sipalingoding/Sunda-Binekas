@@ -16,7 +16,7 @@ const PetaPage = () => {
   }, []);
 
   const getDataMap = async () => {
-    const res = await fetch("/api/dongeng", {
+    const res = await fetch("/api/dongeng/approved", {
       method: "GET",
     });
     const { data } = await res.json();

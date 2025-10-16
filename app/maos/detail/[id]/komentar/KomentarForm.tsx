@@ -90,11 +90,7 @@ export default function KomentarForm({ dongengId }: { dongengId: string }) {
         </div>
       </form>
       <div className="space-y-3 mt-6">
-        {komentar.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Belum ada komentar. Jadilah yang pertama!
-          </p>
-        ) : (
+        {
           komentar.map((k) => (
             <Card key={k.id} className="shadow-sm">
               <CardHeader className="p-3 pb-1">
@@ -110,8 +106,7 @@ export default function KomentarForm({ dongengId }: { dongengId: string }) {
                 <p>{k.isi}</p>
               </CardContent>
             </Card>
-          ))
-        )}
+          ))}
       </div>
     </div>
   );
