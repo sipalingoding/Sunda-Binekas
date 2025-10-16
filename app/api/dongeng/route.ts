@@ -1,5 +1,8 @@
 // app/api/lokasi/route.ts
-import { createMiddlewareClient, createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createMiddlewareClient,
+  createRouteHandlerClient,
+} from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -65,16 +68,12 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ data });
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+export async function PATCH(req: NextRequest, context: any) {
+  const { id } = context.params;
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
   try {
-
     // Update status jadi 'approved'
     const { error } = await supabase
       .from("dongeng")
