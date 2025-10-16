@@ -4,6 +4,8 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
+
+  // 🔹 Buat Supabase middleware client
   const supabase = createMiddlewareClient({ req, res });
 
   const {
@@ -12,21 +14,39 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  // ✅ Halaman publik (tidak perlu login)
+  // ✅ Halaman publik (tidak butuh login)
   const publicPaths = ["/login", "/register", "/public", "/api"];
-
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 
-  // ✅ Jika bukan halaman publik & belum login → redirect ke /login
+  // 🔒 Kalau bukan halaman publik & belum login → redirect ke /login
   if (!isPublicPath && !session) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = "/login";
     return NextResponse.redirect(redirectUrl);
   }
 
+  // ✅ Cek halaman admin
+  if (pathname.startsWith("/admin") && session?.user?.id) {
+    // Ambil data role dari table "user"
+    const { data: userRole } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session?.user.id)
+      .single();
+
+    if (userRole?.role !== "admin") {
+      const redirectUrl = req.nextUrl.clone();
+      redirectUrl.pathname = "/";
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
+  // 🔁 Kembalikan response (biar session tersimpan di cookies)
   return res;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api|login|register).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|api|login|register|public).*)",
+  ],
 };

@@ -1,16 +1,11 @@
 import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import KomentarForm from "./komentar/KomentarForm";
-
-interface Komentar {
-  id: string;
-  isi: string;
-  user_id: string;
-  created_at: string;
-}
+import { Button } from "@/components/ui/button";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import ApproveButtons from "./button-decision/ButtonDecision";
 
 export default async function DetailMaosPage({
   params,
@@ -18,20 +13,24 @@ export default async function DetailMaosPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
-  // ✅ cookies() harus di-await di Next.js 15
-  const cookieStore = await cookies();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  // ✅ Client Supabase versi SSR baru
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => cookieStore.getAll(),
-      },
-    }
-  );
+  let role: string | null = null;
+
+  if (user) {
+    const { data: userData } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    role = userData?.role ?? null;
+    console.log(role);
+  }
 
   const { data, error } = await supabase
     .from("dongeng")
@@ -58,6 +57,19 @@ export default async function DetailMaosPage({
   if (error) {
     return <div>Error ambil dongeng: {error.message}</div>;
   }
+
+  const handleApprove = async () => {
+    const res = await fetch(`/api/dongeng/${data.id}`, {
+      method: "PATCH",
+    });
+
+    const dataApprove = await res.json();
+    if (!res.ok) {
+      alert(dataApprove.error || "Gagal mengubah status");
+    } else {
+      alert(dataApprove.message);
+    }
+  };
 
   return (
     <div className="bg-[#abd7d3] h-[700px] rounded-lg p-8 flex flex-col gap-8 w-[1300px] absolute left-48 top-28 z-20">
@@ -117,6 +129,7 @@ export default async function DetailMaosPage({
           </Card>
         </TabsContent>
       </Tabs>
+      {role === "admin" && <ApproveButtons id={data.id} />}
     </div>
   );
 }

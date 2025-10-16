@@ -1,5 +1,6 @@
 // app/api/lokasi/route.ts
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { createMiddlewareClient, createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -62,4 +63,40 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({ data });
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
+
+  try {
+
+    // Update status jadi 'approved'
+    const { error } = await supabase
+      .from("dongeng")
+      .update({ status: "approved" })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Update error:", error);
+      return NextResponse.json(
+        { error: "Gagal memperbarui status" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      message: `Status dongeng dengan id ${id} berhasil diubah menjadi 'approved'`,
+    });
+  } catch (err) {
+    console.error("Server error:", err);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan pada server" },
+      { status: 500 }
+    );
+  }
 }
