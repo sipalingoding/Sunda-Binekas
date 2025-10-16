@@ -15,8 +15,6 @@ import { logout } from "@/services/authService";
 const Header = () => {
   const router = useRouter();
 
-  
-
   const handleLogout = () => {
     logout()
       .then(() => router.push("/login"))
@@ -33,7 +31,7 @@ const Header = () => {
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 bg-[#abd7d3]" align="start">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>Akun Simkuring</DropdownMenuLabel>
           <DropdownMenuGroup>
             <DropdownMenuItem
               className="cursor-pointer"

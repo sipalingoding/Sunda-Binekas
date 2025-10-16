@@ -23,7 +23,6 @@ import { IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { createBrowserClient } from "@supabase/ssr";
 
 const formSchema = loginSchema;
 

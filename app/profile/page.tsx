@@ -1,13 +1,33 @@
-import BoxExplanation from "@/components/box-explanation/boxExplanation";
-import React from "react";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import ProfileFormClient from "./profile-form/ProfileFormClient";
 
-const ProfilePage = () => {
+const ProfilePage = async () => {
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let dataUser: any = [];
+
+  if (user) {
+    const { data: userData } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    dataUser = userData;
+  }
+
   return (
-    <BoxExplanation
-      judul="Identitas"
-      deskripsi="Idéntitas didieu maksudna data diri pikeun ngawanohkeun diri ka user séjén, sangkan bisa leuwih interaktif silih méré koméntar jeung sajabana."
-      buttonText="Lengkapan Identitas"
-    />
+    <div className="bg-[#abd7d3] h-[600px] rounded-lg p-16 flex flex-col justify-start items-start gap-6 w-[1300px] absolute left-48 top-28 z-20">
+      <span className="font-bold text-2xl mb-4">Edit Profile</span>
+
+      <ProfileFormClient userData={dataUser} />
+    </div>
   );
 };
 
