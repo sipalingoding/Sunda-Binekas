@@ -3,7 +3,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import KomentarForm from "./komentar/KomentarForm";
-import { Button } from "@/components/ui/button";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import ApproveButtons from "./button-decision/ButtonDecision";
 
