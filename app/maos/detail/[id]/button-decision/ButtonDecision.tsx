@@ -1,11 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ApproveButtons({ id }: { id: string }) {
   const router = useRouter();
+  const { toast } = useToast();
   const [loadingApprove, setLoadingApprove] = useState(false);
   const [loadingReject, setLoadingReject] = useState(false);
 
@@ -19,10 +21,18 @@ export default function ApproveButtons({ id }: { id: string }) {
     setLoadingApprove(false);
 
     if (!res.ok) {
-      alert(dataApprove.error || "Gagal mengubah status");
+      toast({
+        title: "Data Gagal Disimpen",
+        description: dataApprove.error || "Gagal disimpen",
+        variant: "destructive",
+      });
     } else {
       router.replace("/admin");
-      alert(dataApprove.message);
+      toast({
+        title: "Data Parantos Disimpen",
+        description: dataApprove.message,
+        variant: "success",
+      });
     }
   };
 
@@ -36,10 +46,18 @@ export default function ApproveButtons({ id }: { id: string }) {
     setLoadingReject(false);
 
     if (!res.ok) {
-      alert(dataApprove.error || "Gagal mengubah status");
+      toast({
+        title: "Data Gagal Disimpen",
+        description: dataApprove.error || "Gagal disimpen",
+        variant: "destructive",
+      });
     } else {
       router.replace("/admin");
-      alert(dataApprove.message);
+      toast({
+        title: "Data Parantos Disimpen",
+        description: dataApprove.message,
+        variant: "success",
+      });
     }
   };
 

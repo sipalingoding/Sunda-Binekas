@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import KomentarForm from "./komentar/KomentarForm";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import ApproveButtons from "./button-decision/ButtonDecision";
+import { GrView } from "react-icons/gr";
 
 export default async function DetailMaosPage({
   params,
@@ -27,6 +28,7 @@ export default async function DetailMaosPage({
       .select("role")
       .eq("id", user.id)
       .single();
+
     role = userData?.role ?? null;
     console.log(role);
   }
@@ -38,6 +40,7 @@ export default async function DetailMaosPage({
     id,
     judul,
     eusi,
+    view,
     created_at,
     user_id ( 
       id,
@@ -50,25 +53,17 @@ export default async function DetailMaosPage({
     .eq("id", id)
     .single();
 
+  await supabase
+    .from("dongeng")
+    .update({ view: (data?.view ?? 0) + 1 })
+    .eq("id", id);
+
   if (error) console.error("Error ambil dongeng:", error);
   else console.log("Data dongeng:", data);
 
   if (error) {
     return <div>Error ambil dongeng: {error.message}</div>;
   }
-
-  const handleApprove = async () => {
-    const res = await fetch(`/api/dongeng/${data.id}`, {
-      method: "PATCH",
-    });
-
-    const dataApprove = await res.json();
-    if (!res.ok) {
-      alert(dataApprove.error || "Gagal mengubah status");
-    } else {
-      alert(dataApprove.message);
-    }
-  };
 
   return (
     <div className="bg-[#abd7d3] h-[700px] rounded-lg p-8 flex flex-col gap-8 w-[1300px] absolute left-48 top-28 z-20">
@@ -81,8 +76,12 @@ export default async function DetailMaosPage({
         <TabsContent value="carita">
           <Card>
             <CardHeader>
-              <CardTitle>
+              <CardTitle className="flex w-full justify-between">
                 <div>{data.judul}</div>
+                <div className="flex gap-2">
+                  <GrView />
+                  {data.view} 
+                </div>
               </CardTitle>
               {/* <CardDescription>
                 Make changes to your account here. Click save when you&apos;re
