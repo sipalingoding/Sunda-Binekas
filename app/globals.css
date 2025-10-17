@@ -1,5 +1,12 @@
 @import "leaflet/dist/leaflet.css";
+@import "swiper/css";
+@import "swiper/css/pagination";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.swiper-right-pagination .swiper-pagination {
+  text-align: right !important;
+  padding-right: 8px; /* kasih sedikit jarak dari tepi kanan */
+}
