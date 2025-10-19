@@ -9,12 +9,11 @@ import { Autoplay, Pagination } from "swiper/modules";
 
 // Fix icon Leaflet tidak muncul di Next.js
 delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.icon({
-  iconUrl:
-    "https://cdn.mapmarker.io/api/v1/pin?size=50&background=%23ff0000&icon=fa-heart&color=%23FFFFFF&voffset=0",
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -35],
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
 type MapViewType = {

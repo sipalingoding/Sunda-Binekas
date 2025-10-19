@@ -46,8 +46,6 @@ const LoginPage = () => {
     setLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword(values);
 
-    console.log(data);
-
     if (error) {
       alert(error.message);
       setLoading(false);
@@ -59,10 +57,10 @@ const LoginPage = () => {
 
   const handleLoginGoogle = async () => {
     const supabase = createClientComponentClient();
-    await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        redirectTo: `${location.origin}/auth/callback`,
       },
     });
   };
