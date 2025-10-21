@@ -3,7 +3,6 @@ import axios from "axios";
 export const registerUser = async (userData: {
   username: string;
   email: string;
-  gender?: "" | "laki-laki" | "perempuan" | undefined;
   password: string;
 }) => {
   try {

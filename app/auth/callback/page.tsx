@@ -38,7 +38,6 @@ export default function AuthCallbackPage() {
               id: user.id,
               email: user.email,
               username: user.user_metadata?.full_name ?? "User",
-              gender: "",
             },
           ]);
 
