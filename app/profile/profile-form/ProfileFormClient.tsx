@@ -209,7 +209,7 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
             >
               <span className="font-semibold text-lg">Simpen</span>
               {loading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-[#fafafa] border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <FaArrowRight />
               )}

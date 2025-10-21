@@ -25,6 +25,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Plus, Trash } from "lucide-react";
+
 const formSchema = formSubmitDongengSchema;
 
 const FormPage = () => {
@@ -46,11 +48,37 @@ const FormPage = () => {
     },
   });
 
+  const [kamusList, setKamusList] = useState<
+    { kata: string; pengertian: string }[]
+  >([{ kata: "", pengertian: "" }]);
+
+  // Fungsi untuk menambah baris kamus
+  const addKamus = () => {
+    setKamusList([...kamusList, { kata: "", pengertian: "" }]);
+  };
+
+  // Fungsi untuk menghapus baris kamus
+  const removeKamus = (index: number) => {
+    setKamusList(kamusList.filter((_, i) => i !== index));
+  };
+
+  // Fungsi untuk ubah nilai kata/pengertian
+  const updateKamus = (
+    index: number,
+    field: "kata" | "pengertian",
+    value: string
+  ) => {
+    const updated = [...kamusList];
+    updated[index][field] = value;
+    setKamusList(updated);
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const payload = {
       ...values,
       lat: latitude,
       lan: langitude,
+      kamus: kamusList.filter((k) => k.kata && k.pengertian),
     };
 
     const res = await fetch("/api/dongeng", {
@@ -297,6 +325,49 @@ const FormPage = () => {
                   </FormItem>
                 )}
               />
+              <div className="mt-6">
+                <FormLabel>Kamus (Opsional)</FormLabel>
+                <div className="space-y-4 mt-2">
+                  {kamusList.map((item, index) => (
+                    <div key={index} className="flex items-center gap-4">
+                      <Input
+                        placeholder="Kata"
+                        value={item.kata}
+                        onChange={(e) =>
+                          updateKamus(index, "kata", e.target.value)
+                        }
+                        className="bg-white border border-gray-300 px-4 py-2 w-1/3"
+                      />
+                      <Input
+                        placeholder="Pengertian"
+                        value={item.pengertian}
+                        onChange={(e) =>
+                          updateKamus(index, "pengertian", e.target.value)
+                        }
+                        className="bg-white border border-gray-300 px-4 py-2 flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => removeKamus(index)}
+                        className="text-red-500"
+                      >
+                        <Trash size={18} />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={addKamus}
+                  variant="outline"
+                  className="mt-4 text-sm"
+                >
+                  <Plus size={16} className="mr-2" />
+                  Tambah Kata
+                </Button>
+              </div>
             </div>
           </div>
           <div className="flex justify-end">

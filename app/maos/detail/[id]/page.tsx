@@ -46,12 +46,12 @@ export default async function DetailMaosPage({
     eusi,
     view,
     status,
+    kamus,
     created_at,
     user_id ( 
       id,
       username,
-      email,
-      gender
+      email
     )
   `
     )
@@ -91,8 +91,14 @@ export default async function DetailMaosPage({
         <CardContent className="flex flex-col gap-10">
           <span>{data.eusi}</span>
           <div className="flex gap-20">
-            <div className="p-4 w-3/4 border border-black rounded-md min-h-36">
+            <div className="p-4 w-3/4 border border-black rounded-md min-h-36 flex flex-col gap-2">
               <span>Kamus Alit :</span>
+              {data.kamus.map((item: any, index: number) => (
+                <div className="flex gap-2 items-center">
+                  <span className="text-sm font-bold">{item.kata} :</span>
+                  <span className="text-sm italic">{item.pengertian}</span>
+                </div>
+              ))}
             </div>
             <div className="w-1/4 flex gap-2 justify-end items-end">
               <div className="flex items-center gap-2">
