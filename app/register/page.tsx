@@ -43,8 +43,8 @@ const Register = () => {
     mode: "onBlur",
     defaultValues: {
       username: "",
+      nohp: "",
       email: "",
-      gender: undefined,
       password: "",
     },
   });
@@ -131,6 +131,24 @@ const Register = () => {
               />
               <FormField
                 control={form.control}
+                name="nohp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>No HP</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Lebetkeun No HP"
+                        {...field}
+                        type="number"
+                        className="bg-white text-gray-900 border border-gray-300 px-4 py-2 w-full h-[50px] rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
@@ -142,27 +160,6 @@ const Register = () => {
                         {...field}
                         className="bg-white text-gray-900 border border-gray-300 rounded-md h-[50px]"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gender</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange}>
-                        <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px] flex items-center">
-                          <SelectValue placeholder="Milih Gender" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white text-black">
-                          <SelectItem value="laki-laki">Lalaki</SelectItem>
-                          <SelectItem value="perempuan">Awewe</SelectItem>
-                        </SelectContent>
-                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
