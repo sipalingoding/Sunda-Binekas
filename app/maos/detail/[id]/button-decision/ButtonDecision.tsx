@@ -62,17 +62,13 @@ export default function ApproveButtons({ id }: { id: string }) {
   };
 
   return (
-    <div className="flex justify-end items-end gap-2">
-      <Button
-        variant="destructive"
-        disabled={loadingReject}
-        onClick={handleReject}
-      >
+    <div className="flex justify-end items-end gap-2 mt-4">
+      <Button disabled={loadingReject} onClick={handleReject}>
         {loadingReject ? "Memproses..." : "Tolak"}
       </Button>
       <Button
         variant="default"
-        className="bg-blue-500 text-white"
+        className="bg-[#fafafa]"
         onClick={handleApprove}
         disabled={loadingApprove}
       >

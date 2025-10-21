@@ -30,7 +30,8 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-start h-screen p-16">
+    <div className="flex flex-col items-start h-screen p-16 gap-10">
+      <h1 className="text-3xl font-bold">List Dongeng</h1>
       <Table>
         <TableCaption></TableCaption>
         <TableHeader>
@@ -59,7 +60,7 @@ const AdminPage = () => {
               </TableCell>
               <TableCell className="text-right">
                 <Button
-                  className="bg-green-800 px-2 py-1 text-white"
+                  className="bg-[#fafafa]px-2 py-1"
                   onClick={() => router.replace(`/maos/detail/${resp.id}`)}
                 >
                   Detail

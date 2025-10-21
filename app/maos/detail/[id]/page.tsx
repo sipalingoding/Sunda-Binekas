@@ -6,6 +6,10 @@ import KomentarForm from "./komentar/KomentarForm";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import ApproveButtons from "./button-decision/ButtonDecision";
 import { GrView } from "react-icons/gr";
+import { ImVolumeHigh } from "react-icons/im";
+import { FaCamera } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
+import { MdPlace } from "react-icons/md";
 
 export default async function DetailMaosPage({
   params,
@@ -30,7 +34,6 @@ export default async function DetailMaosPage({
       .single();
 
     role = userData?.role ?? null;
-    console.log(role);
   }
 
   const { data, error } = await supabase
@@ -39,8 +42,10 @@ export default async function DetailMaosPage({
       `
     id,
     judul,
+    kabupaten,
     eusi,
     view,
+    status,
     created_at,
     user_id ( 
       id,
@@ -66,68 +71,64 @@ export default async function DetailMaosPage({
   }
 
   return (
-    <div className="bg-[#abd7d3] h-[700px] rounded-lg p-8 flex flex-col gap-8 w-[1300px] absolute left-48 top-28 z-20">
-      <Tabs defaultValue="carita">
-        <TabsList>
-          <TabsTrigger value="carita">Carita</TabsTrigger>
-          <TabsTrigger value="penulis">Penulis</TabsTrigger>
-          <TabsTrigger value="komentar">Komentar</TabsTrigger>
-        </TabsList>
-        <TabsContent value="carita">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex w-full justify-between">
-                <div>{data.judul}</div>
-                <div className="flex gap-2">
-                  <GrView />
-                  {data.view} 
+    <div className="rounded-lg p-8">
+      <Card className="p-4 h-fit">
+        <CardHeader>
+          <CardTitle className="flex flex-col gap-8">
+            <div className="flex justify-between items-center">
+              <div className="text-3xl font-bold">{data.judul}</div>
+              <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                <ImVolumeHigh size={30} color="white" />
+              </div>
+            </div>
+
+            <div className="text-sm font-light flex flex-col">
+              <span>Dongeng daerah : {data.kabupaten}</span>
+              <span>Sumber : </span>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-10">
+          <span>{data.eusi}</span>
+          <div className="flex gap-20">
+            <div className="p-4 w-3/4 border border-black rounded-md min-h-36">
+              <span>Kamus Alit :</span>
+            </div>
+            <div className="w-1/4 flex gap-2 justify-end items-end">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+                  <GrView size={15} color="white" />
                 </div>
-              </CardTitle>
-              {/* <CardDescription>
-                Make changes to your account here. Click save when you&apos;re
-                done.
-              </CardDescription> */}
-            </CardHeader>
-            <CardContent className="grid gap-6">{data.eusi}</CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="penulis">
-          <Card>
-            <CardHeader>
-              <CardTitle>Biodata</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              {data && data.user_id ? (
-                <div>
-                  <p>
-                    <strong>Ngaran:</strong> {(data.user_id as any).username}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {(data.user_id as any).email}
-                  </p>
-                  <p>
-                    <strong>Jenis Kelamin:</strong>{" "}
-                    {(data.user_id as any).gender}
-                  </p>
-                </div>
-              ) : (
-                <p>Data penulis tidak ditemukan.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="komentar">
-          <Card className="h-[600px] flex flex-col">
-            <CardHeader>
-              <CardTitle>Komentar</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 overflow-y-auto">
-              <KomentarForm dongengId={data.id} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-      {role === "admin" && <ApproveButtons id={data.id} />}
+                <span>{data.view}</span>
+              </div>
+            </div>
+          </div>
+          <div className="border border-black w-full"></div>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+                <FaCamera size={15} color="white" />
+              </div>
+              <span>Kontributor : {(data.user_id as any).username}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+                <IoCall size={15} color="white" />
+              </div>
+              <span>Hubungi Kontributor</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+                <MdPlace size={18} color="white" />
+              </div>
+              <span>Nyalusur Tempat Dongeng</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      {role === "admin" && data.status == "pending" && (
+        <ApproveButtons id={data.id} />
+      )}
     </div>
   );
 }

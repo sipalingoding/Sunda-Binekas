@@ -4,10 +4,9 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+import "leaflet/dist/leaflet.css";
 
-// Fix icon Leaflet tidak muncul di Next.js
+// ✅ Fix icon Leaflet agar muncul
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -17,86 +16,73 @@ L.Icon.Default.mergeOptions({
 });
 
 type MapViewType = {
-  data: any;
+  data: {
+    id: string;
+    judul: string;
+    kabupaten: string;
+    lat: number;
+    lan: number;
+  }[];
 };
 
 export default function MapView({ data }: MapViewType) {
   const router = useRouter();
 
-  const grouped = groupByLatLan(data);
-
-  function groupByLatLan(dataKoor: any) {
-    const map = new Map();
-    dataKoor.forEach((item: any) => {
-      const key = `${item.lat}-${item.lan}`;
+  // 🔹 Kelompokkan berdasarkan kabupaten
+  function groupByKabupaten(dataKoor: any[]) {
+    const map = new Map<string, any[]>();
+    dataKoor.forEach((item) => {
+      const key = item.kabupaten;
       if (!map.has(key)) map.set(key, []);
-      map.get(key).push(item);
+      map.get(key)?.push(item);
     });
-    return Array.from(map.values());
+
+    return Array.from(map.entries()).map(([kabupaten, items]) => ({
+      kabupaten,
+      items,
+      lat: items[0].lat, // ambil posisi dari data pertama
+      lan: items[0].lan,
+    }));
   }
+
+  const grouped = groupByKabupaten(data);
 
   return (
     <MapContainer
-      center={[-6.9218457, 107.6070833]} // contoh: Garut
-      zoom={10}
+      key={grouped.length}
+      center={[-6.9218457, 107.6070833]}
+      zoom={9}
       scrollWheelZoom={true}
-      style={{ height: "100%", width: "100%", borderRadius: "8px" }}
+      style={{ height: "500px", width: "100%", borderRadius: "8px" }}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
       />
-      return (
-      {grouped.map((group: any, index: number) => (
-        <Marker key={index} position={[group[0].lat, group[0].lan]}>
+
+      {/* 🔹 Render marker per kabupaten */}
+      {grouped.map((group, index) => (
+        <Marker key={index} position={[group.lat, group.lan]}>
           <Popup>
-            {group.length === 1 ? (
-              <div className="flex flex-col justify-center items-center gap-2">
-                <span className="text-sm font-bold italic">
-                  {group[0].judul}
-                </span>
-                <Button
-                  variant="white"
-                  onClick={() => router.replace(`/maos/detail/${group[0].id}`)}
-                >
-                  Maca
-                </Button>
-              </div>
-            ) : (
-              <Swiper
-                modules={[Pagination, Autoplay]}
-                pagination={{ clickable: true }}
-                spaceBetween={10}
-                slidesPerView={1}
-                className="w-[220px] swiper-right-pagination"
-                autoplay={{
-                  delay: 2000,
-                  disableOnInteraction: false,
-                }}
+            <div className="flex flex-col items-center text-center">
+              <h3 className="font-bold">{group.kabupaten}</h3>
+              <p className="text-sm">Jumlah dongéng: {group.items.length}</p>
+              <Button
+                className="text-sm bg-[#fafafa]"
+                onClick={() =>
+                  router.push(
+                    `/maos/detail/kabupaten?kabupaten=${encodeURIComponent(
+                      group.kabupaten
+                    )}`
+                  )
+                }
               >
-                {group.map((item: any, i: number) => (
-                  <SwiperSlide key={i}>
-                    <div className="flex flex-col justify-center items-center gap-2 p-2">
-                      <span className="text-base font-bold italic text-center">
-                        {item.judul}
-                      </span>
-                      <Button
-                        variant="white"
-                        onClick={() =>
-                          router.replace(`/maos/detail/${item.id}`)
-                        }
-                      >
-                        Maca
-                      </Button>
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            )}
+                Maca
+              </Button>
+            </div>
           </Popup>
         </Marker>
       ))}
-      );
     </MapContainer>
   );
 }

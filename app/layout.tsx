@@ -1,9 +1,8 @@
-import ClientLayout from "@/components/layout/ClientLayout";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Poppins } from "next/font/google";
-
+import { SidebarLayout } from "./sidebar-layout";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -34,10 +33,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased font-poppins bg-[#96C4C2] min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased font-poppins min-h-screen`}
       >
-        {/* Render layout client di dalam server layout */}
-        <ClientLayout>{children}</ClientLayout>
+        <SidebarLayout>{children}</SidebarLayout>
         <Toaster />
       </body>
     </html>
