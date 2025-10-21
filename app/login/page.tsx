@@ -66,7 +66,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative grid grid-cols-2 bg-[#96C4C2]">
+    <div className="relative grid grid-cols-2 bg-[#fafafa]">
       {/* Background Image Fullscreen */}
       <div className="col-span-1"></div>
 
