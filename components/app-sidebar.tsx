@@ -14,8 +14,10 @@ import {
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const router = useRouter();
   const supabase = createClientComponentClient();
   const [user, setUser] = React.useState<any>(null);
   const [dataUser, setDataUser] = React.useState<any>(null);
@@ -91,7 +93,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: "Warta",
-            url: "/404",
+            url: "/warta",
           },
         ],
       },
@@ -111,8 +113,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       variant="inset"
       className="bg-[#fafafa]"
     >
-      <SidebarHeader>
-        <span className="font-bold text-3xl">PUKIS</span>
+      <SidebarHeader onClick={() => router.replace("/")}>
+        <span className="font-bold text-3xl cursor-pointer">PUKIS</span>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

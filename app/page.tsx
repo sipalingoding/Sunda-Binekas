@@ -1,10 +1,26 @@
+"use client";
+
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { TfiWrite } from "react-icons/tfi";
 import { MdGroups2 } from "react-icons/md";
 import { GiOpenBook } from "react-icons/gi";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+  const [dataStatistik, setDataStatistik] = useState<any>({});
+
+  useEffect(() => {
+    getDataStatistik();
+  }, []);
+
+  const getDataStatistik = async () => {
+    const resp = await fetch("/api/users/total");
+    const json = await resp.json();
+    console.log(json);
+    setDataStatistik(json);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -51,21 +67,21 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-1">
               <div className="flex gap-2 items-center text-lg font-semibold">
                 <TfiWrite />
-                <span>9</span>
+                <span>{dataStatistik?.total_kontributor}</span>
               </div>
               <span className="text-sm text-gray-600">Kontributor</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <div className="flex gap-2 items-center text-lg font-semibold">
                 <MdGroups2 />
-                <span>100222</span>
+                <span>{dataStatistik?.total_view}</span>
               </div>
               <span className="text-sm text-gray-600">Ditingali</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <div className="flex gap-2 items-center text-lg font-semibold">
                 <GiOpenBook />
-                <span>10</span>
+                <span>{dataStatistik?.total_dongeng}</span>
               </div>
               <span className="text-sm text-gray-600">Dongeng</span>
             </div>

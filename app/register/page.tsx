@@ -81,7 +81,7 @@ const Register = () => {
   };
 
   return (
-    <div className="relative min-h-screen grid grid-cols-2">
+    <div className="relative min-h-screen grid grid-cols-2 bg-[#fafafa]">
       {/* Background Image Fullscreen */}
       <div className="col-span-1">
         {/* <Image
