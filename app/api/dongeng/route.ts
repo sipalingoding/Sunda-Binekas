@@ -15,7 +15,8 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   const body = await req.json();
-  const { kabupaten, kecamatan, desa, judul, eusi, lat, lan, kamus } = body;
+  const { kabupaten, kecamatan, desa, judul, eusi, lat, lan, kamus, sumber } =
+    body;
 
   // Pastikan user sudah login
   // const {
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
         lat,
         lan,
         kamus,
+        sumber,
       },
     ])
     .select()

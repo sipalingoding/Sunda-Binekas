@@ -45,6 +45,7 @@ const FormPage = () => {
       desa: "",
       judul: "",
       eusi: "",
+      sumber:""
     },
   });
 
@@ -283,6 +284,23 @@ const FormPage = () => {
                           ))}
                         </SelectContent>
                       </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+                <FormField
+                control={form.control}
+                name="sumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sumber Dongeng</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Lebetkeun Sumber"
+                        {...field}
+                        className="bg-white text-gray-900 border border-gray-300 px-4 py-2 w-full h-[50px] rounded-md"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
