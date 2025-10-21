@@ -5,9 +5,9 @@ import bcrypt from "bcryptjs";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, password, username, gender } = body;
+    const { email, password, username, nohp } = body;
 
-    if (!email || !password || !username || !gender) {
+    if (!email || !password || !username || !nohp) {
       return NextResponse.json(
         { error: "Semua field harus diisi!" },
         { status: 400 }
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       email,
       password,
       options: {
-        data: { username, gender },
+        data: { username },
       },
     });
 
@@ -61,8 +61,8 @@ export async function POST(req: Request) {
           id: user?.id,
           email,
           username,
-          gender,
           password: hashedPassword,
+          nohp,
         },
       ])
       .select()
