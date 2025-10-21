@@ -1,15 +1,84 @@
-import BoxExplanation from "@/components/box-explanation/boxExplanation";
-import React from "react";
+"use client";
 
-const Maos = () => {
+import dynamic from "next/dynamic";
+import React, { useEffect, useState } from "react";
+import { MdPlace } from "react-icons/md";
+import { GrView } from "react-icons/gr";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
+// ✅ Import MapView secara dinamis tanpa SSR
+const MapView = dynamic(() => import("@/components/mapview/MapView"), {
+  ssr: false,
+});
+
+export default function Maos() {
+  const router = useRouter();
+  const [dataLokasi, setDataLokasi] = useState<any[]>([]);
+  const [dongengPopular, setDongengPopular] = useState<any[]>([]);
+
+  useEffect(() => {
+    getDataMap();
+  }, []);
+
+  const getDataMap = async () => {
+    const res = await fetch("/api/dongeng/approved");
+    const { data } = await res.json();
+    setDataLokasi(data || []);
+    getTop4ByView(data);
+  };
+
+  function getTop4ByView(data: any) {
+    const sorted = [...data].sort((a, b) => b.view - a.view);
+    const dataMap = sorted.slice(0, 4).map((item) => ({
+      ...item,
+      eusi:
+        item.eusi.length > 20
+          ? item.eusi.slice(0, 20).trim() + "..."
+          : item.eusi,
+    }));
+    setDongengPopular(dataMap);
+  }
+
   return (
-    <BoxExplanation
-      judul="Maos Dongeng"
-      deskripsi="Didieu sadérék bisa maos dongéng ti unggal daérah utamana daerah Sunda, pikeun pangaweruh, panalungtikan atawa pancén ti sakola."
-      buttonText="Ngawitan Maos"
-      link="/maos/peta"
-    />
-  );
-};
+    <div className="rounded-lg flex-1 px-16 py-10 gap-4 flex flex-col">
+      <h1 className="font-bold text-3xl">Maos Dongeng</h1>
+      {dataLokasi.length > 0 && <MapView data={dataLokasi} />}
+      <h1 className="font-bold text-xl">Dongéng Populer</h1>
+      <div className="flex justify-start items-center flex-wrap gap-4">
+        {dongengPopular.map((item: any, index: number) => (
+          <div
+            key={index}
+            className="flex flex-col w-64 min-h-80 bg-[#fafafa] rounded-lg justify-between gap-4 p-4"
+          >
+            <div className="rounded-full bg-gray-500 w-20 h-20 self-center"></div>
+            <span className="text-base font-semibold text-center self-center">
+              {item.judul}
+            </span>
+            <span className="text-xs font-light">{item.eusi}</span>
+            <div className="flex gap-2 items-center">
+              <MdPlace />
+              <div className="flex flex-col text-xs">
+                <span>Kecamatan: {item.kecamatan}</span>
+                <span>Desa: {item.desa}</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2 items-center">
+                <GrView />
+                <span className="text-xs">{item.view}</span>
+              </div>
 
-export default Maos;
+              <Button
+                className="w-fit px-2 bg-gray-500 text-white"
+                onClick={() => router.push(`/maos/detail/${item.id}`)}
+              >
+                Maos
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

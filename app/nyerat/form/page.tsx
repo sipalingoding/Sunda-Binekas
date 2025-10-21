@@ -64,7 +64,7 @@ const FormPage = () => {
       toast({
         title: "Data Parantos Disimpen",
         description:
-          "Dongeng anjeun bade di cek heula ku kurator,antosan 2-7 poe",
+          "Dongeng anjeun bade di pariksa heula ku kurator, pami tos valid engke di email.",
         variant: "success",
       });
       router.replace("/maos");
@@ -143,10 +143,8 @@ const FormPage = () => {
   }, [form.watch("kecamatan")]);
 
   useEffect(() => {
-    if (!form.watch("desa")) return;
-    const fullAddress = `${form.getValues("desa")}, ${form.getValues(
-      "kecamatan"
-    )}`;
+    if (!form.watch("kabupaten")) return;
+    const fullAddress = `${form.getValues("kabupaten")}`;
     const encoded = encodeURIComponent(fullAddress);
     const fetchCoordinates = async () => {
       try {
@@ -170,10 +168,10 @@ const FormPage = () => {
     };
 
     fetchCoordinates();
-  }, [form.watch("desa")]);
+  }, [form.watch("kabupaten")]);
 
   return (
-    <div className="bg-[#abd7d3] h-[700px] rounded-lg p-8 flex flex-col gap-8 w-[1300px] absolute left-48 top-28 z-20">
+    <div className="rounded-lg p-8 flex flex-col gap-8">
       <span className="font-bold text-3xl">Pengisian Data</span>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -302,7 +300,7 @@ const FormPage = () => {
             </div>
           </div>
           <div className="flex justify-end">
-            <Button variant="white">
+            <Button className="bg-[#fafafa]">
               <span className="font-semibold">Simpen</span>
               {loading ? (
                 <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
