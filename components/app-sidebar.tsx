@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { Bot, Frame, GalleryVerticalEnd, SquareTerminal } from "lucide-react";
-
+import { MdOutlineEmail } from "react-icons/md";
+import { FaWhatsapp } from "react-icons/fa";
 import { NavProjects } from "@/components/nav-projects";
 import {
   Sidebar,
@@ -15,6 +16,7 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
+import { url } from "inspector";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
@@ -50,9 +52,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const data = {
     user: {
-      name: dataUser?.username,
-      email: user?.email,
-      avatar: user?.user_metadata?.avatar_url,
+      username: dataUser?.username,
+      email: dataUser?.email,
+      photo: dataUser?.photo,
     },
     teams: [
       {
@@ -64,8 +66,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     navMain: [
       {
         title: "Fitur Utami",
-        url: "#",
         icon: SquareTerminal,
+        url: "",
         isActive: true,
         items: [
           {
@@ -80,13 +82,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: "Ngupingkeun",
             url: "/ngupingkeun",
           },
-        ],
-      },
-      {
-        title: "Fitur Tambihan",
-        url: "#",
-        icon: Bot,
-        items: [
           {
             title: "Rereongan",
             url: "/404",
@@ -94,6 +89,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {
             title: "Warta",
             url: "/warta",
+          },
+        ],
+      },
+      {
+        title: "Kontak",
+        icon: Bot,
+        isActive: true,
+        url: "",
+        items: [
+          {
+            title: "Email",
+            url: "",
+          },
+          {
+            title: "Whatsapp",
+            url: "",
           },
         ],
       },

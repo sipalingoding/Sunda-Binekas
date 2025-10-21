@@ -7,7 +7,7 @@ export async function PATCH(req: NextRequest) {
   const supabase = createMiddlewareClient({ req, res });
 
   const body = await req.json();
-  const { username, umur, pekerjaan, alamat, noHp } = body;
+  const { username, umur, pekerjaan, alamat, nohp, photo } = body;
 
   console.log(username, umur);
 
@@ -22,7 +22,7 @@ export async function PATCH(req: NextRequest) {
 
   const { error: userError } = await supabase
     .from("users")
-    .update({ username, umur, pekerjaan, alamat, noHp })
+    .update({ username, umur, pekerjaan, alamat, nohp, photo })
     .eq("id", user?.id);
 
   if (userError) {

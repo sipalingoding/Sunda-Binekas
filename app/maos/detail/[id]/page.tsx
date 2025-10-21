@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import KomentarForm from "./komentar/KomentarForm";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import ApproveButtons from "./button-decision/ButtonDecision";
 import { GrView } from "react-icons/gr";
@@ -47,6 +45,7 @@ export default async function DetailMaosPage({
     view,
     status,
     kamus,
+    sumber,
     created_at,
     user_id ( 
       id,
@@ -77,14 +76,14 @@ export default async function DetailMaosPage({
           <CardTitle className="flex flex-col gap-8">
             <div className="flex justify-between items-center">
               <div className="text-3xl font-bold">{data.judul}</div>
-              <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
-                <ImVolumeHigh size={30} color="white" />
+              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
+                <ImVolumeHigh size={15} color="white" />
               </div>
             </div>
 
             <div className="text-sm font-light flex flex-col">
               <span>Dongeng daerah : {data.kabupaten}</span>
-              <span>Sumber : </span>
+              <span>Sumber : {data?.sumber}</span>
             </div>
           </CardTitle>
         </CardHeader>
@@ -93,8 +92,8 @@ export default async function DetailMaosPage({
           <div className="flex gap-20">
             <div className="p-4 w-3/4 border border-black rounded-md min-h-36 flex flex-col gap-2">
               <span>Kamus Alit :</span>
-              {data.kamus.map((item: any, index: number) => (
-                <div className="flex gap-2 items-center">
+              {data?.kamus?.map((item: any, index: number) => (
+                <div className="flex gap-2 items-center" key={index}>
                   <span className="text-sm font-bold">{item.kata} :</span>
                   <span className="text-sm italic">{item.pengertian}</span>
                 </div>

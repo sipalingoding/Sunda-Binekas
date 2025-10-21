@@ -29,6 +29,7 @@ export const formSubmitDongengSchema = z.object({
   desa: z.string().nonempty("Desa kudu diisi!"),
   judul: z.string().nonempty("Judul kudu diisi!"),
   eusi: z.string().nonempty("eusi kudu diisi!"),
+  sumber: z.string().nonempty("Sumber kudu diisi!"),
 });
 
 export const editProfileSchema = z.object({
@@ -38,4 +39,5 @@ export const editProfileSchema = z.object({
   umur: z.preprocess((val) => Number(val), z.number().min(0)),
   pekerjaan: z.string(),
   alamat: z.string(),
+  photo: z.string().optional(),
 });
