@@ -56,7 +56,7 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
     },
   });
 
-  // hanya preview, tidak upload
+  // Preview foto
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -67,14 +67,13 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
     reader.readAsDataURL(file);
   };
 
-  // upload baru dilakukan di sini
+  // Simpan profil
   const handleSave = async (value: any) => {
     try {
       setLoading(true);
 
       let photoUrl = userData.photo;
 
-      // jika user memilih file baru
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
@@ -89,7 +88,6 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
         photoUrl = uploadData.url;
       }
 
-      // kirim data profil beserta URL foto (kalau ada)
       const res = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -122,13 +120,15 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
   };
 
   return (
-    <div className="space-y-5 w-full">
+    <div className="space-y-5 w-full px-4 sm:px-8 md:px-12 lg:px-24 py-8">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSave)}
           className="space-y-6 w-full flex flex-col justify-between h-full"
         >
-          <div className="grid grid-cols-2 gap-10 w-full">
+          {/* Grid dua kolom di desktop, satu kolom di HP */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
+            {/* Foto profil */}
             <div>
               <FormField
                 control={form.control}
@@ -142,12 +142,12 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
                           <Image
                             src={preview}
                             alt="preview"
-                            width={400}
-                            height={400}
-                            className="rounded-lg object-cover border"
+                            width={200}
+                            height={200}
+                            className="rounded-lg object-cover border w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]"
                           />
                         ) : (
-                          <div className="w-[100px] h-[100px] rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                          <div className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
                             No Photo
                           </div>
                         )}
@@ -155,7 +155,7 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
                           type="file"
                           accept="image/*"
                           onChange={handleImageChange}
-                          className="w-[400]"
+                          className="w-full sm:w-[300px]"
                         />
                       </div>
                     </FormControl>
@@ -164,132 +164,79 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
                 )}
               />
             </div>
-            <div className="space-y-8 ">
-              {/* FORM FIELD LAINNYA */}
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Wasta</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Lebetkeun Wasta"
-                        {...field}
-                        className="bg-white text-gray-900 border border-gray-300 h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="nohp"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>No HP</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Lebetkeun No HP"
-                        {...field}
-                        type="number"
-                        className="bg-white text-gray-900 border border-gray-300 h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="pekerjaan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pagawean</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Lebetkeun Pagawean"
-                        {...field}
-                        className="bg-white text-gray-900 border border-gray-300 h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="alamat"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Padumukan</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Lebetkeun Padumukan"
-                        {...field}
-                        className="bg-white text-gray-900 border border-gray-300 h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="umur"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Umur</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Lebetkeun Umur"
-                        {...field}
-                        type="number"
-                        className="bg-white text-gray-900 border border-gray-300 h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Surel</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Lebetkeun Surel"
-                        {...field}
-                        className="bg-white text-gray-900 border border-gray-300 h-[50px]"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Kolom data diri */}
+            <div className="space-y-6">
+              {[
+                {
+                  name: "username",
+                  label: "Wasta",
+                  placeholder: "Lebetkeun Wasta",
+                },
+                {
+                  name: "nohp",
+                  label: "No HP",
+                  placeholder: "Lebetkeun No HP",
+                  type: "number",
+                },
+                {
+                  name: "pekerjaan",
+                  label: "Pagawean",
+                  placeholder: "Lebetkeun Pagawean",
+                },
+                {
+                  name: "alamat",
+                  label: "Padumukan",
+                  placeholder: "Lebetkeun Padumukan",
+                },
+                {
+                  name: "umur",
+                  label: "Umur",
+                  placeholder: "Lebetkeun Umur",
+                  type: "number",
+                },
+                {
+                  name: "email",
+                  label: "Surel",
+                  placeholder: "Lebetkeun Surel",
+                  type: "email",
+                  disabled: true,
+                },
+              ].map((field) => (
+                <FormField
+                  key={field.name}
+                  control={form.control}
+                  name={field.name as keyof z.infer<typeof formSchema>}
+                  render={({ field: inputField }) => (
+                    <FormItem>
+                      <FormLabel>{field.label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...inputField}
+                          placeholder={field.placeholder}
+                          type={field.type || "text"}
+                          disabled={field.disabled}
+                          className="bg-white text-gray-900 border border-gray-300 h-[48px]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
             </div>
           </div>
 
-          {/* BUTTON SIMPEN */}
-          <div className="flex justify-end items-center">
+          {/* Tombol Simpen */}
+          <div className="flex justify-end items-center mt-8">
             <Button
               type="submit"
               disabled={loading}
-              className="bg-[#fafafa] rounded-full px-4 py-2 w-[155px] font-semibold gap-4 h-[44px]"
+              className="bg-[#fafafa] rounded-full px-6 py-2 w-fit font-semibold gap-3 h-[44px] hover:bg-gray-100 border"
             >
               <span className="font-semibold text-lg">Simpen</span>
               {loading ? (
-                <div className="w-4 h-4 border-2 border-[#fafafa] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-[#000] border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <FaArrowRight />
               )}

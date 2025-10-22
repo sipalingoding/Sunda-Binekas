@@ -12,18 +12,10 @@ import {
   FormMessage,
   FormItem,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "@/validators/auth";
 import * as z from "zod";
-import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { FaEyeSlash } from "react-icons/fa";
@@ -38,6 +30,8 @@ const Register = () => {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -49,69 +43,58 @@ const Register = () => {
     },
   });
 
-  const router = useRouter();
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    registerUser(values)
-      .then(() => {
-        router.replace("/login");
-      })
-      .catch((error) =>
-        toast({
-          title: "Terjadi Kesalahan",
-          description: error.response?.data?.error,
-          variant: "destructive",
-        })
-      )
-      .finally(() => {
-        setLoading(false);
+    try {
+      await registerUser(values);
+      router.replace("/login");
+    } catch (error: any) {
+      toast({
+        title: "Terjadi Kesalahan",
+        description: error.response?.data?.error || "Gagal mendaftar",
+        variant: "destructive",
       });
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleLoginGoogle = async () => {
     const supabase = createClientComponentClient();
-
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: `${location.origin}/auth/callback`,
-      },
+      options: { redirectTo: `${location.origin}/auth/callback` },
     });
   };
 
   return (
-    <div className="relative min-h-screen grid grid-cols-2 bg-[#fafafa]">
-      {/* Background Image Fullscreen */}
-      <div className="col-span-1">
-        {/* <Image
-          src="/images/BACKGROUND-WEBSUN.jpeg"
-          alt="Background"
-          className="absolute z-[-1] w-full h-full object-cover"
-          fill
-          sizes="100vw"
-        /> */}
-      </div>
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#fafafa]">
+      {/* LEFT SIDE (image / kosong) */}
+      <div className="hidden md:block bg-cover bg-center" />
 
-      {/* Form Section (posisi tengah kanan) */}
+      {/* RIGHT SIDE (Form Section) */}
       <div
-        className="flex min-h-screen w-full items-center px-24 py-12"
+        className="flex min-h-screen w-full items-center justify-center px-6 sm:px-10 md:px-16 lg:px-24 py-12"
         style={{
-          background: "rgba(255, 255, 255, 0.70)", // 🔥 Background transparan
-          backdropFilter: "blur(4px)", // 🔥 Efek blur kaca
+          background: "rgba(255, 255, 255, 0.7)",
+          backdropFilter: "blur(4px)",
         }}
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 w-full flex flex-col justify-between h-full"
+            className="space-y-10 w-full max-w-md flex flex-col justify-center"
           >
+            {/* HEADER */}
             <div className="text-center space-y-2">
-              <h1 className="font-bold text-2xl">Sampurasun</h1>
-              <h1 className="text-lg">Hayu Daptar Heula</h1>
+              <h1 className="font-bold text-3xl md:text-4xl">Sampurasun</h1>
+              <p className="text-base md:text-lg text-gray-600">
+                Hayu Daptar Heula
+              </p>
             </div>
 
-            <div className="space-y-8">
+            {/* INPUT FIELDS */}
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="username"
@@ -122,13 +105,14 @@ const Register = () => {
                       <Input
                         placeholder="Lebetkeun Wasta"
                         {...field}
-                        className="bg-white text-gray-900 border border-gray-300 px-4 py-2 w-full h-[50px] rounded-md"
+                        className="bg-white text-gray-900 border border-gray-300 h-[50px] rounded-md"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="nohp"
@@ -138,15 +122,16 @@ const Register = () => {
                     <FormControl>
                       <Input
                         placeholder="Lebetkeun No HP"
-                        {...field}
                         type="number"
-                        className="bg-white text-gray-900 border border-gray-300 px-4 py-2 w-full h-[50px] rounded-md"
+                        {...field}
+                        className="bg-white text-gray-900 border border-gray-300 h-[50px] rounded-md"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="email"
@@ -158,13 +143,14 @@ const Register = () => {
                         type="email"
                         placeholder="Lebetkeun Surel"
                         {...field}
-                        className="bg-white text-gray-900 border border-gray-300 rounded-md h-[50px]"
+                        className="bg-white text-gray-900 border border-gray-300 h-[50px] rounded-md"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="password"
@@ -177,7 +163,7 @@ const Register = () => {
                           type={showPassword ? "text" : "password"}
                           placeholder="Lebetkeun Sandi"
                           {...field}
-                          className="bg-white text-gray-900 border border-gray-300 rounded-md h-[50px]"
+                          className="bg-white text-gray-900 border border-gray-300 h-[50px] rounded-md"
                         />
                         <button
                           type="button"
@@ -198,23 +184,25 @@ const Register = () => {
               />
             </div>
 
+            {/* SUBMIT BUTTON */}
             <div className="flex justify-center items-center">
               <Button
                 type="submit"
-                className="bg-green-700 rounded-full px-4 py-2 text-white w-[155px] font-semibold gap-4 h-[44px]"
+                className="bg-[#fafafa] rounded-full px-6 py-2 w-[155px] font-semibold gap-3 h-[44px]"
               >
-                <span className="font-semibold text-lg">Lebet</span>
-                {loading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <FaArrowRight />
-                )}
+                <span className="text-lg font-semibold">
+                  {loading ? "Ngantosan..." : "Lebet"}
+                </span>
+                {!loading && <FaArrowRight />}
               </Button>
             </div>
 
-            <div className="flex flex-col justify-center items-center gap-2">
+            {/* GOOGLE & LOGIN LINK */}
+            <div className="flex flex-col justify-center items-center gap-3 text-center">
               <div className="flex gap-2 items-center">
-                <h1 className="text-base">Atanapi daptar nganggo</h1>
+                <span className="text-base text-gray-700">
+                  Atanapi daptar nganggo
+                </span>
                 <FcGoogle
                   size={25}
                   className="hover:cursor-pointer"
@@ -222,15 +210,15 @@ const Register = () => {
                 />
               </div>
 
-              <h1 className="text-base">
+              <p className="text-base text-gray-700">
                 Tos Kagungan Akun?{" "}
                 <span
-                  className="font-bold text-lg hover:cursor-pointer"
+                  className="font-bold hover:underline hover:cursor-pointer"
                   onClick={() => router.replace("/login")}
                 >
                   Lebet
                 </span>
-              </h1>
+              </p>
             </div>
           </form>
         </Form>

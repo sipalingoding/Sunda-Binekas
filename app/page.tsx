@@ -17,12 +17,12 @@ export default function HomePage() {
   const getDataStatistik = async () => {
     const resp = await fetch("/api/users/total");
     const json = await resp.json();
-    console.log(json);
     setDataStatistik(json);
   };
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* HEADER */}
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
@@ -34,14 +34,18 @@ export default function HomePage() {
       </header>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 rounded-xl px-16 py-10 gap-4 flex flex-col">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold">Wilujeng Sumping!</h1>
-          <h5 className="italic">Nyukcruk Sasakala Lembur</h5>
-          <h2 className="font-bold">Dongéng Tatar Sunda</h2>
+      <main className="flex-1 rounded-xl px-6 sm:px-10 lg:px-16 py-10 gap-4 flex flex-col">
+        {/* TEKS INTRO */}
+        <div className="flex flex-col gap-2 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold">Wilujeng Sumping!</h1>
+          <h5 className="italic text-base sm:text-lg">
+            Nyukcruk Sasakala Lembur
+          </h5>
+          <h2 className="font-bold text-lg sm:text-xl">Dongéng Tatar Sunda</h2>
         </div>
 
-        <div className="flex flex-col gap-2">
+        {/* DESKRIPSI */}
+        <div className="flex flex-col gap-2 text-sm sm:text-base leading-relaxed">
           <p>
             PUKIS mangrupa platform digital berbasis peta interaktif pikeun
             maluruh cerita rakyat ti unggal daérah di Jawa Barat. Sistem website
@@ -54,34 +58,50 @@ export default function HomePage() {
             ukuranana parondok, ditulis dina wangun prosa. Dongéng sumebar ti
             hiji jalma ka jalma liana sacara lisan, tur teu kapanggih saha nu
             ngarangna. Lantaran sumebar dina wangun lisan, téks dongéng babari
-            robah atawa leungit. Robahna téks téh alatan aya anu dihaja jeung
-            teu dihaja. Jenis-jenis dongéng diantarana fable (carita sasatoan),
-            parable (carita kahirupan jalma), sasakala (legenda), sage (babad),
-            mite (mitos).
+            robah atawa leungit. Jenis-jenis dongéng diantarana fable (carita
+            sasatoan), parable (carita kahirupan jalma), sasakala (legenda),
+            sage (babad), mite (mitos).
           </p>
         </div>
 
         {/* STATISTIC SECTION */}
         <div className="mt-auto flex justify-center">
-          <div className="bg-[#fafafa] w-fit p-4 rounded-xl flex justify-center gap-16 shadow-sm">
+          <div
+            className="
+            bg-[#fafafa]
+            w-full sm:w-auto
+            p-4 sm:p-6
+            rounded-xl
+            flex flex-col sm:flex-row
+            justify-center
+            gap-6 sm:gap-16
+            shadow-sm
+            text-center
+          "
+          >
+            {/* ITEM 1 */}
             <div className="flex flex-col items-center gap-1">
-              <div className="flex gap-2 items-center text-lg font-semibold">
+              <div className="flex gap-2 items-center justify-center text-lg font-semibold">
                 <TfiWrite />
-                <span>{dataStatistik?.total_kontributor}</span>
+                <span>{dataStatistik?.total_kontributor ?? 0}</span>
               </div>
               <span className="text-sm text-gray-600">Kontributor</span>
             </div>
+
+            {/* ITEM 2 */}
             <div className="flex flex-col items-center gap-1">
-              <div className="flex gap-2 items-center text-lg font-semibold">
+              <div className="flex gap-2 items-center justify-center text-lg font-semibold">
                 <MdGroups2 />
-                <span>{dataStatistik?.total_view}</span>
+                <span>{dataStatistik?.total_view ?? 0}</span>
               </div>
               <span className="text-sm text-gray-600">Ditingali</span>
             </div>
+
+            {/* ITEM 3 */}
             <div className="flex flex-col items-center gap-1">
-              <div className="flex gap-2 items-center text-lg font-semibold">
+              <div className="flex gap-2 items-center justify-center text-lg font-semibold">
                 <GiOpenBook />
-                <span>{dataStatistik?.total_dongeng}</span>
+                <span>{dataStatistik?.total_dongeng ?? 0}</span>
               </div>
               <span className="text-sm text-gray-600">Dongeng</span>
             </div>

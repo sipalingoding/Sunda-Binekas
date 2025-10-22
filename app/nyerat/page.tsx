@@ -11,37 +11,49 @@ const NyeratPage = () => {
   const [isChecked, setIsChecked] = useState(false);
 
   return (
-    <div className="flex flex-col gap-4 p-24">
-      <h1 className="font-bold text-3xl">Nyerat Dongeng</h1>
-      <p>
-        Salian bisa maos dongéng dina ieu website saderek ogé bisa nyeratkeun
+    <div className="flex flex-col gap-6 px-4 sm:px-8 md:px-16 py-6 md:py-10">
+      {/* Judul */}
+      <h1 className="font-bold text-2xl sm:text-3xl text-center md:text-left">
+        Nyerat Dongeng
+      </h1>
+
+      {/* Deskripsi */}
+      <p className="text-sm sm:text-base leading-relaxed text-justify">
+        Salian bisa maos dongéng dina ieu website, saderek ogé bisa nyeratkeun
         dongéng lemburna séwang-séwangan. Sangkan bisa dibaca ku loba jalma,
         katambah pikeun ngadokuméntasikeun budaya sacara digital.
       </p>
-      <p>
-        Tapi saacan nyerat dongéng peryogi kauninga perkawis katangtuan anu
-        kedah disatujuan nu anu badé nyerat. Diantawisna nyaéta: <br />
-        1. Saacan nulis, eusian heula identitas kalayan lengkep; <br />
-        2. Anu nyerat kedah nyantumkeun sumber dongéng, boh sumberna tina
-        tradisi lisan masyarakat boh tina literatur tinulis (buku) kalayan ijin
-        pangarangna;
+
+      <p className="text-sm sm:text-base leading-relaxed text-justify">
+        Tapi saacan nyerat dongéng, peryogi kauninga perkawis katangtuan anu
+        kedah disatujuan ku anu badé nyerat. Di antawisna nyaéta: <br />
         <br />
-        3. Kersa nampi saran tinu maca saupama dongeng anu ditulis dirasa kurang
+        1. Saacan nulis, eusian heula identitas kalayan lengkep. <br />
+        2. Anu nyerat kedah nyantumkeun sumber dongéng — boh tina tradisi lisan
+        masyarakat boh tina literatur tinulis (buku) kalayan ijin pangarangna.
+        <br />
+        3. Kersa nampi saran tinu maca saupama dongéng anu ditulis dirasa kurang
         payus atawa perlu didiskusikeun.
       </p>
-      <div className="flex flex-col items-end gap-2 self-end mt-20">
-        <div className="flex items-center gap-3">
+
+      {/* Checkbox dan Tombol */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-10 sm:mt-16 gap-4">
+        <div className="flex items-start sm:items-center gap-3">
           <Checkbox
             id="terms"
             checked={isChecked}
             onCheckedChange={(value) => setIsChecked(!!value)}
           />
-          <Label htmlFor="terms">
-            Satuju kana kantangtuan anu tos ditangtoskeun
+          <Label
+            htmlFor="terms"
+            className="text-sm sm:text-base leading-snug cursor-pointer"
+          >
+            Satuju kana katangtuan anu tos ditangtoskeun
           </Label>
         </div>
+
         <Button
-          className="w-fit bg-[#fafafa]"
+          className="w-full sm:w-fit bg-gray-800 text-white hover:bg-gray-700 transition"
           onClick={() => router.replace("/nyerat/form")}
           disabled={!isChecked}
         >

@@ -45,7 +45,7 @@ const FormPage = () => {
       desa: "",
       judul: "",
       eusi: "",
-      sumber:""
+      sumber: "",
     },
   });
 
@@ -53,17 +53,10 @@ const FormPage = () => {
     { kata: string; pengertian: string }[]
   >([{ kata: "", pengertian: "" }]);
 
-  // Fungsi untuk menambah baris kamus
-  const addKamus = () => {
+  const addKamus = () =>
     setKamusList([...kamusList, { kata: "", pengertian: "" }]);
-  };
-
-  // Fungsi untuk menghapus baris kamus
-  const removeKamus = (index: number) => {
+  const removeKamus = (index: number) =>
     setKamusList(kamusList.filter((_, i) => i !== index));
-  };
-
-  // Fungsi untuk ubah nilai kata/pengertian
   const updateKamus = (
     index: number,
     field: "kata" | "pengertian",
@@ -75,6 +68,7 @@ const FormPage = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     const payload = {
       ...values,
       lat: latitude,
@@ -82,129 +76,88 @@ const FormPage = () => {
       kamus: kamusList.filter((k) => k.kata && k.pengertian),
     };
 
-    const res = await fetch("/api/dongeng", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      toast({
-        title: "Data Parantos Disimpen",
-        description:
-          "Dongeng anjeun bade di pariksa heula ku kurator, pami tos valid engke di email.",
-        variant: "success",
+    try {
+      const res = await fetch("/api/dongeng", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      router.replace("/maos");
-    } else {
+
+      const data = await res.json();
+      if (res.ok) {
+        toast({
+          title: "Data Parantos Disimpen",
+          description:
+            "Dongeng anjeun bade di pariksa heula ku kurator, pami tos valid engke di email.",
+          variant: "success",
+        });
+        router.replace("/maos");
+      } else {
+        toast({
+          title: "Error nyimpen data",
+          description: data.error,
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      console.error(err);
       toast({
-        title: "Error nyimpen data",
-        description: data.error,
+        title: "Gagal koneksi",
+        description: "Aya kasalahan dina sambungan jaringan.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(true);
   };
 
-  const [kabupatenList, setKabupatenList] = useState<
-    { id: string; province_id: string; name: string }[]
-  >([]);
-
-  const [kecamatanList, setKecamatanList] = useState<
-    {
-      id: string;
-      regency_id: string;
-      name: string;
-    }[]
-  >([]);
-  const [desaList, setDesaList] = useState<
-    {
-      id: string;
-      id_district: string;
-      name: string;
-    }[]
-  >([]);
+  // Fetch data wilayah
+  const [kabupatenList, setKabupatenList] = useState<any[]>([]);
+  const [kecamatanList, setKecamatanList] = useState<any[]>([]);
+  const [desaList, setDesaList] = useState<any[]>([]);
 
   useEffect(() => {
-    async function fetchKabupaten() {
-      try {
-        const res = await fetch(
-          "https://www.emsifa.com/api-wilayah-indonesia/api/regencies/32.json"
-        );
-        const data = await res.json();
-        setKabupatenList(data);
-      } catch (error) {
-        console.error("Gagal mengambil data kabupaten:", error);
-      }
-    }
-
-    fetchKabupaten();
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/regencies/32.json")
+      .then((res) => res.json())
+      .then(setKabupatenList)
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
-    const selectedKabupaten = kabupatenList.find(
+    const selectedKab = kabupatenList.find(
       (k) => k.name === form.watch("kabupaten")
     );
-    if (!selectedKabupaten) return;
-
+    if (!selectedKab) return;
     fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedKabupaten.id}.json`
+      `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedKab.id}.json`
     )
       .then((res) => res.json())
-      .then((data) => setKecamatanList(data))
-      .catch((err) => console.error("Gagal ambil kecamatan:", err));
+      .then(setKecamatanList)
+      .catch(console.error);
   }, [form.watch("kabupaten")]);
 
   useEffect(() => {
-    const selectedKecamatan = kecamatanList.find(
+    const selectedKec = kecamatanList.find(
       (k) => k.name === form.watch("kecamatan")
     );
-    if (!selectedKecamatan) return;
-
+    if (!selectedKec) return;
     fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api//villages/${selectedKecamatan.id}.json`
+      `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKec.id}.json`
     )
       .then((res) => res.json())
-      .then((data) => setDesaList(data))
-      .catch((err) => console.error("Gagal ambil desa:", err));
+      .then(setDesaList)
+      .catch(console.error);
   }, [form.watch("kecamatan")]);
 
-  useEffect(() => {
-    if (!form.watch("kabupaten")) return;
-    const fullAddress = `${form.getValues("kabupaten")}`;
-    const encoded = encodeURIComponent(fullAddress);
-    const fetchCoordinates = async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&addressdetails=1&limit=1`,
-          {
-            headers: { "User-Agent": "NextJS-Geocoding-Demo/1.0" },
-          }
-        );
-        const data = await res.json();
-
-        if (data.length > 0) {
-          setLatitude(data[0].lat);
-          setLangitude(data[0].lon);
-        } else {
-          console.log("Koordinat tidak ditemukan");
-        }
-      } catch (err) {
-        console.error("Gagal mengambil koordinat:", err);
-      }
-    };
-
-    fetchCoordinates();
-  }, [form.watch("kabupaten")]);
-
   return (
-    <div className="rounded-lg p-8 flex flex-col gap-8">
-      <span className="font-bold text-3xl">Pengisian Data</span>
+    <div className="px-4 sm:px-8 md:px-16 py-6 md:py-10">
+      <span className="font-bold text-2xl sm:text-3xl">Pengisian Data</span>
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
+          {/* Grid Responsif */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+            {/* Kiri */}
             <div className="space-y-6">
               <FormField
                 control={form.control}
@@ -217,10 +170,10 @@ const FormPage = () => {
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px] flex items-center">
+                        <SelectTrigger className="w-full min-h-[48px]">
                           <SelectValue placeholder="Pilih Kabupaten" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white text-black max-h-60 overflow-y-auto">
+                        <SelectContent className="max-h-60 overflow-y-auto">
                           {kabupatenList.map((item) => (
                             <SelectItem key={item.id} value={item.name}>
                               {item.name}
@@ -233,6 +186,7 @@ const FormPage = () => {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="kecamatan"
@@ -245,10 +199,10 @@ const FormPage = () => {
                         defaultValue={field.value}
                         disabled={!form.watch("kabupaten")}
                       >
-                        <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
+                        <SelectTrigger className="w-full min-h-[48px]">
                           <SelectValue placeholder="Pilih Kecamatan" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white text-black max-h-60 overflow-y-auto">
+                        <SelectContent className="max-h-60 overflow-y-auto">
                           {kecamatanList.map((item) => (
                             <SelectItem key={item.id} value={item.name}>
                               {item.name}
@@ -261,6 +215,7 @@ const FormPage = () => {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="desa"
@@ -273,10 +228,10 @@ const FormPage = () => {
                         defaultValue={field.value}
                         disabled={!form.watch("kecamatan")}
                       >
-                        <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
+                        <SelectTrigger className="w-full min-h-[48px]">
                           <SelectValue placeholder="Pilih Desa" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white text-black max-h-60 overflow-y-auto">
+                        <SelectContent className="max-h-60 overflow-y-auto">
                           {desaList.map((item) => (
                             <SelectItem key={item.id} value={item.name}>
                               {item.name}
@@ -289,24 +244,23 @@ const FormPage = () => {
                   </FormItem>
                 )}
               />
-                <FormField
+
+              <FormField
                 control={form.control}
                 name="sumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Sumber Dongeng</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Lebetkeun Sumber"
-                        {...field}
-                        className="bg-white text-gray-900 border border-gray-300 px-4 py-2 w-full h-[50px] rounded-md"
-                      />
+                      <Input {...field} placeholder="Lebetkeun Sumber" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+
+            {/* Kanan */}
             <div className="space-y-6">
               <FormField
                 control={form.control}
@@ -315,16 +269,13 @@ const FormPage = () => {
                   <FormItem>
                     <FormLabel>Judul</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Lebetkeun Judul"
-                        {...field}
-                        className="bg-white text-gray-900 border border-gray-300 px-4 py-2 w-full h-[50px] rounded-md"
-                      />
+                      <Input {...field} placeholder="Lebetkeun Judul" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="eusi"
@@ -333,28 +284,32 @@ const FormPage = () => {
                     <FormLabel>Eusi Dongeng</FormLabel>
                     <FormControl>
                       <Textarea
-                        rows={14}
-                        placeholder="Lebetkeun Eusi Dongeng"
                         {...field}
-                        className="bg-white text-gray-900 border border-gray-300 px-4 py-2 w-full rounded-md"
+                        rows={10}
+                        placeholder="Lebetkeun Eusi Dongeng"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="mt-6">
+
+              {/* Kamus Section */}
+              <div>
                 <FormLabel>Kamus (Opsional)</FormLabel>
-                <div className="space-y-4 mt-2">
+                <div className="space-y-3 mt-3">
                   {kamusList.map((item, index) => (
-                    <div key={index} className="flex items-center gap-4">
+                    <div
+                      key={index}
+                      className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+                    >
                       <Input
                         placeholder="Kata"
                         value={item.kata}
                         onChange={(e) =>
                           updateKamus(index, "kata", e.target.value)
                         }
-                        className="bg-white border border-gray-300 px-4 py-2 w-1/3"
+                        className="sm:w-1/3"
                       />
                       <Input
                         placeholder="Pengertian"
@@ -362,7 +317,7 @@ const FormPage = () => {
                         onChange={(e) =>
                           updateKamus(index, "pengertian", e.target.value)
                         }
-                        className="bg-white border border-gray-300 px-4 py-2 flex-1"
+                        className="flex-1"
                       />
                       <Button
                         type="button"
@@ -388,13 +343,17 @@ const FormPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Tombol Submit */}
           <div className="flex justify-end">
-            <Button className="bg-[#fafafa]">
-              <span className="font-semibold">Simpen</span>
+            <Button
+              className="bg-gray-900 text-white hover:bg-gray-700 w-full sm:w-auto"
+              disabled={loading}
+            >
               {loading ? (
-                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                ""
+                <span className="font-semibold">Simpen</span>
               )}
             </Button>
           </div>
