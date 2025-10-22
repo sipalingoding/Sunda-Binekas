@@ -26,6 +26,7 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
+import { FaBookReader } from "react-icons/fa";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
@@ -136,8 +137,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       variant="inset"
       className="bg-[#fafafa]"
     >
-      <SidebarHeader onClick={() => router.replace("/")}>
-        <span className="font-bold text-3xl cursor-pointer">PUKIS</span>
+      <SidebarHeader
+        onClick={() => router.replace("/")}
+        className="flex flex-row gap-3 items-center "
+      >
+        <FaBookReader size={50} />
+        <div className="flex flex-col">
+          <span className="font-bold text-3xl">PUKIS</span>
+          <span className="text-xs">
+            Peta Unik Karuhun Jeung Inovasi Sastra
+          </span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
