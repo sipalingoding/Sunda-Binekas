@@ -17,18 +17,20 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavMain({
   items,
 }: {
   items: {
     title: string;
-    url: string;
+    url?: string;
     icon?: LucideIcon;
     isActive?: boolean;
     items?: {
       title: string;
       url: string;
+      icon?: LucideIcon;
     }[];
   }[];
 }) {
@@ -53,15 +55,41 @@ export function NavMain({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
+                  {item.items?.map((subItem) => {
+                    const isExternal =
+                      subItem.url.startsWith("http") ||
+                      subItem.url.startsWith("mailto:");
+
+                    return (
+                      <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubButton asChild>
+                          {isExternal ? (
+                            <a
+                              href={subItem.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2"
+                            >
+                              {subItem.icon && (
+                                <subItem.icon className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              <span>{subItem.title}</span>
+                            </a>
+                          ) : (
+                            <Link
+                              href={subItem.url}
+                              className="flex items-center gap-2"
+                            >
+                              {subItem.icon && (
+                                <subItem.icon className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              <span>{subItem.title}</span>
+                            </Link>
+                          )}
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    );
+                  })}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
