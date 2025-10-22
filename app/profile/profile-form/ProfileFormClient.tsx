@@ -120,7 +120,7 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
   };
 
   return (
-    <div className="space-y-5 w-full px-4 sm:px-8 md:px-12 lg:px-24 py-8">
+    <div className="space-y-5 w-full px-4 sm:px-8 md:px-16 py-6 md:py-10">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSave)}
@@ -228,7 +228,7 @@ export default function ProfileFormClient({ userData }: ProfileFormProps) {
           </div>
 
           {/* Tombol Simpen */}
-          <div className="flex justify-end items-center mt-8">
+          <div className="flex justify-center lg:justify-end items-center mt-8">
             <Button
               type="submit"
               disabled={loading}
