@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { authLogin } from "@/services/authService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,6 +30,8 @@ const LoginPage = () => {
   const supabase = createClientComponentClient();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -40,55 +41,63 @@ const LoginPage = () => {
     },
   });
 
-  const router = useRouter();
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword(values);
+    const { error } = await supabase.auth.signInWithPassword(values);
 
     if (error) {
-      alert(error.message);
+      toast({
+        title: "Gagal masuk",
+        description: error.message,
+        variant: "destructive",
+      });
       setLoading(false);
     } else {
       window.location.href = "/";
-      setLoading(false);
     }
   }
 
   const handleLoginGoogle = async () => {
-    const supabase = createClientComponentClient();
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: `${location.origin}/auth/callback`,
-      },
+      options: { redirectTo: `${location.origin}/auth/callback` },
     });
+    if (error)
+      toast({
+        title: "Login gagal",
+        description: error.message,
+        variant: "destructive",
+      });
   };
 
   return (
-    <div className="relative grid grid-cols-2 bg-[#fafafa]">
-      {/* Background Image Fullscreen */}
-      <div className="col-span-1"></div>
+    <div className="min-h-screen bg-[#fafafa] grid grid-cols-1 md:grid-cols-2">
+      {/* Left side (gambar atau kosong) */}
+      <div className="hidden md:block bg-cover bg-center" />
 
-      {/* Form Section (posisi tengah kanan) */}
+      {/* Form Section */}
       <div
-        className="flex min-h-screen w-full items-center px-24 py-12"
+        className="flex min-h-screen w-full items-center justify-center px-6 sm:px-10 md:px-16 lg:px-24 py-12"
         style={{
-          background: "rgba(255, 255, 255, 0.70)", // 🔥 Background transparan
-          backdropFilter: "blur(4px)", // 🔥 Efek blur kaca
+          background: "rgba(255, 255, 255, 0.7)",
+          backdropFilter: "blur(4px)",
         }}
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-20 w-full flex flex-col justify-center h-full"
+            className="space-y-12 w-full max-w-md flex flex-col justify-center"
           >
+            {/* Header */}
             <div className="text-center space-y-2">
-              <h1 className="font-bold text-2xl">Sampurasun</h1>
-              <h1 className="text-lg">Hayu Daptar Heula</h1>
+              <h1 className="font-bold text-3xl md:text-4xl">Sampurasun</h1>
+              <p className="text-base md:text-lg text-gray-600">
+                Hayu Daptar Heula
+              </p>
             </div>
 
-            <div className="space-y-8">
+            {/* Input Fields */}
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="email"
@@ -100,13 +109,14 @@ const LoginPage = () => {
                         type="email"
                         placeholder="Lebetkeun Surel"
                         {...field}
-                        className="bg-white text-gray-900 border border-gray-300 rounded-md h-[50px]"
+                        className="bg-white border border-gray-300 rounded-md h-[50px]"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="password"
@@ -119,7 +129,7 @@ const LoginPage = () => {
                           type={showPassword ? "text" : "password"}
                           placeholder="Lebetkeun Sandi"
                           {...field}
-                          className="bg-white text-gray-900 border border-gray-300 rounded-md h-[50px]"
+                          className="bg-white border border-gray-300 rounded-md h-[50px]"
                         />
                         <button
                           type="button"
@@ -140,12 +150,13 @@ const LoginPage = () => {
               />
             </div>
 
+            {/* Submit Button */}
             <div className="flex justify-center items-center">
               <Button
                 type="submit"
-                className="bg-green-700 rounded-full px-4 py-2 text-white w-[155px] font-semibold gap-4 h-[44px]"
+                className="bg-[#fafafa] rounded-full px-6 py-2 w-[155px] font-semibold gap-3 h-[44px]"
               >
-                <span className="font-semibold text-lg">Lebet</span>
+                <span className="text-lg font-semibold">Lebet</span>
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
@@ -154,9 +165,12 @@ const LoginPage = () => {
               </Button>
             </div>
 
-            <div className="flex flex-col justify-center items-center gap-2">
+            {/* Google & Register Section */}
+            <div className="flex flex-col justify-center items-center gap-3 text-center">
               <div className="flex gap-2 items-center">
-                <h1 className="text-base">Atanapi daptar nganggo</h1>
+                <span className="text-base text-gray-700">
+                  Atanapi daptar nganggo
+                </span>
                 <FcGoogle
                   size={25}
                   className="hover:cursor-pointer"
@@ -164,15 +178,15 @@ const LoginPage = () => {
                 />
               </div>
 
-              <h1 className="text-base">
+              <p className="text-base text-gray-700">
                 Teu acan Kagungan Akun?{" "}
                 <span
-                  className="font-bold text-lg hover:cursor-pointer"
+                  className="font-bold hover:underline hover:cursor-pointer"
                   onClick={() => router.replace("/register")}
                 >
-                  Lebet
+                  Daftar
                 </span>
-              </h1>
+              </p>
             </div>
           </form>
         </Form>

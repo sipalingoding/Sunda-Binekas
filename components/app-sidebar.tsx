@@ -2,8 +2,6 @@
 
 import * as React from "react";
 import { Bot, Frame, GalleryVerticalEnd, SquareTerminal } from "lucide-react";
-import { MdOutlineEmail } from "react-icons/md";
-import { FaWhatsapp } from "react-icons/fa";
 import { NavProjects } from "@/components/nav-projects";
 import {
   Sidebar,
@@ -16,7 +14,6 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
-import { url } from "inspector";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();

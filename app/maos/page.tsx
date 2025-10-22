@@ -7,7 +7,6 @@ import { GrView } from "react-icons/gr";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-// ✅ Import MapView secara dinamis tanpa SSR
 const MapView = dynamic(() => import("@/components/mapview/MapView"), {
   ssr: false,
 });
@@ -41,36 +40,71 @@ export default function Maos() {
   }
 
   return (
-    <div className="rounded-lg flex-1 px-16 py-10 gap-4 flex flex-col">
-      <h1 className="font-bold text-3xl">Maos Dongeng</h1>
-      {dataLokasi.length > 0 && <MapView data={dataLokasi} />}
-      <h1 className="font-bold text-xl">Dongéng Populer</h1>
-      <div className="flex justify-start items-center flex-wrap gap-4">
+    <div className="flex flex-col flex-1 px-4 sm:px-8 md:px-16 py-6 md:py-10 gap-6 md:gap-8">
+      {/* Judul */}
+      <h1 className="font-bold text-2xl sm:text-3xl text-center md:text-left">
+        Maos Dongeng
+      </h1>
+
+      {/* Peta */}
+      {dataLokasi.length > 0 && (
+        <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+          <MapView data={dataLokasi} />
+        </div>
+      )}
+
+      {/* Dongeng Populer */}
+      <h1 className="font-bold text-lg sm:text-xl mt-4">Dongéng Populer</h1>
+
+      <div
+        className="
+          grid 
+          grid-cols-1 
+          sm:grid-cols-2 
+          lg:grid-cols-3 
+          xl:grid-cols-4 
+          gap-6 
+          justify-items-center
+        "
+      >
         {dongengPopular.map((item: any, index: number) => (
           <div
             key={index}
-            className="flex flex-col w-64 min-h-80 bg-[#fafafa] rounded-lg justify-between gap-4 p-4"
+            className="
+              flex flex-col 
+              w-full sm:w-64 
+              bg-[#fafafa] 
+              rounded-lg 
+              justify-between 
+              gap-4 
+              p-4 
+              shadow-sm
+            "
           >
             <div className="rounded-full bg-gray-500 w-20 h-20 self-center"></div>
-            <span className="text-base font-semibold text-center self-center">
+
+            <span className="text-base font-semibold text-center">
               {item.judul}
             </span>
-            <span className="text-xs font-light">{item.eusi}</span>
-            <div className="flex gap-2 items-center">
-              <MdPlace />
-              <div className="flex flex-col text-xs">
+
+            <span className="text-xs font-light text-center">{item.eusi}</span>
+
+            <div className="flex gap-2 items-start text-xs">
+              <MdPlace className="mt-[2px]" />
+              <div className="flex flex-col">
                 <span>Kecamatan: {item.kecamatan}</span>
                 <span>Desa: {item.desa}</span>
               </div>
             </div>
+
             <div className="flex items-center justify-between">
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center text-xs">
                 <GrView />
-                <span className="text-xs">{item.view}</span>
+                <span>{item.view}</span>
               </div>
 
               <Button
-                className="w-fit px-2 bg-gray-500 text-white"
+                className="w-fit px-3 py-1 bg-gray-600 text-white text-xs sm:text-sm"
                 onClick={() => router.push(`/maos/detail/${item.id}`)}
               >
                 Maos
