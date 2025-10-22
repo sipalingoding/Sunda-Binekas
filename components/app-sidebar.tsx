@@ -1,7 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { Bot, Frame, GalleryVerticalEnd, SquareTerminal } from "lucide-react";
+import {
+  Bot,
+  Frame,
+  GalleryVerticalEnd,
+  SquareTerminal,
+  BookOpen,
+  PenTool,
+  Headphones,
+  Users,
+  Newspaper,
+  Mail,
+  Phone,
+} from "lucide-react"; // ✅ icon tambahan
 import { NavProjects } from "@/components/nav-projects";
 import {
   Sidebar,
@@ -34,15 +46,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   React.useEffect(() => {
     const getUserData = async () => {
       if (!user) return;
-      const { data: userData, error } = await supabase
+      const { data: userData } = await supabase
         .from("users")
         .select("*")
         .eq("id", user.id)
         .single();
-
-      if (!error) {
-        setDataUser(userData);
-      }
+      if (userData) setDataUser(userData);
     };
     getUserData();
   }, [user, supabase]);
@@ -64,28 +73,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: "Fitur Utami",
         icon: SquareTerminal,
-        url: "",
         isActive: true,
         items: [
           {
             title: "Maos",
             url: "/maos",
+            icon: BookOpen, // 📖
           },
           {
             title: "Nyerat",
             url: "/nyerat",
+            icon: PenTool, // ✏️
           },
           {
             title: "Ngupingkeun",
             url: "/ngupingkeun",
+            icon: Headphones, // 🎧
           },
           {
             title: "Rereongan",
             url: "/404",
+            icon: Users, // 👥
           },
           {
             title: "Warta",
             url: "/warta",
+            icon: Newspaper, // 📰
           },
         ],
       },
@@ -93,15 +106,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Kontak",
         icon: Bot,
         isActive: true,
-        url: "",
         items: [
           {
             title: "Email",
-            url: "",
+            url: "mailto:info@pukis.com",
+            icon: Mail, // 📧
           },
           {
             title: "Whatsapp",
-            url: "",
+            url: "https://wa.me/628123456789",
+            icon: Phone, // 📞
           },
         ],
       },
@@ -114,6 +128,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ],
   };
+
   return (
     <Sidebar
       collapsible="icon"
