@@ -23,7 +23,7 @@ const ProfilePage = async () => {
   }
 
   return (
-    <div className="rounded-lg p-16 flex flex-col justify-start items-start gap-6">
+    <div className="rounded-lg p-4 flex flex-col justify-start items-start gap-6">
       <span className="font-bold text-2xl mb-4">Edit Profile</span>
 
       <ProfileFormClient userData={dataUser} />
