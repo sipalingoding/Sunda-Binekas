@@ -1,13 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-export async function DELETE(
-  req: Request,
-  context: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: any) {
   const supabase = createRouteHandlerClient({ cookies });
-  const id = context.params.id; // ambil id dari context
+
+  const id = context?.params?.id;
+
+  if (!id) {
+    return NextResponse.json(
+      { success: false, message: "Playlist ID tidak ditemukan" },
+      { status: 400 }
+    );
+  }
 
   try {
     const { data, error } = await supabase
