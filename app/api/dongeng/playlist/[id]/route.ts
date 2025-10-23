@@ -2,15 +2,12 @@ import { NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-interface RouteContext {
-  params: {
-    id: string;
-  };
-}
-
-export async function DELETE(req: Request, context: RouteContext) {
+export async function DELETE(
+  req: Request,
+  context: { params: { id: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
-  const { id } = context.params;
+  const id = context.params.id; // ambil id dari context
 
   try {
     const { data, error } = await supabase
