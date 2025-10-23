@@ -1,9 +1,5 @@
 // app/api/lokasi/route.ts
-import {
-  createMiddlewareClient,
-  createRouteHandlerClient,
-} from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -18,17 +14,6 @@ export async function POST(req: NextRequest) {
   const { kabupaten, kecamatan, desa, judul, eusi, lat, lan, kamus, sumber } =
     body;
 
-  // Pastikan user sudah login
-  // const {
-  //   data: { user },
-  //   error: getUserError,
-  // } = await supabase.auth.getUser();
-
-  // if (getUserError || !user) {
-  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  // }
-
-  // Simpan data ke tabel "lokasi"
   const { data, error } = await supabase
     .from("dongeng")
     .insert([

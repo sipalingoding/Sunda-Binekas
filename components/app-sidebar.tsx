@@ -13,6 +13,7 @@ import {
   Newspaper,
   Mail,
   Phone,
+  BookAudio,
 } from "lucide-react"; // ✅ icon tambahan
 import { NavProjects } from "@/components/nav-projects";
 import {
@@ -27,6 +28,7 @@ import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { FaBookReader } from "react-icons/fa";
+import { VscFileSubmodule } from "react-icons/vsc";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
@@ -125,7 +127,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         name: "Modul Guru",
         url: "/admin",
-        icon: Frame,
+        icon: BookAudio,
       },
     ],
   };
