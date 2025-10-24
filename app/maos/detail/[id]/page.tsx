@@ -7,6 +7,7 @@ import { ImVolumeHigh } from "react-icons/im";
 import { FaCamera } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { MdPlace } from "react-icons/md";
+import Image from "next/image";
 
 export default async function DetailMaosPage({
   params,
@@ -126,7 +127,17 @@ export default async function DetailMaosPage({
           <div className="flex flex-col sm:flex-row sm:flex-wrap justify-between gap-4 md:gap-6">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                <FaCamera size={15} color="white" />
+                {(data.user_id as any).photo ? (
+                  <Image
+                    src={(data.user_id as any).photo}
+                    height={40}
+                    width={40}
+                    alt="foto_user"
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <FaCamera size={18} className="text-white" />
+                )}
               </div>
               <span className="text-sm md:text-base">
                 Kontributor: {(data.user_id as any).username}
