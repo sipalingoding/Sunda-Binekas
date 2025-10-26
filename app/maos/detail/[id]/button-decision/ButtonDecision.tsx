@@ -66,6 +66,9 @@ export default function ApproveButtons({ id }: { id: string }) {
       <Button disabled={loadingReject} onClick={handleReject}>
         {loadingReject ? "Memproses..." : "Tolak"}
       </Button>
+      <Button onClick={() => router.push(`/nyerat/form/edit/${id}`)}>
+        Edit
+      </Button>
       <Button
         variant="default"
         className="bg-[#fafafa]"

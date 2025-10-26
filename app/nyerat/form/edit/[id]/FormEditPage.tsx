@@ -29,15 +29,12 @@ import { Plus, Trash } from "lucide-react";
 
 const formSchema = formSubmitDongengSchema;
 
-const FormPage = () => {
+const FormEditPage = ({ dataGet }: { dataGet: any }) => {
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [latitude, setLatitude] = useState<string>();
   const [langitude, setLangitude] = useState<string>();
-  const [idKab, setIdKab] = useState<any>();
-  const [idKec, setIdKec] = useState<any>();
-  const [idDesa, setIdDesa] = useState<any>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,6 +48,21 @@ const FormPage = () => {
       sumber: "",
     },
   });
+
+  useEffect(() => {
+    if (dataGet) {
+      console.log(dataGet);
+      form.reset({
+        kabupaten: dataGet.kabupaten || "",
+        kecamatan: dataGet.kecamatan || "",
+        desa: dataGet.desa || "",
+        judul: dataGet.judul || "",
+        eusi: dataGet.eusi || "",
+        sumber: dataGet.sumber || "",
+      });
+      setKamusList(dataGet?.kamus);
+    }
+  }, [dataGet, form]);
 
   const [kamusList, setKamusList] = useState<
     { kata: string; pengertian: string }[]
@@ -77,9 +89,6 @@ const FormPage = () => {
       lat: latitude,
       lan: langitude,
       kamus: kamusList.filter((k) => k.kata && k.pengertian),
-      kabupaten_id: idKab,
-      kecamatan_id: idKec,
-      desa_id: idDesa,
     };
 
     try {
@@ -133,8 +142,6 @@ const FormPage = () => {
     const selectedKab = kabupatenList.find(
       (k) => k.name === form.watch("kabupaten")
     );
-
-    setIdKab(selectedKab?.id);
     if (!selectedKab) return;
     fetch(
       `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedKab.id}.json`
@@ -142,13 +149,12 @@ const FormPage = () => {
       .then((res) => res.json())
       .then(setKecamatanList)
       .catch(console.error);
-  }, [form.watch("kabupaten")]);
+  }, [form.watch("kabupaten"), dataGet]);
 
   useEffect(() => {
     const selectedKec = kecamatanList.find(
       (k) => k.name === form.watch("kecamatan")
     );
-    setIdKec(selectedKec?.id);
     if (!selectedKec) return;
     fetch(
       `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKec.id}.json`
@@ -156,12 +162,7 @@ const FormPage = () => {
       .then((res) => res.json())
       .then(setDesaList)
       .catch(console.error);
-  }, [form.watch("kecamatan")]);
-
-  useEffect(() => {
-    const selectedDesa = desaList.find((k) => k.name === form.watch("desa"));
-    setIdDesa(selectedDesa?.id);
-  }, [form.watch("desa")]);
+  }, [form.watch("kecamatan"), dataGet]);
 
   useEffect(() => {
     if (!form.watch("kabupaten")) return;
@@ -193,7 +194,7 @@ const FormPage = () => {
 
   return (
     <div className="px-4 sm:px-8 md:px-16 py-6 md:py-10">
-      <span className="font-bold text-2xl sm:text-3xl">Pengisian Data</span>
+      <span className="font-bold text-2xl sm:text-3xl">Edit Data</span>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
@@ -217,7 +218,11 @@ const FormPage = () => {
                         </SelectTrigger>
                         <SelectContent className="max-h-60 overflow-y-auto">
                           {kabupatenList.map((item) => (
-                            <SelectItem key={item.id} value={item.name}>
+                            <SelectItem
+                              key={item.id}
+                              defaultValue={dataGet?.kabupaten}
+                              value={item.name}
+                            >
                               {item.name}
                             </SelectItem>
                           ))}
@@ -405,4 +410,4 @@ const FormPage = () => {
   );
 };
 
-export default FormPage;
+export default FormEditPage;
