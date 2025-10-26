@@ -11,8 +11,20 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   const body = await req.json();
-  const { kabupaten, kecamatan, desa, judul, eusi, lat, lan, kamus, sumber } =
-    body;
+  const {
+    kabupaten,
+    kecamatan,
+    desa,
+    judul,
+    eusi,
+    lat,
+    lan,
+    kamus,
+    sumber,
+    kabupaten_id,
+    kecamatan_id,
+    desa_id,
+  } = body;
 
   const { data, error } = await supabase
     .from("dongeng")
@@ -28,6 +40,9 @@ export async function POST(req: NextRequest) {
         lan,
         kamus,
         sumber,
+        kabupaten_id,
+        kecamatan_id,
+        desa_id,
       },
     ])
     .select()

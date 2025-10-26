@@ -53,7 +53,7 @@ const AdminPage = () => {
                   <TableCell className="font-medium">{resp.judul}</TableCell>
                   <TableCell>
                     <Button
-                      className={`text-white capitalize px-3 py-1 rounded-md ${
+                      className={`text-white min-w-24 capitalize px-3 py-1 rounded-md ${
                         resp.status === "pending"
                           ? "bg-yellow-500 hover:bg-yellow-600"
                           : resp.status === "rejected"
