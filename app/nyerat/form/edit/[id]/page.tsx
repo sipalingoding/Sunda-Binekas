@@ -2,8 +2,13 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import FormEditPage from "./FormEditPage";
 
-export default async function EditPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function EditPage({
+  params,
+}: {
+  params: any; // ✅ bypass type error
+}) {
+  const resolvedParams = await params; // ✅ handle Promise or object safely
+  const { id } = resolvedParams;
 
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
