@@ -9,6 +9,7 @@ import { FaPlus, FaPlay } from "react-icons/fa6";
 import { CgPlayListRemove } from "react-icons/cg";
 import { IoPlayBack, IoPlayForward } from "react-icons/io5";
 import { FaCheckCircle } from "react-icons/fa";
+import Image from "next/image";
 
 const NgupingkeunPage = () => {
   const [dataDongeng, setDataDongeng] = useState<any[]>([]);
@@ -107,7 +108,19 @@ const NgupingkeunPage = () => {
                 className="flex flex-col bg-white rounded-xl justify-between gap-4 p-5 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-200"
               >
                 {/* Foto */}
-                <div className="rounded-full bg-gray-400 w-24 h-24 self-center"></div>
+                {item.photo ? (
+                  <div className="self-center">
+                    <Image
+                      width={20}
+                      height={20}
+                      src={item?.photo}
+                      alt="photo dongeng"
+                      className="rounded-full w-20 h-20"
+                    />
+                  </div>
+                ) : (
+                  <div className="rounded-full bg-gray-400 w-24 h-24 self-center"></div>
+                )}
 
                 {/* Judul */}
                 <span className="text-lg font-semibold text-center text-gray-800">
@@ -200,7 +213,18 @@ const NgupingkeunPage = () => {
                 key={index}
               >
                 <div className="flex gap-2 items-center">
-                  <div className="rounded-full w-8 h-8 bg-gray-500"></div>
+                  {item?.dongeng_id?.photo ? (
+                    <Image
+                      width={8}
+                      height={8}
+                      src={item?.dongeng_id?.photo}
+                      alt="photo dongeng"
+                      className="rounded-full w-8 h-8"
+                    />
+                  ) : (
+                    <div className="rounded-full w-8 h-8 bg-gray-500"></div>
+                  )}
+
                   <span className="text-gray-800">
                     {typeof item.dongeng_id === "object"
                       ? item.dongeng_id.judul

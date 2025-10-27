@@ -46,6 +46,7 @@ export default async function DetailMaosPage({
       status,
       kamus,
       sumber,
+      photo,
       created_at,
       user_id ( 
         id,
@@ -62,6 +63,8 @@ export default async function DetailMaosPage({
     .from("dongeng")
     .update({ view: (data?.view ?? 0) + 1 })
     .eq("id", id);
+
+  console.log(data);
 
   if (error) return <div>Error ambil dongeng: {error.message}</div>;
 
@@ -87,6 +90,15 @@ export default async function DetailMaosPage({
         </CardHeader>
 
         <CardContent className="flex flex-col gap-8 md:gap-10">
+          {data?.photo && (
+            <Image
+              src={data.photo}
+              height={300}
+              width={300}
+              alt="photo dongeng"
+            />
+          )}
+
           <span className="text-sm md:text-base leading-relaxed text-justify">
             {data.eusi}
           </span>
