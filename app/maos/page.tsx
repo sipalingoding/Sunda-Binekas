@@ -6,6 +6,7 @@ import { MdPlace } from "react-icons/md";
 import { GrView } from "react-icons/gr";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const MapView = dynamic(() => import("@/components/mapview/MapView"), {
   ssr: false,
@@ -81,7 +82,19 @@ export default function Maos() {
               shadow-sm
             "
           >
-            <div className="rounded-full bg-gray-500 w-20 h-20 self-center"></div>
+            {item?.photo ? (
+              <div className="self-center">
+                <Image
+                  width={20}
+                  height={20}
+                  src={item?.photo}
+                  alt="photo dongeng"
+                  className="rounded-full w-20 h-20"
+                />
+              </div>
+            ) : (
+              <div className="rounded-full bg-gray-500 w-20 h-20 self-center"></div>
+            )}
 
             <span className="text-base font-semibold text-center">
               {item.judul}

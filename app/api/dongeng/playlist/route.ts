@@ -21,7 +21,8 @@ export async function GET(req: NextRequest) {
       dongeng_id (
         id,
         judul,
-        eusi
+        eusi,
+        photo
       )`
     )
     .eq("user_id", user.id)
