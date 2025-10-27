@@ -215,7 +215,7 @@ const FormPage = () => {
                         <SelectTrigger className="w-full min-h-[48px]">
                           <SelectValue placeholder="Pilih Kabupaten" />
                         </SelectTrigger>
-                        <SelectContent className="max-h-60 overflow-y-auto">
+                        <SelectContent className="max-h-60 overflow-y-auto bg-white">
                           {kabupatenList.map((item) => (
                             <SelectItem key={item.id} value={item.name}>
                               {item.name}
@@ -244,7 +244,7 @@ const FormPage = () => {
                         <SelectTrigger className="w-full min-h-[48px]">
                           <SelectValue placeholder="Pilih Kecamatan" />
                         </SelectTrigger>
-                        <SelectContent className="max-h-60 overflow-y-auto">
+                        <SelectContent className="max-h-60 overflow-y-auto bg-white">
                           {kecamatanList.map((item) => (
                             <SelectItem key={item.id} value={item.name}>
                               {item.name}
@@ -273,7 +273,7 @@ const FormPage = () => {
                         <SelectTrigger className="w-full min-h-[48px]">
                           <SelectValue placeholder="Pilih Desa" />
                         </SelectTrigger>
-                        <SelectContent className="max-h-60 overflow-y-auto">
+                        <SelectContent className="max-h-60 overflow-y-auto bg-white">
                           {desaList.map((item) => (
                             <SelectItem key={item.id} value={item.name}>
                               {item.name}

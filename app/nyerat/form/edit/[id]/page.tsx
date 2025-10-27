@@ -1,4 +1,3 @@
-import React from "react";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import FormEditPage from "./FormEditPage";
@@ -6,10 +5,10 @@ import FormEditPage from "./FormEditPage";
 export default async function EditPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: any; // ✅ bypass type error
 }) {
-  // 🔸 unwrap Promise params (fitur baru di Next.js 15)
-  const { id } = React.use(params);
+  const resolvedParams = await params; // ✅ handle Promise or object safely
+  const { id } = resolvedParams;
 
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
@@ -25,6 +24,5 @@ export default async function EditPage({
     return <div className="p-6 text-red-500">Gagal memuat data</div>;
   }
 
-  // 🔸 kirim data hasil supabase ke komponen client
   return <FormEditPage dataGet={data} />;
 }
