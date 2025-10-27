@@ -26,6 +26,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Plus, Trash } from "lucide-react";
+import Image from "next/image";
 
 const formSchema = formSubmitDongengSchema;
 
@@ -35,6 +36,11 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [latitude, setLatitude] = useState<string>();
   const [langitude, setLangitude] = useState<string>();
+  const [preview, setPreview] = useState<string | null>(dataGet?.photo || null);
+  const [file, setFile] = useState<File | null>(null);
+  const [kabupatenList, setKabupatenList] = useState<any[]>([]);
+  const [kecamatanList, setKecamatanList] = useState<any[]>([]);
+  const [desaList, setDesaList] = useState<any[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,11 +52,17 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
       judul: "",
       eusi: "",
       sumber: "",
+      photo: "",
     },
   });
 
   useEffect(() => {
-    if (dataGet) {
+    if (
+      dataGet &&
+      kabupatenList.length > 0 &&
+      kecamatanList.length > 0 &&
+      desaList.length > 0
+    ) {
       console.log(dataGet);
       form.reset({
         kabupaten: dataGet.kabupaten || "",
@@ -59,10 +71,11 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
         judul: dataGet.judul || "",
         eusi: dataGet.eusi || "",
         sumber: dataGet.sumber || "",
+        photo: dataGet.photo || "",
       });
       setKamusList(dataGet?.kamus);
     }
-  }, [dataGet, form]);
+  }, [dataGet, kabupatenList, kecamatanList, desaList, form]);
 
   const [kamusList, setKamusList] = useState<
     { kata: string; pengertian: string }[]
@@ -83,17 +96,35 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    let photoUrl = values.photo;
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadRes = await fetch("/api/upload-dongeng", {
+        method: "POST",
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+      if (!uploadData.url) throw new Error("Upload foto gagal");
+      photoUrl = uploadData.url;
+    }
+
     setLoading(true);
     const payload = {
       ...values,
+      id: dataGet?.id,
       lat: latitude,
       lan: langitude,
       kamus: kamusList.filter((k) => k.kata && k.pengertian),
+      photo: photoUrl,
     };
 
     try {
-      const res = await fetch("/api/dongeng", {
-        method: "POST",
+      const res = await fetch("/api/dongeng/edit", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -102,11 +133,10 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
       if (res.ok) {
         toast({
           title: "Data Parantos Disimpen",
-          description:
-            "Dongeng anjeun bade di pariksa heula ku kurator, pami tos valid engke di email.",
+          description: "Dongeng berhasil di update",
           variant: "success",
         });
-        router.replace("/maos");
+        router.replace("/admin");
       } else {
         toast({
           title: "Error nyimpen data",
@@ -126,11 +156,6 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
     }
   };
 
-  // Fetch data wilayah
-  const [kabupatenList, setKabupatenList] = useState<any[]>([]);
-  const [kecamatanList, setKecamatanList] = useState<any[]>([]);
-  const [desaList, setDesaList] = useState<any[]>([]);
-
   useEffect(() => {
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/regencies/32.json")
       .then((res) => res.json())
@@ -142,27 +167,44 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
     const selectedKab = kabupatenList.find(
       (k) => k.name === form.watch("kabupaten")
     );
-    if (!selectedKab) return;
-    fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedKab.id}.json`
-    )
-      .then((res) => res.json())
-      .then(setKecamatanList)
-      .catch(console.error);
+    if (!selectedKab) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${dataGet?.kabupaten_id}.json`
+      )
+        .then((res) => res.json())
+        .then(setKecamatanList)
+        .catch(console.error);
+    } else {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedKab.id}.json`
+      )
+        .then((res) => res.json())
+        .then(setKecamatanList)
+        .catch(console.error);
+    }
+    return;
   }, [form.watch("kabupaten"), dataGet]);
 
   useEffect(() => {
-    const selectedKec = kecamatanList.find(
-      (k) => k.name === form.watch("kecamatan")
-    );
-    if (!selectedKec) return;
-    fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKec.id}.json`
-    )
-      .then((res) => res.json())
-      .then(setDesaList)
-      .catch(console.error);
-  }, [form.watch("kecamatan"), dataGet]);
+    const kecamatanValue = form.watch("kecamatan");
+    const selectedKec = kecamatanList.find((k) => k.name === kecamatanValue);
+
+    if (selectedKec) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKec.id}.json`
+      )
+        .then((res) => res.json())
+        .then(setDesaList)
+        .catch(console.error);
+    } else if (dataGet?.kecamatan_id && kecamatanList.length > 0) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${dataGet.kecamatan_id}.json`
+      )
+        .then((res) => res.json())
+        .then(setDesaList)
+        .catch(console.error);
+    }
+  }, [kecamatanList, dataGet]);
 
   useEffect(() => {
     if (!form.watch("kabupaten")) return;
@@ -192,6 +234,16 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
     fetchCoordinates();
   }, [form.watch("kabupaten")]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="px-4 sm:px-8 md:px-16 py-6 md:py-10">
       <span className="font-bold text-2xl sm:text-3xl">Edit Data</span>
@@ -211,7 +263,7 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="w-full min-h-[48px]">
                           <SelectValue placeholder="Pilih Kabupaten" />
@@ -239,7 +291,7 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                         disabled={!form.watch("kabupaten")}
                       >
                         <SelectTrigger className="w-full min-h-[48px]">
@@ -268,7 +320,7 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                         disabled={!form.watch("kecamatan")}
                       >
                         <SelectTrigger className="w-full min-h-[48px]">
@@ -296,6 +348,40 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                     <FormLabel>Sumber Dongeng</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Lebetkeun Sumber" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="photo"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Foto Dongeng</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col items-start gap-3">
+                        {preview ? (
+                          <Image
+                            src={preview}
+                            alt="preview"
+                            width={200}
+                            height={200}
+                            className="rounded-sm object-cover border w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]"
+                          />
+                        ) : (
+                          <div className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] rounded-sm bg-gray-200 flex items-center justify-center text-gray-500">
+                            No Photo
+                          </div>
+                        )}
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="w-full sm:w-[300px]"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
