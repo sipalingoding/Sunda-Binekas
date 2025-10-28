@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ButtonDialog from "./button-dialog-icon";
+import AudioReader from "./audio-reader";
 
 export default async function DetailMaosPage({
   params,
@@ -101,9 +102,7 @@ export default async function DetailMaosPage({
               <div className="text-2xl md:text-3xl font-bold text-balance">
                 {data.judul}
               </div>
-              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center shrink-0">
-                <ImVolumeHigh size={15} color="white" />
-              </div>
+              <AudioReader text={data.eusi} />
             </div>
 
             <div className="text-sm md:text-base font-light flex flex-col">
