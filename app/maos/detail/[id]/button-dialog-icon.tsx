@@ -23,7 +23,7 @@ const ButtonDialog = ({ email, nohp }: DataProps) => {
             name="email"
             disabled
             defaultValue={email}
-            className="pr-10" // beri ruang di kanan untuk icon
+            className="pr-10"
           />
           <button
             type="button"
