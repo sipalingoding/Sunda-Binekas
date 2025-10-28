@@ -34,3 +34,15 @@
     --sidebar-ring: oklch(0.439 0 0);
   }
 }
+
+/* 🔧 Hilangkan efek blur / opacity sidebar di mobile */
+@media (max-width: 768px) {
+  [data-sidebar-overlay],
+  [data-state="open"][data-sidebar-overlay],
+  .sidebar-overlay,
+  .sheet-overlay {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    pointer-events: none !important; /* biar tetap bisa klik halaman di belakang */
+  }
+}

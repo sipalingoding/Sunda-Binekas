@@ -3,7 +3,6 @@
 import * as React from "react";
 import {
   Bot,
-  Frame,
   GalleryVerticalEnd,
   SquareTerminal,
   BookOpen,
@@ -28,7 +27,6 @@ import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { FaBookReader } from "react-icons/fa";
-import { VscFileSubmodule } from "react-icons/vsc";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();

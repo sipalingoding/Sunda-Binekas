@@ -4,6 +4,8 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader2 } from "lucide-react"; // 🌀 Spinner
 import "leaflet/dist/leaflet.css";
 
 // ✅ Fix icon Leaflet agar muncul
@@ -27,6 +29,7 @@ type MapViewType = {
 
 export default function MapView({ data }: MapViewType) {
   const router = useRouter();
+  const [loadingKabupaten, setLoadingKabupaten] = useState<string | null>(null); // 🆕 Track tombol yang diklik
 
   // 🔹 Kelompokkan berdasarkan kabupaten
   function groupByKabupaten(dataKoor: any[]) {
@@ -47,6 +50,13 @@ export default function MapView({ data }: MapViewType) {
 
   const grouped = groupByKabupaten(data);
 
+  const handleMacaClick = (kabupaten: string) => {
+    setLoadingKabupaten(kabupaten); // tampilkan spinner
+    router.push(
+      `/maos/detail/kabupaten?kabupaten=${encodeURIComponent(kabupaten)}`
+    );
+  };
+
   return (
     <MapContainer
       key={grouped.length}
@@ -54,6 +64,7 @@ export default function MapView({ data }: MapViewType) {
       zoom={9}
       scrollWheelZoom={true}
       style={{ height: "500px", width: "100%", borderRadius: "8px" }}
+      className="relative z-0 md:z-0"
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -64,20 +75,23 @@ export default function MapView({ data }: MapViewType) {
       {grouped.map((group, index) => (
         <Marker key={index} position={[group.lat, group.lan]}>
           <Popup>
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-center text-center gap-2">
               <h3 className="font-bold">{group.kabupaten}</h3>
               <p className="text-sm">Jumlah dongéng: {group.items.length}</p>
+
               <Button
-                className="text-sm bg-[#fafafa]"
-                onClick={() =>
-                  router.push(
-                    `/maos/detail/kabupaten?kabupaten=${encodeURIComponent(
-                      group.kabupaten
-                    )}`
-                  )
-                }
+                className="text-sm bg-gray-700 text-white flex items-center justify-center gap-2"
+                onClick={() => handleMacaClick(group.kabupaten)}
+                disabled={loadingKabupaten === group.kabupaten}
               >
-                Maca
+                {loadingKabupaten === group.kabupaten ? (
+                  <>
+                    <Loader2 className="animate-spin w-4 h-4" />
+                    <span>Maca</span>
+                  </>
+                ) : (
+                  "Maca"
+                )}
               </Button>
             </div>
           </Popup>
