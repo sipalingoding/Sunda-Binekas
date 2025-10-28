@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react"; // 🌀 Tambahkan spinner
 
 export default function MaosByKabupatenPage() {
   const router = useRouter();
@@ -35,6 +36,9 @@ export default function MaosByKabupatenPage() {
   const [searchKecamatan, setSearchKecamatan] = useState("");
   const [searchDesa, setSearchDesa] = useState("");
   const [searchDongeng, setSearchDongeng] = useState("");
+
+  // 🆕 Tambah state loading button Maca
+  const [loadingMaca, setLoadingMaca] = useState(false);
 
   useEffect(() => {
     if (!kabupaten) return;
@@ -124,6 +128,12 @@ export default function MaosByKabupatenPage() {
   const filteredDongengList = filteredDongeng.filter((item) =>
     item.judul.toLowerCase().includes(searchDongeng.toLowerCase())
   );
+
+  // 🔹 Handler untuk klik tombol Maca
+  const handleMaca = () => {
+    setLoadingMaca(true);
+    router.replace(`/maos/detail/${selectedDongeng}`);
+  };
 
   return (
     <div className="p-4 sm:p-8 min-h-screen flex flex-col">
@@ -243,12 +253,20 @@ export default function MaosByKabupatenPage() {
             </SelectContent>
           </Select>
 
+          {/* Tombol Maca */}
           <Button
-            className="bg-gray-800 text-white py-2 hover:bg-gray-700 transition"
-            onClick={() => router.replace(`/maos/detail/${selectedDongeng}`)}
-            disabled={!selectedDongeng}
+            className="bg-gray-800 text-white py-2 hover:bg-gray-700 transition flex items-center justify-center gap-2"
+            onClick={handleMaca}
+            disabled={!selectedDongeng || loadingMaca}
           >
-            Maca
+            {loadingMaca ? (
+              <>
+                <Loader2 className="animate-spin w-4 h-4" />
+                <span>Maca</span>
+              </>
+            ) : (
+              "Maca"
+            )}
           </Button>
         </div>
       </div>

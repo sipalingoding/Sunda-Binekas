@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react"; // 🌀 icon spinner
 
 const MapView = dynamic(() => import("@/components/mapview/MapView"), {
   ssr: false,
@@ -18,6 +19,7 @@ export default function Maos() {
   const [dataLokasi, setDataLokasi] = useState<any[]>([]);
   const [dongengPopular, setDongengPopular] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingItem, setLoadingItem] = useState<string | null>(null); // 🆕 track tombol yang diklik
 
   useEffect(() => {
     getDataMap();
@@ -47,6 +49,11 @@ export default function Maos() {
     }));
     setDongengPopular(dataMap);
   }
+
+  const handleMaosClick = (id: string) => {
+    setLoadingItem(id); // tampilkan spinner pada tombol yang diklik
+    router.push(`/maos/detail/${id}`);
+  };
 
   return (
     <div className="flex flex-col flex-1 px-4 sm:px-8 md:px-16 py-6 md:py-10 gap-6 md:gap-8">
@@ -155,10 +162,18 @@ export default function Maos() {
                   </div>
 
                   <Button
-                    className="w-fit px-3 py-1 bg-gray-600 text-white text-xs sm:text-sm"
-                    onClick={() => router.push(`/maos/detail/${item.id}`)}
+                    className="w-fit px-3 py-1 bg-gray-600 text-white text-xs sm:text-sm flex items-center justify-center gap-2"
+                    onClick={() => handleMaosClick(item.id)}
+                    disabled={loadingItem === item.id} // 🧊 disable saat loading
                   >
-                    Maos
+                    {loadingItem === item.id ? (
+                      <>
+                        <Loader2 className="animate-spin w-4 h-4" />
+                        <span>Maos</span>
+                      </>
+                    ) : (
+                      "Maos"
+                    )}
                   </Button>
                 </div>
               </div>
