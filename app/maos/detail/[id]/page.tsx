@@ -172,45 +172,42 @@ export default async function DetailMaosPage({
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <IoCall
-                      size={15}
-                      color="white"
-                      className="cursor-pointer"
-                    />
-                  </DialogTrigger>
-                  <DialogContent
-                    className="sm:max-w-[425px]  bg-white 
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center cursor-pointer">
+                    <IoCall size={15} color="white" />
+                  </div>
+                </DialogTrigger>
+                <DialogContent
+                  className="sm:max-w-[425px]  bg-white 
           dark:bg-neutral-900 
           text-black 
           dark:text-white 
           rounded-2xl 
           shadow-lg 
           border border-gray-200"
-                  >
-                    <DialogHeader>
-                      <DialogTitle className="text-lg font-semibold">
-                        Kontak Kontributor
-                      </DialogTitle>
-                      <DialogDescription className="text-sm text-gray-600 dark:text-gray-300">
-                        Mangga tiasa ngahubungi kontributor ngangge :
-                      </DialogDescription>
-                    </DialogHeader>
+                >
+                  <DialogHeader>
+                    <DialogTitle className="text-lg font-semibold">
+                      Kontak Kontributor
+                    </DialogTitle>
+                    <DialogDescription className="text-sm text-gray-600 dark:text-gray-300">
+                      Mangga tiasa ngahubungi kontributor ngangge :
+                    </DialogDescription>
+                  </DialogHeader>
 
-                    <ButtonDialog
-                      email={(data.user_id as any).email}
-                      nohp={(data.user_id as any).nohp}
-                    />
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Close</Button>
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
+                  <ButtonDialog
+                    email={(data.user_id as any).email}
+                    nohp={(data.user_id as any).nohp}
+                  />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Close</Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
               <span className="text-sm md:text-base">Hubungi Kontributor</span>
             </div>
 
