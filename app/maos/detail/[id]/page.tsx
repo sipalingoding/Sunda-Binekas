@@ -60,6 +60,8 @@ export default async function DetailMaosPage({
       kamus,
       sumber,
       photo,
+      lat,
+      lan,
       created_at,
       user_id ( 
         id,
@@ -79,6 +81,16 @@ export default async function DetailMaosPage({
     .eq("id", id);
 
   if (error) return <div>Error ambil dongeng: {error.message}</div>;
+
+  const openInGoogleMaps = () => {
+    if (data?.lat && data?.lan) {
+      const url = `https://www.google.com/maps?q=${data.lat},${data.lan}`;
+      return url;
+    }
+    return null;
+  };
+
+  const mapsUrl = openInGoogleMaps();
 
   return (
     <div className="rounded-lg p-4 md:p-8">
@@ -171,54 +183,64 @@ export default async function DetailMaosPage({
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center cursor-pointer">
+            <Dialog>
+              <DialogTrigger asChild>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
                     <IoCall size={15} color="white" />
                   </div>
-                </DialogTrigger>
-                <DialogContent
-                  className="sm:max-w-[425px]  bg-white 
+                  <span className="text-sm md:text-base">
+                    Hubungi Kontributor
+                  </span>
+                </div>
+              </DialogTrigger>
+              <DialogContent
+                className="sm:max-w-[425px]  bg-white 
           dark:bg-neutral-900 
           text-black 
           dark:text-white 
           rounded-2xl 
           shadow-lg 
           border border-gray-200"
-                >
-                  <DialogHeader>
-                    <DialogTitle className="text-lg font-semibold">
-                      Kontak Kontributor
-                    </DialogTitle>
-                    <DialogDescription className="text-sm text-gray-600 dark:text-gray-300">
-                      Mangga tiasa ngahubungi kontributor ngangge :
-                    </DialogDescription>
-                  </DialogHeader>
+              >
+                <DialogHeader>
+                  <DialogTitle className="text-lg font-semibold">
+                    Kontak Kontributor
+                  </DialogTitle>
+                  <DialogDescription className="text-sm text-gray-600 dark:text-gray-300">
+                    Mangga tiasa ngahubungi kontributor ngangge :
+                  </DialogDescription>
+                </DialogHeader>
 
-                  <ButtonDialog
-                    email={(data.user_id as any).email}
-                    nohp={(data.user_id as any).nohp}
-                  />
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Close</Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                <ButtonDialog
+                  email={(data.user_id as any).email}
+                  nohp={(data.user_id as any).nohp}
+                />
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
-              <span className="text-sm md:text-base">Hubungi Kontributor</span>
-            </div>
-
-            <div className="flex items-center gap-2">
+            <a
+              href={mapsUrl ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-2 ${
+                mapsUrl
+                  ? "cursor-pointer hover:opacity-80 transition"
+                  : "opacity-50 cursor-not-allowed"
+              }`}
+            >
               <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
                 <MdPlace size={18} color="white" />
               </div>
               <span className="text-sm md:text-base">
                 Nyalusur Tempat Dongeng
               </span>
-            </div>
+            </a>
           </div>
         </CardContent>
       </Card>
