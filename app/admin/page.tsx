@@ -59,7 +59,7 @@ const AdminPage = () => {
                           : resp.status === "rejected"
                           ? "bg-red-500 hover:bg-red-600"
                           : "bg-green-500 hover:bg-green-600"
-                      }`}
+                      } cursor-default`}
                     >
                       {resp.status}
                     </Button>
