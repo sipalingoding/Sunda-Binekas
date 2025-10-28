@@ -8,6 +8,19 @@ import { FaCamera } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { MdPlace } from "react-icons/md";
 import Image from "next/image";
+import ShareDialogButton from "./share-dialog-button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import ButtonDialog from "./button-dialog-icon";
 
 export default async function DetailMaosPage({
   params,
@@ -52,7 +65,8 @@ export default async function DetailMaosPage({
         id,
         username,
         email,
-        photo
+        photo,
+        nohp
       )
     `
     )
@@ -63,8 +77,6 @@ export default async function DetailMaosPage({
     .from("dongeng")
     .update({ view: (data?.view ?? 0) + 1 })
     .eq("id", id);
-
-  console.log(data);
 
   if (error) return <div>Error ambil dongeng: {error.message}</div>;
 
@@ -123,13 +135,16 @@ export default async function DetailMaosPage({
               )}
             </div>
 
-            <div className="flex justify-end items-center lg:w-1/4">
+            <div className="flex justify-end items-center lg:w-1/4 gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
                   <GrView size={15} color="white" />
                 </div>
                 <span className="text-sm md:text-base">{data.view}</span>
               </div>
+              <ShareDialogButton
+                link={`https://sunda-binekas.vercel.app/dongeng/${id}`}
+              />
             </div>
           </div>
 
@@ -158,7 +173,43 @@ export default async function DetailMaosPage({
 
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                <IoCall size={15} color="white" />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <IoCall
+                      size={15}
+                      color="white"
+                      className="cursor-pointer"
+                    />
+                  </DialogTrigger>
+                  <DialogContent
+                    className="sm:max-w-[425px]  bg-white 
+          dark:bg-neutral-900 
+          text-black 
+          dark:text-white 
+          rounded-2xl 
+          shadow-lg 
+          border border-gray-200"
+                  >
+                    <DialogHeader>
+                      <DialogTitle className="text-lg font-semibold">
+                        Kontak Kontributor
+                      </DialogTitle>
+                      <DialogDescription className="text-sm text-gray-600 dark:text-gray-300">
+                        Mangga tiasa ngahubungi kontributor ngangge :
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <ButtonDialog
+                      email={(data.user_id as any).email}
+                      nohp={(data.user_id as any).nohp}
+                    />
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Close</Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
               <span className="text-sm md:text-base">Hubungi Kontributor</span>
             </div>
