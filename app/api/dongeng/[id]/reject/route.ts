@@ -35,7 +35,7 @@ export async function PATCH(req: Request, context: any) {
     }
 
     return NextResponse.json({
-      message: "Status berhasil diubah menjadi approved",
+      message: "Status berhasil di ubah menjadi reject",
       data,
     });
   } catch (err) {

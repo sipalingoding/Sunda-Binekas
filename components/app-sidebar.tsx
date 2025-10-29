@@ -139,10 +139,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     >
       <SidebarHeader
         onClick={() => router.replace("/")}
-        className="flex flex-row gap-3 items-center "
+        className="flex flex-row gap-3 items-center overflow-auto group-data-[collapsible=icon]:overflow-hidden"
       >
         <FaBookReader size={50} />
-        <div className="flex flex-col">
+        <div className="flex flex-col group-data-[collapsible=icon]:hidden">
           <span className="font-bold text-3xl">PUKIS</span>
           <span className="text-xs">
             Peta Unik Karuhun Jeung Inovasi Sastra
