@@ -110,12 +110,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: "Email",
-            url: "mailto:info@pukis.com",
+            url: "mailto:pukis.dongengsunda@gmail.com",
             icon: Mail, // 📧
           },
           {
             title: "Whatsapp",
-            url: "https://wa.me/628123456789",
+            url: "https://wa.me/6281221808959",
             icon: Phone, // 📞
           },
         ],
