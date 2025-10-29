@@ -8,16 +8,23 @@ import { GiOpenBook } from "react-icons/gi";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
-  const [dataStatistik, setDataStatistik] = useState<any>({});
+  const [dataStatistik, setDataStatistik] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getDataStatistik();
   }, []);
 
   const getDataStatistik = async () => {
-    const resp = await fetch("/api/users/total");
-    const json = await resp.json();
-    setDataStatistik(json);
+    try {
+      const resp = await fetch("/api/users/total");
+      const json = await resp.json();
+      setDataStatistik(json);
+    } catch (err) {
+      console.error("Gagal mengambil data statistik:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -79,32 +86,50 @@ export default function HomePage() {
             text-center
           "
           >
-            {/* ITEM 1 */}
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex gap-2 items-center justify-center text-lg font-semibold">
-                <TfiWrite />
-                <span>{dataStatistik?.total_kontributor ?? 0}</span>
-              </div>
-              <span className="text-sm text-gray-600">Kontributor</span>
-            </div>
+            {loading ? (
+              // 🟢 Skeleton Loading
+              <>
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-1 animate-pulse"
+                  >
+                    <div className="flex gap-2 items-center justify-center text-lg font-semibold">
+                      <div className="w-5 h-5 bg-gray-300 rounded-full" />
+                      <div className="w-6 h-4 bg-gray-300 rounded" />
+                    </div>
+                    <div className="w-16 h-3 bg-gray-200 rounded" />
+                  </div>
+                ))}
+              </>
+            ) : (
+              // 🟣 Data Statistik
+              <>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex gap-2 items-center justify-center text-lg font-semibold">
+                    <TfiWrite />
+                    <span>{dataStatistik?.total_kontributor ?? 0}</span>
+                  </div>
+                  <span className="text-sm text-gray-600">Kontributor</span>
+                </div>
 
-            {/* ITEM 2 */}
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex gap-2 items-center justify-center text-lg font-semibold">
-                <MdGroups2 />
-                <span>{dataStatistik?.total_view ?? 0}</span>
-              </div>
-              <span className="text-sm text-gray-600">Ditingali</span>
-            </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex gap-2 items-center justify-center text-lg font-semibold">
+                    <MdGroups2 />
+                    <span>{dataStatistik?.total_view ?? 0}</span>
+                  </div>
+                  <span className="text-sm text-gray-600">Ditingali</span>
+                </div>
 
-            {/* ITEM 3 */}
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex gap-2 items-center justify-center text-lg font-semibold">
-                <GiOpenBook />
-                <span>{dataStatistik?.total_dongeng ?? 0}</span>
-              </div>
-              <span className="text-sm text-gray-600">Dongeng</span>
-            </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex gap-2 items-center justify-center text-lg font-semibold">
+                    <GiOpenBook />
+                    <span>{dataStatistik?.total_dongeng ?? 0}</span>
+                  </div>
+                  <span className="text-sm text-gray-600">Dongeng</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>
