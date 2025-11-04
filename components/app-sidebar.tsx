@@ -27,6 +27,7 @@ import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { FaBookReader } from "react-icons/fa";
+import Image from "next/image";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
@@ -141,7 +142,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         onClick={() => router.replace("/")}
         className="flex flex-row gap-3 items-center overflow-auto group-data-[collapsible=icon]:overflow-hidden"
       >
-        <FaBookReader size={50} />
+        <Image src={"/images/LOGO.png"} width={50} height={50} alt="logo" />
         <div className="flex flex-col group-data-[collapsible=icon]:hidden">
           <span className="font-bold text-3xl">PUKIS</span>
           <span className="text-xs">

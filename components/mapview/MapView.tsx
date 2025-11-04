@@ -1,11 +1,7 @@
 "use client";
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Loader2 } from "lucide-react"; // 🌀 Spinner
+import L from "leaflet"; // 🌀 Spinner
 import "leaflet/dist/leaflet.css";
 
 // ✅ Fix icon Leaflet agar muncul
@@ -17,51 +13,24 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
+// 🔹 Sekarang hanya menerima satu objek, bukan array
 type MapViewType = {
   data: {
     id: string;
     judul: string;
     kabupaten: string;
+    kecamatan: string;
+    desa: string;
     lat: number;
     lan: number;
-  }[];
+  };
 };
 
 export default function MapView({ data }: MapViewType) {
-  const router = useRouter();
-  const [loadingKabupaten, setLoadingKabupaten] = useState<string | null>(null); // 🆕 Track tombol yang diklik
-
-  // 🔹 Kelompokkan berdasarkan kabupaten
-  function groupByKabupaten(dataKoor: any[]) {
-    const map = new Map<string, any[]>();
-    dataKoor.forEach((item) => {
-      const key = item.kabupaten;
-      if (!map.has(key)) map.set(key, []);
-      map.get(key)?.push(item);
-    });
-
-    return Array.from(map.entries()).map(([kabupaten, items]) => ({
-      kabupaten,
-      items,
-      lat: items[0].lat, // ambil posisi dari data pertama
-      lan: items[0].lan,
-    }));
-  }
-
-  const grouped = groupByKabupaten(data);
-
-  const handleMacaClick = (kabupaten: string) => {
-    setLoadingKabupaten(kabupaten); // tampilkan spinner
-    router.push(
-      `/maos/detail/kabupaten?kabupaten=${encodeURIComponent(kabupaten)}`
-    );
-  };
-
   return (
     <MapContainer
-      key={grouped.length}
-      center={[-6.9218457, 107.6070833]}
-      zoom={9}
+      center={[data.lat, data.lan]}
+      zoom={10}
       scrollWheelZoom={true}
       style={{ height: "500px", width: "100%", borderRadius: "8px" }}
       className="relative z-0 md:z-0"
@@ -71,32 +40,18 @@ export default function MapView({ data }: MapViewType) {
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
       />
 
-      {/* 🔹 Render marker per kabupaten */}
-      {grouped.map((group, index) => (
-        <Marker key={index} position={[group.lat, group.lan]}>
-          <Popup>
-            <div className="flex flex-col items-center text-center gap-2">
-              <h3 className="font-bold">{group.kabupaten}</h3>
-              <p className="text-sm">Jumlah dongéng: {group.items.length}</p>
-
-              <Button
-                className="text-sm bg-gray-700 text-white flex items-center justify-center gap-2"
-                onClick={() => handleMacaClick(group.kabupaten)}
-                disabled={loadingKabupaten === group.kabupaten}
-              >
-                {loadingKabupaten === group.kabupaten ? (
-                  <>
-                    <Loader2 className="animate-spin w-4 h-4" />
-                    <span>Maca</span>
-                  </>
-                ) : (
-                  "Maca"
-                )}
-              </Button>
+      {/* 🟢 Satu marker saja */}
+      <Marker position={[data.lat, data.lan]}>
+        <Popup>
+          <div className="flex flex-col items-center text-center gap-2">
+            <h3 className="font-bold">{data.kabupaten}</h3>
+            <div className="flex flex-col items-start -space-y-4">
+              <p className="text-sm">kecamatan : {data.kecamatan}</p>
+              <p className="text-sm">desa : {data.desa}</p>
             </div>
-          </Popup>
-        </Marker>
-      ))}
+          </div>
+        </Popup>
+      </Marker>
     </MapContainer>
   );
 }

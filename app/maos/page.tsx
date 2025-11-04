@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react"; // 🌀 icon spinner
+import MapJabar from "@/components/map-jabar/MapJabar";
 
 const MapView = dynamic(() => import("@/components/mapview/MapView"), {
   ssr: false,
@@ -65,14 +66,8 @@ export default function Maos() {
       {/* Peta */}
       {loading ? (
         <Skeleton className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg" />
-      ) : dataLokasi.length > 0 ? (
-        <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden">
-          <MapView data={dataLokasi} />
-        </div>
       ) : (
-        <p className="text-center text-sm text-gray-500">
-          Tidak ada data lokasi
-        </p>
+        <MapJabar data={dataLokasi} />
       )}
 
       {/* Dongeng Populer */}
