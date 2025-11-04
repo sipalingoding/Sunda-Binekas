@@ -3,6 +3,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet"; // 🌀 Spinner
 import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 
 // ✅ Fix icon Leaflet agar muncul
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -27,9 +28,19 @@ type MapViewType = {
 };
 
 export default function MapView({ data }: MapViewType) {
+  useEffect(() => {
+    return () => {
+      const mapContainers = document.querySelectorAll(".leaflet-container");
+      mapContainers.forEach((el) => {
+        (el as any)._leaflet_id = null;
+      });
+    };
+  }, []);
+
   return (
     <MapContainer
       center={[data.lat, data.lan]}
+      key={`${data.lat}-${data.lan}`}
       zoom={10}
       scrollWheelZoom={true}
       style={{ height: "500px", width: "100%", borderRadius: "8px" }}
@@ -46,8 +57,8 @@ export default function MapView({ data }: MapViewType) {
           <div className="flex flex-col items-center text-center gap-2">
             <h3 className="font-bold">{data.kabupaten}</h3>
             <div className="flex flex-col items-start -space-y-4">
-              <p className="text-sm">kecamatan : {data.kecamatan}</p>
-              <p className="text-sm">desa : {data.desa}</p>
+              <p className="text-sm">Kecamatan : {data.kecamatan}</p>
+              <p className="text-sm">Desa : {data.desa}</p>
             </div>
           </div>
         </Popup>

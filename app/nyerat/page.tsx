@@ -19,18 +19,14 @@ const NyeratPage = () => {
 
       {/* Deskripsi */}
       <p className="text-sm sm:text-base leading-relaxed text-justify">
-        Salian bisa maos dongéng dina ieu website, saderek ogé bisa nyeratkeun
-        dongéng lemburna séwang-séwangan. Sangkan bisa dibaca ku loba jalma,
-        katambah pikeun ngadokuméntasikeun budaya sacara digital.
+      Dina ieu website, salian bisa maos dongéng urang ogé bisa nyerat dongéng ti lembur séwang-séwangan. Tujuanna pikeun ngadokuméntasikeun budaya sacara digital jeung ngawanohkeun dongéng-dongéng ti sakuliah tatar Jawa Barat.
       </p>
 
       <p className="text-sm sm:text-base leading-relaxed text-justify">
-        Tapi saacan nyerat dongéng, peryogi kauninga perkawis katangtuan anu
-        kedah disatujuan ku anu badé nyerat. Di antawisna nyaéta: <br />
+      Tapi saacan nyerat dongéng aya sababaraha katangtuan anu kudu disapukan. Diantarana nyaéta: <br />
         <br />
-        1. Saacan nulis, eusian heula identitas kalayan lengkep. <br />
-        2. Anu nyerat kedah nyantumkeun sumber dongéng — boh tina tradisi lisan
-        masyarakat boh tina literatur tinulis (buku) kalayan ijin pangarangna.
+        1. Saacan nyerat, eusian heula identitas kalayan lengkep; <br />
+        2. Anu nyerat kudu nyantumkeun sumber dongéng, boh sumberna tina tradisi lisan masyarakat boh tina literatur tinulis (buku) kalayan ijin pangarangna; jeung
         <br />
         3. Kersa nampi saran tinu maca saupama dongéng anu ditulis dirasa kurang
         payus atawa perlu didiskusikeun.

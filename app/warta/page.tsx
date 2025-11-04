@@ -6,12 +6,9 @@ const WartaPage = () => {
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Warta</h1>
 
       <p className="text-sm sm:text-base leading-relaxed text-gray-700">
-        Iber atawa béja singget ngeunaan ieu website. Boh iber ngeunaan saha anu
-        nyieunna, saha waé anu kontribusina jeung sajabana.
+      Iber atawa béja singget ngeunaan ieu website ngawengku iber ngeunaan saha anu nyieunna, saha waé anu kontribusina, jeung sajabana.
         <br />
-        Ieu website di kelola sarta di kembangkeun ku tim inovasi SMKN 1 Rancah,
-        kalayan gawé bareng jeung sababaraha pihak diantarana website developer
-        Saloka Mandala Karya ogé komunitas budaya jeung sastra Sunda.
+        Ieu website diinisiasi ku tim inovasi SMKN 1 Rancah kalayan gawé bareng jeung sababaraha pihak, diantarana website developer Saloka Mandala Karya, dirojong ku Forum Musyawarah guru Bahasa Sunda sarta komunitas budaya ogé sastra Sunda lianna. Ieu website masih dina proses pengembangan, kukituna fitur-fiturna can lengkep sakabéhna.
         <br />
         Sementawis ieu website masih kénéh dikembangkeun, kukituna fitur-fiturna
         can lengkep sakabéhna.
