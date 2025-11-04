@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import ButtonDialog from "./button-dialog-icon";
 import AudioReader from "./audio-reader";
+import MapView from "@/components/mapview/MapView";
 
 export default async function DetailMaosPage({
   params,
@@ -55,6 +56,8 @@ export default async function DetailMaosPage({
       id,
       judul,
       kabupaten,
+      kecamatan,
+      desa,
       eusi,
       view,
       status,
@@ -158,6 +161,8 @@ export default async function DetailMaosPage({
               />
             </div>
           </div>
+
+          <MapView data={data} />
 
           <div className="border border-black w-full"></div>
 
