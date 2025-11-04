@@ -55,19 +55,19 @@ export default function HomePage() {
         <div className="flex flex-col gap-2 text-sm sm:text-base leading-relaxed">
           <p>
             PUKIS mangrupa platform digital berbasis peta interaktif pikeun
-            maluruh cerita rakyat ti unggal daérah di Jawa Barat. Sistem website
-            ieu dirancang partisipatif, artina boh guru, siswa, atawa masyarakat
-            umum bisa milu kontribusi nuliskeun cerita rakyat kalayan mékanismeu
-            Wikipédia.
+            maluruh cerita rakyat ti unggal daérah di Jawa Barat. Ieu sistem
+            website dirancang sacara partisipatif saperti Wikipedia, hartina ti
+            mimiti guru, siswa, nepika masyarakat umum bisa milu ilubiung
+            nuliskeun cerita rakyat dina PUKIS.
           </p>
           <p>
-            Dongéng mangrupa carita rékaan anu méré kesan pamohalan tur
-            ukuranana parondok, ditulis dina wangun prosa. Dongéng sumebar ti
-            hiji jalma ka jalma liana sacara lisan, tur teu kapanggih saha nu
-            ngarangna. Lantaran sumebar dina wangun lisan, téks dongéng babari
-            robah atawa leungit. Jenis-jenis dongéng diantarana fable (carita
-            sasatoan), parable (carita kahirupan jalma), sasakala (legenda),
-            sage (babad), mite (mitos).
+            Dongéng mangrupa carita rékaan dina wangun prosa anu eusi caritana
+            pamohalan tur ukuranana parondok. Dongéng sumebar ti hiji jalma ka
+            jalma lianna sacara lisan, ku kituna teu kapaluruh saha nu
+            ngarangna. Lantaran sumebar dina wangun lisan, téks dongéng ogé
+            babari robah atawa leungit. Dongéng dipasing-pasing jadi sababaraha
+            jenis, nyaéta fabél (carita sasatoan), parabél (carita kahirupan
+            jalma), sasakala (legenda), sagé (babad), jeung mite (mitos).
           </p>
         </div>
 

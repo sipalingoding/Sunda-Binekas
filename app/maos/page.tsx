@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { MdPlace } from "react-icons/md";
 import { GrView } from "react-icons/gr";
@@ -10,10 +9,6 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react"; // 🌀 icon spinner
 import MapJabar from "@/components/map-jabar/MapJabar";
-
-const MapView = dynamic(() => import("@/components/mapview/MapView"), {
-  ssr: false,
-});
 
 export default function Maos() {
   const router = useRouter();

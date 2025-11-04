@@ -13,6 +13,7 @@ import {
   Mail,
   Phone,
   BookAudio,
+  ShieldUser,
 } from "lucide-react"; // ✅ icon tambahan
 import { NavProjects } from "@/components/nav-projects";
 import {
@@ -73,34 +74,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
     navMain: [
       {
-        title: "Fitur Utami",
+        title: "Fitur Utama",
         icon: SquareTerminal,
         isActive: true,
         items: [
           {
             title: "Maos",
             url: "/maos",
-            icon: BookOpen, // 📖
+            icon: BookOpen,
           },
           {
             title: "Nyerat",
             url: "/nyerat",
-            icon: PenTool, // ✏️
+            icon: PenTool,
           },
           {
             title: "Ngupingkeun",
             url: "/ngupingkeun",
-            icon: Headphones, // 🎧
-          },
-          {
-            title: "Rereongan",
-            url: "/404",
-            icon: Users, // 👥
-          },
-          {
-            title: "Warta",
-            url: "/warta",
-            icon: Newspaper, // 📰
+            icon: Headphones,
           },
         ],
       },
@@ -125,8 +116,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     projects: [
       {
         name: "Modul Guru",
-        url: "/admin",
+        url: "/404",
         icon: BookAudio,
+      },
+      {
+        name: "Rereongan",
+        url: "/404",
+        icon: Users, // 👥
+      },
+      {
+        name: "Warta",
+        url: "/warta",
+        icon: Newspaper, // 📰
+      },
+      {
+        name: "Kurator",
+        url: "/admin",
+        icon: ShieldUser,
       },
     ],
   };
@@ -140,7 +146,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     >
       <SidebarHeader
         onClick={() => router.replace("/")}
-        className="flex flex-row gap-3 items-center overflow-auto group-data-[collapsible=icon]:overflow-hidden"
+        className="flex flex-row gap-3 items-center overflow-auto group-data-[collapsible=icon]:overflow-hidden cursor-pointer"
       >
         <Image src={"/images/LOGO.png"} width={50} height={50} alt="logo" />
         <div className="flex flex-col group-data-[collapsible=icon]:hidden">

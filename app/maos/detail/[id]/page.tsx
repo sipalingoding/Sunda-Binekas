@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import ApproveButtons from "./button-decision/ButtonDecision";
 import { GrView } from "react-icons/gr";
-import { ImVolumeHigh } from "react-icons/im";
 import { FaCamera } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { MdPlace } from "react-icons/md";
@@ -22,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import ButtonDialog from "./button-dialog-icon";
 import AudioReader from "./audio-reader";
-import MapView from "@/components/mapview/MapView";
+import MapViewWrapper from "../MapViewWrapper";
 
 export default async function DetailMaosPage({
   params,
@@ -162,7 +161,7 @@ export default async function DetailMaosPage({
             </div>
           </div>
 
-          <MapView data={data} />
+          <MapViewWrapper data={data} />
 
           <div className="border border-black w-full"></div>
 
@@ -249,7 +248,7 @@ export default async function DetailMaosPage({
         </CardContent>
       </Card>
 
-      {role === "admin" && data.status === "pending" && (
+      {role === "admin" && (
         <div className="mt-6">
           <ApproveButtons id={data.id} />
         </div>
