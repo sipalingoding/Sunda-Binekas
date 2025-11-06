@@ -27,6 +27,13 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Plus, Trash } from "lucide-react";
 import Image from "next/image";
+import SafeHTMLContent from "@/app/maos/detail/[id]/safe-html/SafeHtml";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
+import Placeholder from "@tiptap/extension-placeholder";
+import TipTapEditor from "@/components/tip-tap-editor/TipTapEditor";
 
 const formSchema = formSubmitDongengSchema;
 
@@ -412,10 +419,9 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                   <FormItem>
                     <FormLabel>Eusi Dongeng</FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        rows={10}
-                        placeholder="Lebetkeun Eusi Dongeng"
+                      <TipTapEditor
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />

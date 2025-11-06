@@ -46,3 +46,26 @@
     pointer-events: none !important; /* biar tetap bisa klik halaman di belakang */
   }
 }
+
+/* Untuk tampilan konten editor */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+.ProseMirror h1 {
+  font-size: 1.5em;
+  font-weight: 700;
+}
+
+.ProseMirror h2 {
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.ProseMirror p {
+  margin: 0.5em 0;
+}

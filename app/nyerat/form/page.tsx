@@ -26,8 +26,16 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Plus, Trash } from "lucide-react";
+import dynamic from "next/dynamic";
 
 const formSchema = formSubmitDongengSchema;
+
+const TipTapEditor = dynamic(
+  () => import("@/components/tip-tap-editor/TipTapEditor"),
+  {
+    ssr: false, // ⛔ nonaktifkan SSR
+  }
+);
 
 const FormPage = () => {
   const { toast } = useToast();
@@ -325,10 +333,9 @@ const FormPage = () => {
                   <FormItem>
                     <FormLabel>Eusi Dongeng</FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        rows={10}
-                        placeholder="Lebetkeun Eusi Dongeng"
+                      <TipTapEditor
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
