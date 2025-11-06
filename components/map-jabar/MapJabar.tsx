@@ -27,6 +27,7 @@ export default function MapJabar({ data }: MapViewType) {
   const [geoData, setGeoData] = useState<any | null>(null);
   const [popup, setPopup] = useState<{ name: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchGeoData() {
@@ -93,13 +94,14 @@ export default function MapJabar({ data }: MapViewType) {
   // ✅ perbaiki fungsi redirect
   const handleMacaClick = (jumlah: number) => {
     if (jumlah === 0) {
-      setPopup(null); // jika 0 → tutup popup
+      setPopup(null);
       return;
     }
 
     if (!popup?.name) return;
 
-    // 🔹 Tambahkan awalan "KABUPATEN" jika tidak mengandung "KOTA"
+    setLoadingButton(true);
+
     let kabupatenName = popup.name.trim().toUpperCase();
     if (!kabupatenName.includes("KOTA")) {
       kabupatenName = `KABUPATEN ${kabupatenName}`;
@@ -107,6 +109,7 @@ export default function MapJabar({ data }: MapViewType) {
 
     const encodedKabupaten = encodeURIComponent(kabupatenName);
     router.push(`/maos/detail/kabupaten?kabupaten=${encodedKabupaten}`);
+    setLoading(false);
   };
 
   return (

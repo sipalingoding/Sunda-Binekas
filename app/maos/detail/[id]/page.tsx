@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import ButtonDialog from "./button-dialog-icon";
 import AudioReader from "./audio-reader";
 import MapViewWrapper from "../MapViewWrapper";
+import DOMPurify from "dompurify";
+import SafeHTMLContent from "./safe-html/SafeHtml";
 
 export default async function DetailMaosPage({
   params,
@@ -124,9 +126,7 @@ export default async function DetailMaosPage({
             />
           )}
 
-          <span className="text-sm md:text-base leading-relaxed text-justify">
-            {data.eusi}
-          </span>
+          <SafeHTMLContent html={data.eusi} />
 
           {/* Kamus & View Count */}
           <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
