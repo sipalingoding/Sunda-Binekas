@@ -27,6 +27,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Plus, Trash } from "lucide-react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 const formSchema = formSubmitDongengSchema;
 
@@ -46,6 +47,8 @@ const FormPage = () => {
   const [idKab, setIdKab] = useState<any>();
   const [idKec, setIdKec] = useState<any>();
   const [idDesa, setIdDesa] = useState<any>();
+  const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,6 +82,22 @@ const FormPage = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    let photoUrl = values.photo;
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadRes = await fetch("/api/upload-dongeng", {
+        method: "POST",
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+      if (!uploadData.url) throw new Error("Upload foto gagal");
+      photoUrl = uploadData.url;
+    }
+
     setLoading(true);
     const payload = {
       ...values,
@@ -88,7 +107,10 @@ const FormPage = () => {
       kabupaten_id: idKab,
       kecamatan_id: idKec,
       desa_id: idDesa,
+      photo: photoUrl,
     };
+
+    console.log(payload);
 
     try {
       const res = await fetch("/api/dongeng", {
@@ -199,6 +221,16 @@ const FormPage = () => {
     fetchCoordinates();
   }, [form.watch("kabupaten")]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="px-4 sm:px-8 md:px-16 py-6 md:py-10">
       <span className="font-bold text-2xl sm:text-3xl">Pengisian Data</span>
@@ -303,6 +335,40 @@ const FormPage = () => {
                     <FormLabel>Sumber Dongeng</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Lebetkeun Sumber" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="photo"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Foto Dongeng</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col items-start gap-3">
+                        {preview ? (
+                          <Image
+                            src={preview}
+                            alt="preview"
+                            width={200}
+                            height={200}
+                            className="rounded-sm object-cover border w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]"
+                          />
+                        ) : (
+                          <div className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] rounded-sm bg-gray-200 flex items-center justify-center text-gray-500">
+                            No Photo
+                          </div>
+                        )}
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="w-full sm:w-[300px]"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
