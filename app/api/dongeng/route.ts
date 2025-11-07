@@ -11,6 +11,9 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   const body = await req.json();
+
+  console.log(body);
+
   const {
     kabupaten,
     kecamatan,
@@ -24,6 +27,7 @@ export async function POST(req: NextRequest) {
     kabupaten_id,
     kecamatan_id,
     desa_id,
+    photo,
   } = body;
 
   const { data, error } = await supabase
@@ -43,6 +47,7 @@ export async function POST(req: NextRequest) {
         kabupaten_id,
         kecamatan_id,
         desa_id,
+        photo,
       },
     ])
     .select()
