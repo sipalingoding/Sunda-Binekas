@@ -25,7 +25,9 @@ const NgupingkeunPage = () => {
   const [loading, setLoading] = useState(true);
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState<number>(0);
   const [isPlaylistPlaying, setIsPlaylistPlaying] = useState(false);
-  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // 🔊 Ref untuk audio element global
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,14 +38,22 @@ const NgupingkeunPage = () => {
 
     fetchData();
     return () => {
-      window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+      }
     };
   }, []);
 
   const getDataMap = async () => {
     const res = await fetch("/api/dongeng");
     const { data } = await res.json();
-    setDataDongeng(data || []);
+
+    // ❗️Filter hanya dongeng dengan kolom audio tidak null
+    const filtered = (data || []).filter(
+      (d: any) => d.audio !== null && d.status_audio === "approved"
+    );
+    setDataDongeng(filtered);
   };
 
   const getPlaylist = async () => {
@@ -62,34 +72,28 @@ const NgupingkeunPage = () => {
 
   // ✅ Fungsi Play individual
   const handlePlay = (item: any) => {
-    stopSpeech();
+    if (!item.audio) return;
+
+    // Jika lagi play dan klik item yang sama → pause
     if (playingId === item.id) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
       setPlayingId(null);
       return;
     }
-    playSpeech(item.eusi, () => setPlayingId(null));
+
+    // Jika audioRef belum ada → buat baru
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+
+    audioRef.current.src = item.audio;
+    audioRef.current.play();
     setPlayingId(item.id);
-  };
 
-  // ✅ Helper: play speech dengan callback onEnd
-  const playSpeech = (text: string, onEnd?: () => void) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "id-ID";
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    utterance.onend = () => {
-      if (onEnd) onEnd();
-    };
-
-    speechRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const stopSpeech = () => {
-    window.speechSynthesis.cancel();
-    speechRef.current = null;
+    // Event ketika audio selesai
+    audioRef.current.onended = () => setPlayingId(null);
   };
 
   // ✅ Tambah playlist
@@ -117,41 +121,37 @@ const NgupingkeunPage = () => {
     setDeletingId(null);
   };
 
-  // ✅ Play seluruh playlist
+  // ✅ Play seluruh playlist (audio)
   const handlePlayPlaylist = () => {
     if (dataPlaylist.length === 0) return;
 
-    // Jika sedang playing → pause/resume
+    if (!audioRef.current) audioRef.current = new Audio();
+
     if (isPlaylistPlaying) {
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.pause();
-        setIsPlaylistPlaying(false);
-      } else {
-        window.speechSynthesis.resume();
-        setIsPlaylistPlaying(true);
-      }
+      audioRef.current.pause();
+      setIsPlaylistPlaying(false);
       return;
     }
 
-    // Reset dulu
-    stopSpeech();
     setCurrentPlaylistIndex(0);
     setIsPlaylistPlaying(true);
     playCurrentDongeng(0);
   };
 
   const playCurrentDongeng = (index: number) => {
-    if (index < 0 || index >= dataPlaylist.length) {
+    if (!audioRef.current || index >= dataPlaylist.length) {
       setIsPlaylistPlaying(false);
-      setCurrentPlaylistIndex(0);
       return;
     }
 
     const dongengItem = dataPlaylist[index].dongeng_id;
-    const text =
-      typeof dongengItem === "object" ? dongengItem.eusi : "Tidak ada teks.";
+    const audioUrl = typeof dongengItem === "object" ? dongengItem.audio : null;
+    if (!audioUrl) return;
 
-    playSpeech(text, () => {
+    audioRef.current.src = audioUrl;
+    audioRef.current.play();
+
+    audioRef.current.onended = () => {
       const nextIndex = index + 1;
       if (nextIndex < dataPlaylist.length) {
         setCurrentPlaylistIndex(nextIndex);
@@ -160,27 +160,22 @@ const NgupingkeunPage = () => {
         setIsPlaylistPlaying(false);
         setCurrentPlaylistIndex(0);
       }
-    });
+    };
   };
 
-  // ✅ Tombol next / back
   const handleNext = () => {
     const nextIndex = currentPlaylistIndex + 1;
     if (nextIndex < dataPlaylist.length) {
-      stopSpeech();
       setCurrentPlaylistIndex(nextIndex);
       playCurrentDongeng(nextIndex);
-      setIsPlaylistPlaying(true);
     }
   };
 
   const handleBack = () => {
     const prevIndex = currentPlaylistIndex - 1;
     if (prevIndex >= 0) {
-      stopSpeech();
       setCurrentPlaylistIndex(prevIndex);
       playCurrentDongeng(prevIndex);
-      setIsPlaylistPlaying(true);
     }
   };
 
@@ -193,20 +188,7 @@ const NgupingkeunPage = () => {
         </h1>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex flex-col bg-white rounded-xl gap-4 p-5 shadow-md border border-gray-200"
-              >
-                <div className="rounded-full bg-gray-300 w-20 h-20 self-center"></div>
-                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
-                <div className="h-3 bg-gray-200 rounded w-full"></div>
-                <div className="h-3 bg-gray-200 rounded w-5/6"></div>
-                <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-              </div>
-            ))}
-          </div>
+          <p>Loading...</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {dataDongeng.map((item: any, index: number) => {
@@ -234,10 +216,6 @@ const NgupingkeunPage = () => {
 
                   <span className="text-lg font-semibold text-center text-gray-800">
                     {item.judul}
-                  </span>
-
-                  <span className="text-sm text-gray-600 line-clamp-4 text-justify">
-                    {item.eusi}
                   </span>
 
                   <div className="flex gap-2 items-start text-gray-700 text-sm">
@@ -305,20 +283,7 @@ const NgupingkeunPage = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
-          {loading ? (
-            Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex justify-between items-center border-b border-gray-200 pb-2 animate-pulse"
-              >
-                <div className="flex gap-2 items-center">
-                  <div className="rounded-full w-8 h-8 bg-gray-300"></div>
-                  <div className="h-3 w-24 bg-gray-200 rounded"></div>
-                </div>
-                <div className="h-5 w-5 bg-gray-300 rounded"></div>
-              </div>
-            ))
-          ) : dataPlaylist.length > 0 ? (
+          {dataPlaylist.length > 0 ? (
             dataPlaylist.map((item: any, index: number) => (
               <div
                 key={index}

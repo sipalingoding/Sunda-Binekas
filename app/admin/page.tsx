@@ -43,6 +43,7 @@ const AdminPage = () => {
             <TableRow className="bg-gray-50">
               <TableHead>Judul</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Status Audio</TableHead>
               <TableHead>Detail</TableHead>
             </TableRow>
           </TableHeader>
@@ -62,6 +63,21 @@ const AdminPage = () => {
                       } cursor-default`}
                     >
                       {resp.status}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      className={`text-white min-w-24 capitalize px-3 py-1 rounded-md ${
+                        resp.status_audio === null
+                          ? "bg-transparent"
+                          : resp.status_audio === "pending"
+                          ? "bg-yellow-500 hover:bg-yellow-600"
+                          : resp.status === "rejected"
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-green-500 hover:bg-green-600"
+                      } cursor-default text-black`}
+                    >
+                      {resp.status_audio ?? "Belum Record"}
                     </Button>
                   </TableCell>
                   <TableCell>

@@ -14,6 +14,7 @@ import {
   Phone,
   BookAudio,
   ShieldUser,
+  Mic,
 } from "lucide-react"; // ✅ icon tambahan
 import { NavProjects } from "@/components/nav-projects";
 import {
@@ -92,6 +93,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: "Ngupingkeun",
             url: "/ngupingkeun",
             icon: Headphones,
+          },
+          {
+            title: "Ngadeklamasikeun",
+            url: "/ngadeklamasikeun",
+            icon: Mic,
           },
         ],
       },

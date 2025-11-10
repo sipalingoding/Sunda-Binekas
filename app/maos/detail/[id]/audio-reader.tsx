@@ -1,40 +1,41 @@
 "use client";
 
-import { ImVolumeHigh } from "react-icons/im";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
+import { FaPlay, FaPause } from "react-icons/fa6";
+import { Button } from "@/components/ui/button";
 
-export default function AudioReader({ text }: { text: string }) {
-  const [isSpeaking, setIsSpeaking] = useState(false);
+interface AudioReaderProps {
+  audioUrl: string;
+}
 
-  const handleSpeak = () => {
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-      return;
+export default function AudioReader({ audioUrl }: AudioReaderProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
     }
-
-    if (!text) return;
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "id-ID";
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
   };
 
   return (
-    <button
-      onClick={handleSpeak}
-      className={`w-10 h-10 rounded-full flex items-center justify-center transition ${
-        isSpeaking ? "bg-red-600" : "bg-black"
-      }`}
-      title={isSpeaking ? "Stop audio" : "Play audio"}
-    >
-      <ImVolumeHigh size={15} color="white" />
-    </button>
+    <div className="flex items-center gap-3">
+      <audio
+        ref={audioRef}
+        src={audioUrl}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => setIsPlaying(false)}
+      />
+      <Button
+        onClick={togglePlay}
+        className="rounded-full bg-gray-700 hover:bg-gray-800 text-white p-3"
+      >
+        {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+      </Button>
+    </div>
   );
 }
