@@ -19,7 +19,14 @@ export default function AudioRecorder({ dongengId }: { dongengId: string }) {
   // Mulai merekam
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mediaRecorder = new MediaRecorder(stream);
+
+    const mimeType = MediaRecorder.isTypeSupported("audio/mp4")
+      ? "audio/mp4"
+      : MediaRecorder.isTypeSupported("audio/ogg")
+      ? "audio/ogg"
+      : "audio/webm";
+
+    const mediaRecorder = new MediaRecorder(stream, { mimeType });
     mediaRecorderRef.current = mediaRecorder;
     audioChunksRef.current = [];
 
@@ -28,12 +35,17 @@ export default function AudioRecorder({ dongengId }: { dongengId: string }) {
     };
 
     mediaRecorder.onstop = () => {
-      const audioBlob = new Blob(audioChunksRef.current, {
-        type: "audio/webm",
-      });
-      const url = URL.createObjectURL(audioBlob);
-      setAudioBlob(audioBlob);
-      setAudioURL(url);
+      setTimeout(() => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+        console.log("🎧 Blob size:", audioBlob.size);
+        if (audioBlob.size === 0) {
+          alert("Gagal merekam. Browser mungkin tidak mendukung format ini.");
+          return;
+        }
+        const url = URL.createObjectURL(audioBlob);
+        setAudioBlob(audioBlob);
+        setAudioURL(url);
+      }, 300);
     };
 
     mediaRecorder.start();
