@@ -70,6 +70,7 @@
     "swiper": "^12.0.2",
     "tailwind-merge": "^3.0.2",
     "tw-animate-css": "^1.2.5",
+    "wellknown": "^0.5.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {

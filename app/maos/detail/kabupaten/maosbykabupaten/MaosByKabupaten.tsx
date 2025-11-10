@@ -12,7 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react"; // 🌀 Tambahkan spinner
+import { Loader2 } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function MaosByKabupatenPage() {
   const router = useRouter();
@@ -31,14 +37,47 @@ export default function MaosByKabupatenPage() {
   const [selectedDesa, setSelectedDesa] = useState<string>("");
   const [filteredDongeng, setFilteredDongeng] = useState<any[]>([]);
   const [selectedDongeng, setSelectedDongeng] = useState<string>("");
+  const [petaUrl, setPetaUrl] = useState<string | null>(null);
 
   // search
   const [searchKecamatan, setSearchKecamatan] = useState("");
   const [searchDesa, setSearchDesa] = useState("");
   const [searchDongeng, setSearchDongeng] = useState("");
 
-  // 🆕 Tambah state loading button Maca
   const [loadingMaca, setLoadingMaca] = useState(false);
+
+  // 🗺️ Ambil gambar peta dari Supabase Storage berdasarkan nama kabupaten
+  useEffect(() => {
+    if (!kabupaten) return;
+
+    const fetchPeta = async () => {
+      // Nama file sama dengan nama kabupaten (misal: "KABUPATEN CIAMIS.png")
+      const possibleExtensions = ["png", "jpg", "jpeg", "webp"];
+      let foundUrl: string | null = null;
+
+      for (const ext of possibleExtensions) {
+        const { data } = supabase.storage
+          .from("peta_kabupaten")
+          .getPublicUrl(`${kabupaten}.${ext}`);
+
+        // Cek apakah URL valid (Supabase tetap kasih URL meskipun file tidak ada,
+        // jadi sebaiknya kita validasi HEAD request)
+        try {
+          const res = await fetch(data.publicUrl, { method: "HEAD" });
+          if (res.ok) {
+            foundUrl = data.publicUrl;
+            break;
+          }
+        } catch {
+          continue;
+        }
+      }
+
+      setPetaUrl(foundUrl);
+    };
+
+    fetchPeta();
+  }, [kabupaten]);
 
   useEffect(() => {
     if (!kabupaten) return;
@@ -129,7 +168,6 @@ export default function MaosByKabupatenPage() {
     item.judul.toLowerCase().includes(searchDongeng.toLowerCase())
   );
 
-  // 🔹 Handler untuk klik tombol Maca
   const handleMaca = () => {
     setLoadingMaca(true);
     router.replace(`/maos/detail/${selectedDongeng}`);
@@ -144,17 +182,22 @@ export default function MaosByKabupatenPage() {
       {loading && <div>Loading...</div>}
       {error && <div className="text-red-500">{error}</div>}
 
-      {/* ✅ Grid Responsif */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        {/* Gambar */}
+        {/* 🗺️ Gambar Peta Kabupaten */}
         <div className="flex justify-center">
-          <Image
-            src={"/images/map-jabar.png"}
-            width={800}
-            height={800}
-            alt="map-jabar"
-            className="w-full max-w-md sm:max-w-lg h-auto object-contain"
-          />
+          {petaUrl ? (
+            <Image
+              src={petaUrl}
+              width={800}
+              height={800}
+              alt={`Peta ${kabupaten}`}
+              className="w-full max-w-md sm:max-w-lg h-auto object-contain rounded-lg"
+            />
+          ) : (
+            <div className="w-full max-w-md sm:max-w-lg h-[400px] bg-gray-100 border flex items-center justify-center text-gray-500">
+              Peta tidak ditemukan
+            </div>
+          )}
         </div>
 
         {/* Dropdown Filter */}
