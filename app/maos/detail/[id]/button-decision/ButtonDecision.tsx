@@ -5,7 +5,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function ApproveButtons({ id }: { id: string }) {
+export default function ApproveButtons({
+  id,
+  isAudio,
+}: {
+  id: string;
+  isAudio: boolean;
+}) {
   const router = useRouter();
   const { toast } = useToast();
   const [loadingApprove, setLoadingApprove] = useState(false);
@@ -27,6 +33,22 @@ export default function ApproveButtons({ id }: { id: string }) {
         variant: "destructive",
       });
     } else {
+      if (isAudio) {
+        setLoadingApprove(true);
+        const resAudio = await fetch(`/api/dongeng/${id}/audio`, {
+          method: "PATCH",
+        });
+
+        const audioApprove = await resAudio.json();
+        setLoadingApprove(false);
+        if (!resAudio.ok) {
+          toast({
+            title: "Data Gagal Disimpen",
+            description: audioApprove.error || "Gagal disimpen",
+            variant: "destructive",
+          });
+        }
+      }
       router.replace("/admin");
       toast({
         title: "Data Parantos Disimpen",

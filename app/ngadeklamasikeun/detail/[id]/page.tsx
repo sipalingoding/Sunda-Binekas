@@ -1,13 +1,11 @@
 import { cookies } from "next/headers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import ApproveButtons from "./button-decision/ButtonDecision";
 import { GrView } from "react-icons/gr";
 import { FaCamera } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { MdPlace } from "react-icons/md";
 import Image from "next/image";
-import ShareDialogButton from "./share-dialog-button";
 import {
   Dialog,
   DialogClose,
@@ -19,11 +17,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import ButtonDialog from "./button-dialog-icon";
-import AudioReader from "./audio-reader";
-import MapViewWrapper from "../MapViewWrapper";
-import DOMPurify from "dompurify";
-import SafeHTMLContent from "./safe-html/SafeHtml";
+import ButtonDialog from "@/app/maos/detail/[id]/button-dialog-icon";
+import MapViewWrapper from "@/app/maos/detail/MapViewWrapper";
+import SafeHTMLContent from "@/app/maos/detail/[id]/safe-html/SafeHtml";
+import AudioRecorder from "./AudioRecorder/AudioRecorder";
 
 export default async function DetailMaosPage({
   params,
@@ -67,7 +64,6 @@ export default async function DetailMaosPage({
       photo,
       lat,
       lan,
-      audio,
       created_at,
       user_id ( 
         id,
@@ -107,9 +103,6 @@ export default async function DetailMaosPage({
               <div className="text-2xl md:text-3xl font-bold text-balance">
                 {data.judul}
               </div>
-              {data.audio && role === "admin" ? (
-                <AudioReader audioUrl={data.audio} />
-              ) : null}
             </div>
 
             <div className="text-sm md:text-base font-light flex flex-col">
@@ -119,6 +112,7 @@ export default async function DetailMaosPage({
           </CardTitle>
         </CardHeader>
 
+        <AudioRecorder dongengId={id}/>
         <CardContent className="flex flex-col gap-8 md:gap-10">
           {data?.photo && (
             <Image
@@ -129,7 +123,7 @@ export default async function DetailMaosPage({
             />
           )}
 
-          <SafeHTMLContent html={data.eusi} />
+          <SafeHTMLContent html={data?.eusi} />
 
           {/* Kamus & View Count */}
           <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
@@ -158,9 +152,6 @@ export default async function DetailMaosPage({
                 </div>
                 <span className="text-sm md:text-base">{data.view}</span>
               </div>
-              <ShareDialogButton
-                link={`https://sunda-binekas.vercel.app/dongeng/${id}`}
-              />
             </div>
           </div>
 
@@ -250,12 +241,6 @@ export default async function DetailMaosPage({
           </div>
         </CardContent>
       </Card>
-
-      {role === "admin" && (
-        <div className="mt-6">
-          <ApproveButtons id={data.id} isAudio={data.audio ? true : false} />
-        </div>
-      )}
     </div>
   );
 }

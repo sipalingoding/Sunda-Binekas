@@ -133,10 +133,6 @@ export default function Maos() {
                   {item.judul}
                 </span>
 
-                <span className="text-xs font-light text-center">
-                  {item.eusi}
-                </span>
-
                 <div className="flex gap-2 items-start text-xs">
                   <MdPlace className="mt-[2px]" />
                   <div className="flex flex-col">
