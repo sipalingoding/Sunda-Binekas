@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState, useRef } from "react";
-import { GrView } from "react-icons/gr";
 import { MdPlace } from "react-icons/md";
 import {
   IoPlayCircleOutline,
@@ -14,6 +13,8 @@ import { FaPlus, FaPlay, FaSpinner, FaPause } from "react-icons/fa6";
 import { CgPlayListRemove } from "react-icons/cg";
 import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
+import { MdHeadsetMic } from "react-icons/md";
+import { supabase } from "@/lib/supabase";
 
 const NgupingkeunPage = () => {
   const [dataDongeng, setDataDongeng] = useState<any[]>([]);
@@ -92,6 +93,8 @@ const NgupingkeunPage = () => {
     audioRef.current.play();
     setPlayingId(item.id);
 
+    incrementHearCount(item.id);
+
     // Event ketika audio selesai
     audioRef.current.onended = () => setPlayingId(null);
   };
@@ -151,6 +154,10 @@ const NgupingkeunPage = () => {
     audioRef.current.src = audioUrl;
     audioRef.current.play();
 
+    incrementHearCount(
+      typeof dongengItem === "object" ? dongengItem.id : dongengItem
+    );
+
     audioRef.current.onended = () => {
       const nextIndex = index + 1;
       if (nextIndex < dataPlaylist.length) {
@@ -176,6 +183,29 @@ const NgupingkeunPage = () => {
     if (prevIndex >= 0) {
       setCurrentPlaylistIndex(prevIndex);
       playCurrentDongeng(prevIndex);
+    }
+  };
+
+  const incrementHearCount = async (id: string) => {
+    try {
+      const { data: current, error: fetchErr } = await supabase
+        .from("dongeng")
+        .select("hear")
+        .eq("id", id)
+        .single();
+
+      if (fetchErr) throw fetchErr;
+
+      const currentHear = current?.hear ?? 0;
+
+      const { error: updateErr } = await supabase
+        .from("dongeng")
+        .update({ hear: currentHear + 1 })
+        .eq("id", id);
+
+      if (updateErr) throw updateErr;
+    } catch (err) {
+      console.error("❌ Gagal menambah hear count:", err);
     }
   };
 
@@ -228,8 +258,8 @@ const NgupingkeunPage = () => {
 
                   <div className="flex items-center justify-between mt-2">
                     <div className="flex gap-2 items-center text-gray-700 text-sm">
-                      <GrView />
-                      <span>{item.view}</span>
+                      <MdHeadsetMic />
+                      <span>{item.hear}</span>
                     </div>
 
                     <div className="flex gap-2">

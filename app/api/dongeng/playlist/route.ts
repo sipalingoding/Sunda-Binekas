@@ -22,7 +22,8 @@ export async function GET(req: NextRequest) {
         id,
         judul,
         eusi,
-        photo
+        photo,
+        audio
       )`
     )
     .eq("user_id", user.id)
