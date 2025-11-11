@@ -48,7 +48,7 @@ export default function Maos() {
 
   const handleMaosClick = (id: string) => {
     setLoadingItem(id); // tampilkan spinner pada tombol yang diklik
-    router.push(`/maos/detail/${id}`);
+    router.push(`/maos/detail/${btoa(id)}`);
   };
 
   return (

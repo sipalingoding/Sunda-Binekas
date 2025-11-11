@@ -31,6 +31,7 @@ export default async function DetailMaosPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const dataId = atob(id);
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
@@ -78,13 +79,13 @@ export default async function DetailMaosPage({
       )
     `
     )
-    .eq("id", id)
+    .eq("id", dataId)
     .single();
 
   await supabase
     .from("dongeng")
     .update({ view: (data?.view ?? 0) + 1 })
-    .eq("id", id);
+    .eq("id", dataId);
 
   if (error) return <div>Error ambil dongeng: {error.message}</div>;
 
@@ -159,7 +160,7 @@ export default async function DetailMaosPage({
                 <span className="text-sm md:text-base">{data.view}</span>
               </div>
               <ShareDialogButton
-                link={`https://sunda-binekas.vercel.app/dongeng/${id}`}
+                link={`https://sunda-binekas.vercel.app/dongeng/${dataId}`}
               />
             </div>
           </div>
