@@ -15,7 +15,7 @@ import {
   BookAudio,
   ShieldUser,
   Mic,
-} from "lucide-react"; // ✅ icon tambahan
+} from "lucide-react";
 import { NavProjects } from "@/components/nav-projects";
 import {
   Sidebar,
@@ -28,7 +28,6 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
-import { FaBookReader } from "react-icons/fa";
 import Image from "next/image";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -60,6 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     getUserData();
   }, [user, supabase]);
 
+  // 🧩 Definisi data navigasi utama
   const data = {
     user: {
       username: dataUser?.username,
@@ -109,16 +109,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {
             title: "Email",
             url: "mailto:pukis.dongengsunda@gmail.com",
-            icon: Mail, // 📧
+            icon: Mail,
           },
           {
             title: "Whatsapp",
             url: "https://wa.me/6281221808959",
-            icon: Phone, // 📞
+            icon: Phone,
           },
         ],
       },
     ],
+
     projects: [
       {
         name: "Modul Guru",
@@ -126,20 +127,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: BookAudio,
       },
       {
-        name: "Rereongan",
+        name: "Sabilulungan",
         url: "/404",
-        icon: Users, // 👥
+        icon: Users,
       },
       {
         name: "Warta",
         url: "/warta",
-        icon: Newspaper, // 📰
+        icon: Newspaper,
       },
-      {
-        name: "Kurator",
-        url: "/admin",
-        icon: ShieldUser,
-      },
+      // 👇 hanya tampil kalau role admin
+      ...(dataUser?.role === "admin"
+        ? [
+            {
+              name: "Kurator",
+              url: "/admin",
+              icon: ShieldUser,
+            },
+          ]
+        : []),
     ],
   };
 

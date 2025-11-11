@@ -14,12 +14,13 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  // ✅ Halaman publik (tidak butuh login)
-  const publicPaths = ["/login", "/register", "/public", "/api"];
-  const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
+  const protectedPaths = ["/nyerat", "/ngadeklamasikeun", "/profile", "/admin"];
+  const isProtectedPath = protectedPaths.some((path) =>
+    pathname.startsWith(path)
+  );
 
   // 🔒 Kalau bukan halaman publik & belum login → redirect ke /login
-  if (!isPublicPath && !session) {
+  if (isProtectedPath && !session) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = "/login";
     return NextResponse.redirect(redirectUrl);
