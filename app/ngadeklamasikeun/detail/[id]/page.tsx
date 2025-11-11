@@ -28,6 +28,7 @@ export default async function DetailMaosPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const dataId = atob(id);
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
@@ -74,13 +75,13 @@ export default async function DetailMaosPage({
       )
     `
     )
-    .eq("id", id)
+    .eq("id", dataId)
     .single();
 
   await supabase
     .from("dongeng")
     .update({ view: (data?.view ?? 0) + 1 })
-    .eq("id", id);
+    .eq("id", dataId);
 
   if (error) return <div>Error ambil dongeng: {error.message}</div>;
 
@@ -112,7 +113,7 @@ export default async function DetailMaosPage({
           </CardTitle>
         </CardHeader>
 
-        <AudioRecorder dongengId={id}/>
+        <AudioRecorder dongengId={dataId} />
         <CardContent className="flex flex-col gap-8 md:gap-10">
           {data?.photo && (
             <Image

@@ -41,7 +41,7 @@ const NgadeklamasikeunPage = () => {
 
   const handleRouter = (id: string) => {
     setLoadingItem(id);
-    router.replace(`/ngadeklamasikeun/detail/${id}`);
+    router.replace(`/ngadeklamasikeun/detail/${btoa(id)}`);
   };
 
   return (
