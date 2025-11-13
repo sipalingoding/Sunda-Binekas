@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState, useRef } from "react";
-import { MdPlace } from "react-icons/md";
+import { MdPlace, MdHeadsetMic } from "react-icons/md";
 import {
   IoPlayCircleOutline,
   IoPauseCircleOutline,
@@ -12,9 +12,16 @@ import {
 import { FaPlus, FaPlay, FaSpinner, FaPause } from "react-icons/fa6";
 import { CgPlayListRemove } from "react-icons/cg";
 import Image from "next/image";
-import { FaCheckCircle } from "react-icons/fa";
-import { MdHeadsetMic } from "react-icons/md";
 import { supabase } from "@/lib/supabase";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { FaCheckCircle } from "react-icons/fa";
 
 const NgupingkeunPage = () => {
   const [dataDongeng, setDataDongeng] = useState<any[]>([]);
@@ -27,17 +34,29 @@ const NgupingkeunPage = () => {
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState<number>(0);
   const [isPlaylistPlaying, setIsPlaylistPlaying] = useState(false);
 
-  // 🔊 Ref untuk audio element global
+  const [kabupatenList, setKabupatenList] = useState<any[]>([]);
+  const [kecamatanList, setKecamatanList] = useState<any[]>([]);
+  const [desaList, setDesaList] = useState<any[]>([]);
+
+  const [selectedKabupaten, setSelectedKabupaten] = useState<string>("");
+  const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
+  const [selectedDesa, setSelectedDesa] = useState<string>("");
+
+  const [searchKab, setSearchKab] = useState("");
+  const [searchKec, setSearchKec] = useState("");
+  const [searchDesa, setSearchDesa] = useState("");
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // === 🔹 Initial Data
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await Promise.all([getDataMap(), getPlaylist()]);
+      await Promise.all([getDataDongeng(), getPlaylist()]);
       setLoading(false);
     };
-
     fetchData();
+
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -46,11 +65,9 @@ const NgupingkeunPage = () => {
     };
   }, []);
 
-  const getDataMap = async () => {
+  const getDataDongeng = async () => {
     const res = await fetch("/api/dongeng");
     const { data } = await res.json();
-
-    // ❗️Filter hanya dongeng dengan kolom audio tidak null
     const filtered = (data || []).filter(
       (d: any) => d.audio !== null && d.status_audio === "approved"
     );
@@ -61,60 +78,122 @@ const NgupingkeunPage = () => {
     const res = await fetch("/api/dongeng/playlist");
     const { data } = await res.json();
     setDataPlaylist(data || []);
-    cekPlaylist(data || []);
-  };
-
-  const cekPlaylist = (playlistData: any[]) => {
-    const ids = playlistData.map((item) =>
-      typeof item.dongeng_id === "object" ? item.dongeng_id.id : item.dongeng_id
+    setPlaylistIds(
+      (data || []).map((i: any) =>
+        typeof i.dongeng_id === "object" ? i.dongeng_id.id : i.dongeng_id
+      )
     );
-    setPlaylistIds(ids);
   };
 
-  // ✅ Fungsi Play individual
+  // === 🔹 Fetch Wilayah
+  useEffect(() => {
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/regencies/32.json")
+      .then((res) => res.json())
+      .then(setKabupatenList)
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedKabupaten) {
+      setKecamatanList([]);
+      setDesaList([]);
+      setSelectedKecamatan("");
+      setSelectedDesa("");
+      return;
+    }
+
+    const kab = kabupatenList.find((k) => k.name === selectedKabupaten);
+    if (!kab) return;
+
+    fetch(
+      `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${kab.id}.json`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setKecamatanList(data);
+        setDesaList([]);
+        setSelectedKecamatan("");
+        setSelectedDesa("");
+      })
+      .catch(console.error);
+  }, [selectedKabupaten]);
+
+  useEffect(() => {
+    if (!selectedKecamatan) {
+      setDesaList([]);
+      setSelectedDesa("");
+      return;
+    }
+
+    const kec = kecamatanList.find((k) => k.name === selectedKecamatan);
+    if (!kec) return;
+
+    fetch(
+      `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${kec.id}.json`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setDesaList(data);
+        setSelectedDesa("");
+      })
+      .catch(console.error);
+  }, [selectedKecamatan]);
+
+  // === 🔹 Filter Dongeng Berdasarkan Wilayah
+  const handleFilter = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/dongeng/filter-ngupingkeun", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kabupaten: selectedKabupaten || null,
+          kecamatan: selectedKecamatan || null,
+          desa: selectedDesa || null,
+        }),
+      });
+      const { data } = await res.json();
+      const filtered = (data || []).filter(
+        (d: any) => d.audio !== null && d.status_audio === "approved"
+      );
+      setDataDongeng(filtered);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // === 🔹 Audio Controls
   const handlePlay = (item: any) => {
     if (!item.audio) return;
 
-    // Jika lagi play dan klik item yang sama → pause
     if (playingId === item.id) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
+      audioRef.current?.pause();
       setPlayingId(null);
       return;
     }
 
-    // Jika audioRef belum ada → buat baru
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-    }
-
+    if (!audioRef.current) audioRef.current = new Audio();
     audioRef.current.src = item.audio;
     audioRef.current.play();
     setPlayingId(item.id);
-
     incrementHearCount(item.id);
-
-    // Event ketika audio selesai
     audioRef.current.onended = () => setPlayingId(null);
   };
 
-  // ✅ Tambah playlist
   const handleAddToPlaylist = async (item: any) => {
     if (playlistIds.includes(item.id)) return;
     setAddingId(item.id);
-
     const res = await fetch("/api/dongeng/playlist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ dongeng_id: item.id }),
     });
-
     if (res.ok) await getPlaylist();
     setAddingId(null);
   };
 
-  // ✅ Hapus playlist
   const handleDeletePlaylist = async (id: string) => {
     setDeletingId(id);
     const res = await fetch(`/api/dongeng/playlist/${id}`, {
@@ -124,10 +203,8 @@ const NgupingkeunPage = () => {
     setDeletingId(null);
   };
 
-  // ✅ Play seluruh playlist (audio)
   const handlePlayPlaylist = () => {
     if (dataPlaylist.length === 0) return;
-
     if (!audioRef.current) audioRef.current = new Audio();
 
     if (isPlaylistPlaying) {
@@ -146,7 +223,6 @@ const NgupingkeunPage = () => {
       setIsPlaylistPlaying(false);
       return;
     }
-
     const dongengItem = dataPlaylist[index].dongeng_id;
     const audioUrl = typeof dongengItem === "object" ? dongengItem.audio : null;
     if (!audioUrl) return;
@@ -188,66 +264,151 @@ const NgupingkeunPage = () => {
 
   const incrementHearCount = async (id: string) => {
     try {
-      const { data: current, error: fetchErr } = await supabase
+      const { data: current } = await supabase
         .from("dongeng")
         .select("hear")
         .eq("id", id)
         .single();
-
-      if (fetchErr) throw fetchErr;
-
       const currentHear = current?.hear ?? 0;
-
-      const { error: updateErr } = await supabase
+      await supabase
         .from("dongeng")
         .update({ hear: currentHear + 1 })
         .eq("id", id);
-
-      if (updateErr) throw updateErr;
     } catch (err) {
       console.error("❌ Gagal menambah hear count:", err);
     }
   };
 
+  // === 🔹 Filtered list dropdown
+  const filteredKabupaten = kabupatenList.filter((k) =>
+    k.name.toLowerCase().includes(searchKab.toLowerCase())
+  );
+  const filteredKecamatan = kecamatanList.filter((k) =>
+    k.name.toLowerCase().includes(searchKec.toLowerCase())
+  );
+  const filteredDesa = desaList.filter((d) =>
+    d.name.toLowerCase().includes(searchDesa.toLowerCase())
+  );
+
   return (
-    <div className="flex flex-col items-start lg:flex-row gap-6 px-4 sm:px-6 md:px-10 pt-6 min-h-screen py-10">
+    <div className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 md:px-10 pt-6 min-h-screen py-10 relative">
       {/* 🔹 Daftar Dongeng */}
       <div className="flex-1">
         <h1 className="text-3xl font-bold mb-6 text-center lg:text-left">
           Ngupingkeun Dongeng
         </h1>
 
+        {/* 🔹 Filter Wilayah */}
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
+          <Select
+            onValueChange={setSelectedKabupaten}
+            value={selectedKabupaten}
+          >
+            <SelectTrigger className="w-full lg:w-[200px] bg-white">
+              <SelectValue placeholder="Pilih Kabupaten" />
+            </SelectTrigger>
+            <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
+              <Input
+                placeholder="Cari Kabupaten..."
+                value={searchKab}
+                onChange={(e) => setSearchKab(e.target.value)}
+                className="mb-2 h-8 text-sm bg-white"
+              />
+              {filteredKabupaten.length > 0 ? (
+                filteredKabupaten.map((kab) => (
+                  <SelectItem key={kab.id} value={kab.name}>
+                    {kab.name}
+                  </SelectItem>
+                ))
+              ) : (
+                <div className="text-xs text-gray-500 text-center py-2">
+                  Henteu kapanggih kabupaten
+                </div>
+              )}
+            </SelectContent>
+          </Select>
+
+          <Select
+            onValueChange={(v) => setSelectedKecamatan(v)}
+            disabled={!selectedKabupaten}
+            value={selectedKecamatan}
+          >
+            <SelectTrigger className="w-full lg:w-[200px] bg-white">
+              <SelectValue placeholder="Pilih Kecamatan" />
+            </SelectTrigger>
+            <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
+              <Input
+                placeholder="Cari Kecamatan..."
+                value={searchKec}
+                onChange={(e) => setSearchKec(e.target.value)}
+                className="mb-2 h-8 text-sm"
+              />
+              {filteredKecamatan.map((k) => (
+                <SelectItem key={k.id} value={k.name}>
+                  {k.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            onValueChange={(v) => setSelectedDesa(v)}
+            disabled={!selectedKecamatan}
+            value={selectedDesa}
+          >
+            <SelectTrigger className="w-full lg:w-[200px] bg-white">
+              <SelectValue placeholder="Pilih Desa" />
+            </SelectTrigger>
+            <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
+              <Input
+                placeholder="Cari Desa..."
+                value={searchDesa}
+                onChange={(e) => setSearchDesa(e.target.value)}
+                className="mb-2 h-8 text-sm"
+              />
+              {filteredDesa.map((d) => (
+                <SelectItem key={d.id} value={d.name}>
+                  {d.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Button
+            onClick={handleFilter}
+            className="bg-gray-800 text-white hover:bg-gray-700"
+          >
+            Teangan
+          </Button>
+        </div>
+
+        {/* 🔹 Daftar Dongeng */}
         {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {dataDongeng.map((item: any, index: number) => {
+          <p className="text-center text-gray-600">Loading...</p>
+        ) : dataDongeng.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative">
+            {dataDongeng.map((item: any) => {
               const alreadyInPlaylist = playlistIds.includes(item.id);
               const isAdding = addingId === item.id;
-
               return (
                 <div
-                  key={index}
+                  key={item.id}
                   className="flex flex-col bg-white rounded-xl justify-between gap-4 p-5 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-200"
                 >
                   {item.photo ? (
-                    <div className="self-center">
-                      <Image
-                        width={20}
-                        height={20}
-                        src={item?.photo}
-                        alt="photo dongeng"
-                        className="rounded-full w-20 h-20"
-                      />
-                    </div>
+                    <Image
+                      width={20}
+                      height={20}
+                      src={item.photo}
+                      alt="photo dongeng"
+                      className="rounded-full w-20 h-20 self-center"
+                    />
                   ) : (
                     <div className="rounded-full bg-gray-400 w-24 h-24 self-center"></div>
                   )}
-
                   <span className="text-lg font-semibold text-center text-gray-800">
                     {item.judul}
                   </span>
-
                   <div className="flex gap-2 items-start text-gray-700 text-sm">
                     <MdPlace size={18} />
                     <div className="flex flex-col">
@@ -255,13 +416,11 @@ const NgupingkeunPage = () => {
                       <span>Desa: {item.desa}</span>
                     </div>
                   </div>
-
                   <div className="flex items-center justify-between mt-2">
                     <div className="flex gap-2 items-center text-gray-700 text-sm">
                       <MdHeadsetMic />
                       <span>{item.hear}</span>
                     </div>
-
                     <div className="flex gap-2">
                       <Button
                         size="icon"
@@ -274,7 +433,6 @@ const NgupingkeunPage = () => {
                           <IoPlayCircleOutline size={36} />
                         )}
                       </Button>
-
                       <Button
                         size="icon"
                         disabled={alreadyInPlaylist || isAdding}
@@ -301,22 +459,26 @@ const NgupingkeunPage = () => {
               );
             })}
           </div>
+        ) : (
+          <p className="text-gray-600 text-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            Teu acan aya dongeng anu tiasa di kupingkeun
+          </p>
         )}
       </div>
 
-      {/* 🔹 Playlist */}
-      <div className="w-full lg:w-1/3 xl:w-1/4 bg-[#fafafa] rounded-xl border border-gray-300 shadow-md flex flex-col mt-16 h-fit">
+      {/* 🔹 Playlist Sidebar */}
+      <div className="w-full lg:w-1/3 xl:w-1/4 bg-[#fafafa] rounded-xl border border-gray-300 shadow-md flex flex-col mt-6 lg:mt-16 h-fit">
         <div className="p-5 border-b border-gray-200 shrink-0">
           <h1 className="text-lg font-semibold">
             Daptar Dongéng anu badé dikupingkeun
           </h1>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="flex-1 overflow-y-auto p-5 space-y-4 max-h-[400px]">
           {dataPlaylist.length > 0 ? (
             dataPlaylist.map((item: any, index: number) => (
               <div
-                key={index}
+                key={item.id}
                 className={`flex justify-between items-center border-b border-gray-200 pb-2 ${
                   index === currentPlaylistIndex && isPlaylistPlaying
                     ? "bg-green-100 rounded-md px-2"
@@ -341,52 +503,49 @@ const NgupingkeunPage = () => {
                       : item.dongeng_id}
                   </span>
                 </div>
-
                 {deletingId === item.id ? (
-                  <FaSpinner size={22} className="text-gray-600 animate-spin" />
+                  <FaSpinner className="animate-spin text-gray-400" />
                 ) : (
                   <CgPlayListRemove
-                    size={25}
-                    color="red"
-                    className="cursor-pointer hover:opacity-80"
+                    className="text-red-500 hover:text-red-700 cursor-pointer"
+                    size={20}
                     onClick={() => handleDeletePlaylist(item.id)}
                   />
                 )}
               </div>
             ))
           ) : (
-            <div className="text-gray-600 text-sm text-center">
-              Tambihkeun heula dongeng ka playlist!
-            </div>
+            <p className="text-gray-500 text-sm text-center">
+              Teu acan aya dongeng dina daptar putar
+            </p>
           )}
         </div>
 
-        {/* 🔹 Tombol Control Playlist */}
-        <div className="border-t border-gray-200 p-5 flex justify-around items-center shrink-0">
+        <div className="p-4 border-t border-gray-200 flex items-center justify-center gap-4">
           <IoPlayBack
-            size={30}
-            className="cursor-pointer hover:text-gray-700"
             onClick={handleBack}
-          />
-
-          {isPlaylistPlaying ? (
-            <FaPause
-              size={30}
-              className="cursor-pointer text-gray-800"
-              onClick={handlePlayPlaylist}
-            />
-          ) : (
-            <FaPlay
-              size={30}
-              className="cursor-pointer text-gray-800"
-              onClick={handlePlayPlaylist}
-            />
-          )}
-
-          <IoPlayForward
+            className="text-gray-600 hover:text-gray-800 cursor-pointer"
             size={30}
-            className="cursor-pointer hover:text-gray-700"
+          />
+          <Button
+            onClick={handlePlayPlaylist}
+            disabled={dataPlaylist.length === 0}
+            className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 flex items-center gap-2"
+          >
+            {isPlaylistPlaying ? (
+              <>
+                <FaPause />
+              </>
+            ) : (
+              <>
+                <FaPlay />
+              </>
+            )}
+          </Button>
+          <IoPlayForward
             onClick={handleNext}
+            className="text-gray-600 hover:text-gray-800 cursor-pointer"
+            size={30}
           />
         </div>
       </div>
