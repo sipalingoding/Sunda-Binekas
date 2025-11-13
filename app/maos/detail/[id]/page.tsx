@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import ButtonDialog from "./button-dialog-icon";
 import AudioReader from "./audio-reader";
 import MapViewWrapper from "../MapViewWrapper";
-import DOMPurify from "dompurify";
 import SafeHTMLContent from "./safe-html/SafeHtml";
 
 export default async function DetailMaosPage({
