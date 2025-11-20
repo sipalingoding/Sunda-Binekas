@@ -31,6 +31,7 @@ export const formSubmitDongengSchema = z.object({
   eusi: z.string().nonempty("eusi kudu diisi!"),
   sumber: z.string().nonempty("Sumber kudu diisi!"),
   photo: z.string().optional(),
+  translate: z.string().optional(),
 });
 
 export const editProfileSchema = z.object({
