@@ -20,9 +20,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ButtonDialog from "./button-dialog-icon";
-import AudioReader from "./audio-reader";
 import MapViewWrapper from "../MapViewWrapper";
-import SafeHTMLContent from "./safe-html/SafeHtml";
+import DetailClientWrapper from "./DetailClientWrapper";
 
 export default async function DetailMaosPage({
   params,
@@ -68,6 +67,7 @@ export default async function DetailMaosPage({
       lat,
       lan,
       audio,
+      translate,
       created_at,
       user_id ( 
         id,
@@ -107,9 +107,6 @@ export default async function DetailMaosPage({
               <div className="text-2xl md:text-3xl font-bold text-balance">
                 {data.judul}
               </div>
-              {data.audio && role === "admin" ? (
-                <AudioReader audioUrl={data.audio} />
-              ) : null}
             </div>
 
             <div className="text-sm md:text-base font-light flex flex-col">
@@ -129,7 +126,12 @@ export default async function DetailMaosPage({
             />
           )}
 
-          <SafeHTMLContent html={data.eusi} />
+          <DetailClientWrapper
+            eusi={data.eusi}
+            translate={data.translate}
+            audio={data.audio}
+            role={role}
+          />
 
           {/* Kamus & View Count */}
           <div className="flex flex-col lg:flex-row gap-6 md:gap-10">

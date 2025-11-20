@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { formSubmitDongengSchema } from "@/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,12 +26,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Plus, Trash } from "lucide-react";
 import Image from "next/image";
-import SafeHTMLContent from "@/app/maos/detail/[id]/safe-html/SafeHtml";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import TextAlign from "@tiptap/extension-text-align";
-import Placeholder from "@tiptap/extension-placeholder";
 import TipTapEditor from "@/components/tip-tap-editor/TipTapEditor";
 
 const formSchema = formSubmitDongengSchema;
@@ -58,6 +51,7 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
       desa: "",
       judul: "",
       eusi: "",
+      translate: "",
       sumber: "",
       photo: "",
     },
@@ -70,7 +64,6 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
       kecamatanList.length > 0 &&
       desaList.length > 0
     ) {
-      console.log(dataGet);
       form.reset({
         kabupaten: dataGet.kabupaten || "",
         kecamatan: dataGet.kecamatan || "",
@@ -79,6 +72,7 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
         eusi: dataGet.eusi || "",
         sumber: dataGet.sumber || "",
         photo: dataGet.photo || "",
+        translate: dataGet.translate || "",
       });
       setKamusList(dataGet?.kamus);
     }
@@ -360,7 +354,10 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                   </FormItem>
                 )}
               />
+            </div>
 
+            {/* Kanan */}
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="photo"
@@ -394,10 +391,6 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                   </FormItem>
                 )}
               />
-            </div>
-
-            {/* Kanan */}
-            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="judul"
@@ -411,71 +404,89 @@ const FormEditPage = ({ dataGet }: { dataGet: any }) => {
                   </FormItem>
                 )}
               />
+            </div>
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="eusi"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Eusi Dongeng</FormLabel>
+                  <FormControl>
+                    <TipTapEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="eusi"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Eusi Dongeng</FormLabel>
-                    <FormControl>
-                      <TipTapEditor
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="translate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Translate Dongeng</FormLabel>
+                  <FormControl>
+                    <TipTapEditor
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              {/* Kamus Section */}
-              <div>
-                <FormLabel>Kamus (Opsional)</FormLabel>
-                <div className="space-y-3 mt-3">
-                  {kamusList.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+            {/* Kamus Section */}
+            <div>
+              <FormLabel>Kamus (Opsional)</FormLabel>
+              <div className="space-y-3 mt-3">
+                {kamusList.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+                  >
+                    <Input
+                      placeholder="Kata"
+                      value={item.kata}
+                      onChange={(e) =>
+                        updateKamus(index, "kata", e.target.value)
+                      }
+                      className="sm:w-1/3"
+                    />
+                    <Input
+                      placeholder="Pengertian"
+                      value={item.pengertian}
+                      onChange={(e) =>
+                        updateKamus(index, "pengertian", e.target.value)
+                      }
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => removeKamus(index)}
+                      className="text-red-500"
                     >
-                      <Input
-                        placeholder="Kata"
-                        value={item.kata}
-                        onChange={(e) =>
-                          updateKamus(index, "kata", e.target.value)
-                        }
-                        className="sm:w-1/3"
-                      />
-                      <Input
-                        placeholder="Pengertian"
-                        value={item.pengertian}
-                        onChange={(e) =>
-                          updateKamus(index, "pengertian", e.target.value)
-                        }
-                        className="flex-1"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={() => removeKamus(index)}
-                        className="text-red-500"
-                      >
-                        <Trash size={18} />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-
-                <Button
-                  type="button"
-                  onClick={addKamus}
-                  variant="outline"
-                  className="mt-4 text-sm"
-                >
-                  <Plus size={16} className="mr-2" />
-                  Tambah Kata
-                </Button>
+                      <Trash size={18} />
+                    </Button>
+                  </div>
+                ))}
               </div>
+
+              <Button
+                type="button"
+                onClick={addKamus}
+                variant="outline"
+                className="mt-4 text-sm"
+              >
+                <Plus size={16} className="mr-2" />
+                Tambah Kata
+              </Button>
             </div>
           </div>
 

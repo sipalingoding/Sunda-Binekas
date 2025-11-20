@@ -21,6 +21,7 @@ export async function PATCH(req: NextRequest) {
     kecamatan_id,
     desa_id,
     photo,
+    translate,
   } = body;
 
   const {
@@ -48,6 +49,7 @@ export async function PATCH(req: NextRequest) {
       kecamatan_id,
       desa_id,
       photo,
+      translate,
     })
     .eq("id", id);
 

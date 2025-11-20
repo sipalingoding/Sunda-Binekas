@@ -116,9 +116,9 @@ export default function HomePage() {
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex gap-2 items-center justify-center text-lg font-semibold">
                     <MdGroups2 />
-                    <span>{dataStatistik?.total_view ?? 0}</span>
+                    <span>{dataStatistik?.total_users ?? 0}</span>
                   </div>
-                  <span className="text-sm text-gray-600">Ditingali</span>
+                  <span className="text-sm text-gray-600">Pengguna</span>
                 </div>
 
                 <div className="flex flex-col items-center gap-1">
