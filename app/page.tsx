@@ -6,10 +6,12 @@ import { TfiWrite } from "react-icons/tfi";
 import { MdGroups2 } from "react-icons/md";
 import { GiOpenBook } from "react-icons/gi";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function HomePage() {
   const [dataStatistik, setDataStatistik] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     getDataStatistik();
@@ -44,31 +46,17 @@ export default function HomePage() {
       <main className="flex-1 rounded-xl px-6 sm:px-10 lg:px-16 py-10 gap-4 flex flex-col">
         {/* TEKS INTRO */}
         <div className="flex flex-col gap-2 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold">Wilujeng Sumping!</h1>
-          <h5 className="italic text-base sm:text-lg">
-            Nyukcruk Sasakala Lembur
-          </h5>
-          <h2 className="font-bold text-lg sm:text-xl">Dongéng Tatar Sunda</h2>
+          <h1 className="text-2xl sm:text-3xl font-bold">{t("welcome")}</h1>
+          <h5 className="italic text-base sm:text-lg">{t("subtitle1_home")}</h5>
+          <h2 className="font-bold text-lg sm:text-xl">
+            {t("subtitle2_home")}
+          </h2>
         </div>
 
         {/* DESKRIPSI */}
         <div className="flex flex-col gap-2 text-sm sm:text-base leading-relaxed">
-          <p>
-            PUKIS mangrupa platform digital berbasis peta interaktif pikeun
-            maluruh cerita rakyat ti unggal daérah di Jawa Barat. Ieu sistem
-            website dirancang sacara partisipatif saperti Wikipedia, hartina ti
-            mimiti guru, siswa, nepika masyarakat umum bisa milu ilubiung
-            nuliskeun cerita rakyat dina PUKIS.
-          </p>
-          <p>
-            Dongéng mangrupa carita rékaan dina wangun prosa anu eusi caritana
-            pamohalan tur ukuranana parondok. Dongéng sumebar ti hiji jalma ka
-            jalma lianna sacara lisan, ku kituna teu kapaluruh saha nu
-            ngarangna. Lantaran sumebar dina wangun lisan, téks dongéng ogé
-            babari robah atawa leungit. Dongéng dipasing-pasing jadi sababaraha
-            jenis, nyaéta fabél (carita sasatoan), parabél (carita kahirupan
-            jalma), sasakala (legenda), sagé (babad), jeung mite (mitos).
-          </p>
+          <p>{t("desc_p1_home")}</p>
+          <p>{t("desc_p2_home")}</p>
         </div>
 
         {/* STATISTIC SECTION */}

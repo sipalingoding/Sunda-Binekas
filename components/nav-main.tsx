@@ -1,7 +1,6 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
-
+import { ChevronRight, Check, type LucideIcon } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -31,6 +30,8 @@ export function NavMain({
       title: string;
       url: string;
       icon?: LucideIcon;
+      onClick?: () => void;
+      isActive?: boolean;
     }[];
   }[];
 }) {
@@ -60,15 +61,43 @@ export function NavMain({
                       subItem.url.startsWith("http") ||
                       subItem.url.startsWith("mailto:");
 
+                    const isAction = !!subItem.onClick;
+
                     return (
                       <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
-                          {isExternal ? (
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={subItem.isActive}
+                        >
+                          {isAction ? (
+                            // 🟢 TOMBOL ACTION (BAHASA)
+                            <button
+                              onClick={subItem.onClick}
+                              className="flex w-full items-center gap-2 cursor-pointer text-left"
+                              type="button"
+                            >
+                              {subItem.icon && (
+                                <subItem.icon className="h-4 w-4 text-muted-foreground shrink-0" />
+                                /* shrink-0 agar icon tidak gepeng */
+                              )}
+
+                              {/* 👇 PERUBAHAN DI SINI 👇 */}
+                              <span className="flex-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                                {subItem.title}
+                              </span>
+
+                              {subItem.isActive && (
+                                <Check className="ml-auto h-4 w-4 shrink-0" />
+                                /* shrink-0 agar centang tidak gepeng */
+                              )}
+                            </button>
+                          ) : isExternal ? (
+                            // EXTERNAL LINK
                             <a
                               href={subItem.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2"
+                              className="flex items-center gap-2 w-full"
                             >
                               {subItem.icon && (
                                 <subItem.icon className="h-4 w-4 text-muted-foreground" />
@@ -76,9 +105,10 @@ export function NavMain({
                               <span>{subItem.title}</span>
                             </a>
                           ) : (
+                            // INTERNAL LINK
                             <Link
                               href={subItem.url}
-                              className="flex items-center gap-2"
+                              className="flex items-center gap-2 w-full"
                             >
                               {subItem.icon && (
                                 <subItem.icon className="h-4 w-4 text-muted-foreground" />

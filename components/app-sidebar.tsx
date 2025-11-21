@@ -15,6 +15,8 @@ import {
   BookAudio,
   ShieldUser,
   Mic,
+  Languages,
+  Speaker,
 } from "lucide-react";
 import { NavProjects } from "@/components/nav-projects";
 import {
@@ -29,12 +31,23 @@ import { NavUser } from "./nav-user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+// 1. Import hook dari i18next
+import { useTranslation } from "react-i18next";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [user, setUser] = React.useState<any>(null);
   const [dataUser, setDataUser] = React.useState<any>(null);
+  const { t } = useTranslation();
+
+  // 2. Inisialisasi hook i18n
+  const { i18n } = useTranslation();
+
+  // Fungsi helper untuk ganti bahasa
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+  };
 
   React.useEffect(() => {
     const getUser = async () => {
@@ -60,6 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [user, supabase]);
 
   // 🧩 Definisi data navigasi utama
+  // Data ini akan otomatis diperbarui saat bahasa berubah karena ada di dalam render cycle
   const data = {
     user: {
       username: dataUser?.username,
@@ -80,24 +94,45 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         isActive: true,
         items: [
           {
-            title: "Maos",
+            title: t("sidebar1"),
             url: "/maos",
             icon: BookOpen,
           },
           {
-            title: "Nyerat",
+            title: t("sidebar2"),
             url: "/nyerat",
             icon: PenTool,
           },
           {
-            title: "Ngupingkeun",
+            title: t("sidebar3"),
             url: "/ngupingkeun",
             icon: Headphones,
           },
           {
-            title: "Ngadeklamasikeun",
+            title: t("sidebar4"),
             url: "/ngadeklamasikeun",
             icon: Mic,
+          },
+        ],
+      },
+      {
+        title: "Bahasa",
+        icon: Languages,
+        isActive: true,
+        items: [
+          {
+            title: "Basa Sunda",
+            url: "#",
+            icon: Speaker,
+            isActive: i18n.language === "su",
+            onClick: () => changeLanguage("su"),
+          },
+          {
+            title: "Bahasa Indonesia",
+            url: "#",
+            icon: Speaker,
+            isActive: i18n.language === "id",
+            onClick: () => changeLanguage("id"),
           },
         ],
       },
@@ -127,16 +162,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: BookAudio,
       },
       {
-        name: "Sabilulungan",
+        name: t("sidebar5"),
         url: "/404",
         icon: Users,
       },
       {
-        name: "Warta",
+        name: t("sidebar6"),
         url: "/warta",
         icon: Newspaper,
       },
-      // 👇 hanya tampil kalau role admin
       ...(dataUser?.role === "admin"
         ? [
             {
@@ -169,6 +203,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div>
       </SidebarHeader>
       <SidebarContent>
+        {/* Pastikan NavMain mendukung prop onClick pada items */}
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
