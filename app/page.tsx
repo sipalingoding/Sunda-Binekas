@@ -43,7 +43,13 @@ export default function HomePage() {
       </header>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 rounded-xl px-6 sm:px-10 lg:px-16 py-10 gap-4 flex flex-col">
+      <main
+        className="
+    flex-1 rounded-xl px-6 sm:px-10 lg:px-16 py-10 gap-4 flex flex-col
+    bg-cover bg-center bg-no-repeat
+  "
+        style={{ backgroundImage: "url('/images/bghome.png')" }}
+      >
         {/* TEKS INTRO */}
         <div className="flex flex-col gap-2 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold">{t("welcome")}</h1>

@@ -8,11 +8,9 @@ import {
   BookOpen,
   PenTool,
   Headphones,
-  Users,
   Newspaper,
   Mail,
   Phone,
-  BookAudio,
   ShieldUser,
   Mic,
   Languages,
@@ -156,16 +154,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
 
     projects: [
-      {
-        name: "Modul Guru",
-        url: "/404",
-        icon: BookAudio,
-      },
-      {
-        name: t("sidebar5"),
-        url: "/404",
-        icon: Users,
-      },
+      // {
+      //   name: "Modul Guru",
+      //   url: "/404",
+      //   icon: BookAudio,
+      // },
+      // {
+      //   name: t("sidebar5"),
+      //   url: "/404",
+      //   icon: Users,
+      // },
       {
         name: t("sidebar6"),
         url: "/warta",

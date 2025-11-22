@@ -291,7 +291,10 @@ const NgupingkeunPage = () => {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 md:px-10 pt-6 min-h-screen py-10 relative">
+    <div
+      className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 md:px-10 pt-6 min-h-screen py-10 relative bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/images/bghome.png')" }}
+    >
       {/* 🔹 Daftar Dongeng */}
       <div className="flex-1">
         <h1 className="text-3xl font-bold mb-6 text-center lg:text-left">

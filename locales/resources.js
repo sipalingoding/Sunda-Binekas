@@ -16,7 +16,7 @@ export const resources = {
       sidebar3: "Ngupingkeun",
       sidebar4: "Ngadeklamasikeun",
       sidebar5: "Sabilulungan",
-      sidebar6: "Warta",
+      sidebar6: "Iber",
     },
   },
   id: {

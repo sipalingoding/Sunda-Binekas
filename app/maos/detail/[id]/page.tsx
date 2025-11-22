@@ -101,7 +101,15 @@ export default async function DetailMaosPage({
   return (
     <div className="rounded-lg p-4 md:p-8">
       <Card className="p-4 md:p-6 lg:p-8">
-        <CardHeader>
+        <CardHeader className="flex gap-2 justify-around items-center">
+          {data?.photo && (
+            <Image
+              src={data.photo}
+              height={300}
+              width={300}
+              alt="photo dongeng"
+            />
+          )}
           <CardTitle className="flex flex-col gap-6 md:gap-8">
             <div className="flex justify-between items-center flex-wrap gap-4">
               <div className="text-2xl md:text-3xl font-bold text-balance">
@@ -117,15 +125,6 @@ export default async function DetailMaosPage({
         </CardHeader>
 
         <CardContent className="flex flex-col gap-8 md:gap-10">
-          {data?.photo && (
-            <Image
-              src={data.photo}
-              height={300}
-              width={300}
-              alt="photo dongeng"
-            />
-          )}
-
           <DetailClientWrapper
             eusi={data.eusi}
             translate={data.translate}

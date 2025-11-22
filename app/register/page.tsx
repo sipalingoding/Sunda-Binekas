@@ -23,6 +23,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
 
 const formSchema = registerSchema;
 
@@ -70,8 +71,14 @@ const Register = () => {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#fafafa]">
       {/* LEFT SIDE (image / kosong) */}
-      <div className="hidden md:block bg-cover bg-center" />
-
+      <div className="hidden md:block h-screen w-full">
+        <Image
+          src="/images/login.png"
+          alt="bg"
+          fill
+          className="object-cover object-left"
+        />
+      </div>
       {/* RIGHT SIDE (Form Section) */}
       <div
         className="flex min-h-screen w-full items-center justify-center px-6 sm:px-10 md:px-16 lg:px-24 py-12"
