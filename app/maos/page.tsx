@@ -52,7 +52,10 @@ export default function Maos() {
   };
 
   return (
-    <div className="flex flex-col flex-1 px-4 sm:px-8 md:px-16 py-6 md:py-10 gap-6 md:gap-8">
+    <div
+      className="flex flex-col flex-1 px-4 sm:px-8 md:px-16 py-6 md:py-10 gap-6 md:gap-8 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/images/bghome.png')" }}
+    >
       {/* Judul */}
       <h1 className="font-bold text-2xl sm:text-3xl text-center md:text-left">
         Maos Dongeng

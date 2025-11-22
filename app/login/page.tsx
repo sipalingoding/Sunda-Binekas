@@ -22,6 +22,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
 
 const formSchema = loginSchema;
 
@@ -73,7 +74,14 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-[#fafafa] grid grid-cols-1 md:grid-cols-2">
       {/* Left side (gambar atau kosong) */}
-      <div className="hidden md:block bg-cover bg-center" />
+      <div className="hidden md:block h-screen w-full">
+        <Image
+          src="/images/login.png"
+          alt="bg"
+          fill
+          className="object-cover object-left"
+        />
+      </div>
 
       {/* Form Section */}
       <div

@@ -11,7 +11,10 @@ const NyeratPage = () => {
   const [isChecked, setIsChecked] = useState(false);
 
   return (
-    <div className="flex flex-col gap-6 px-4 sm:px-8 md:px-16 py-6 md:py-10">
+    <div
+      className="flex flex-col gap-6 px-4 sm:px-8 md:px-16 py-6 md:py-10 bg-cover bg-center bg-no-repeat h-full"
+      style={{ backgroundImage: "url('/images/bghome.png')" }}
+    >
       {/* Judul */}
       <h1 className="font-bold text-2xl sm:text-3xl text-center md:text-left">
         Nyerat Dongeng
@@ -19,14 +22,20 @@ const NyeratPage = () => {
 
       {/* Deskripsi */}
       <p className="text-sm sm:text-base leading-relaxed text-justify">
-      Dina ieu website, salian bisa maos dongéng urang ogé bisa nyerat dongéng ti lembur séwang-séwangan. Tujuanna pikeun ngadokuméntasikeun budaya sacara digital jeung ngawanohkeun dongéng-dongéng ti sakuliah tatar Jawa Barat.
+        Dina ieu website, salian bisa maos dongéng urang ogé bisa nyerat dongéng
+        ti lembur séwang-séwangan. Tujuanna pikeun ngadokuméntasikeun budaya
+        sacara digital jeung ngawanohkeun dongéng-dongéng ti sakuliah tatar Jawa
+        Barat.
       </p>
 
       <p className="text-sm sm:text-base leading-relaxed text-justify">
-      Tapi saacan nyerat dongéng aya sababaraha katangtuan anu kudu disapukan. Diantarana nyaéta: <br />
+        Tapi saacan nyerat dongéng aya sababaraha katangtuan anu kudu disapukan.
+        Diantarana nyaéta: <br />
         <br />
         1. Saacan nyerat, eusian heula identitas kalayan lengkep; <br />
-        2. Anu nyerat kudu nyantumkeun sumber dongéng, boh sumberna tina tradisi lisan masyarakat boh tina literatur tinulis (buku) kalayan ijin pangarangna; jeung
+        2. Anu nyerat kudu nyantumkeun sumber dongéng, boh sumberna tina tradisi
+        lisan masyarakat boh tina literatur tinulis (buku) kalayan ijin
+        pangarangna; jeung
         <br />
         3. Kersa nampi saran tinu maca saupama dongéng anu ditulis dirasa kurang
         payus atawa perlu didiskusikeun.
