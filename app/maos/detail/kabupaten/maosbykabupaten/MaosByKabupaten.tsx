@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -14,14 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
 import { MdPlace } from "react-icons/md";
 import { GrView } from "react-icons/gr";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export default function MaosByKabupatenPage() {
   const router = useRouter();
@@ -39,41 +32,12 @@ export default function MaosByKabupatenPage() {
     useState<string>("");
   const [selectedDesa, setSelectedDesa] = useState<string>("");
   const [dongengList, setDongengList] = useState<any[]>([]);
-  const [petaUrl, setPetaUrl] = useState<string | null>(null);
 
   // search filter
   const [searchKecamatan, setSearchKecamatan] = useState("");
   const [searchDesa, setSearchDesa] = useState("");
 
   const [loadingDongeng, setLoadingDongeng] = useState(false);
-
-  // 🗺️ Ambil gambar peta dari Supabase Storage
-  useEffect(() => {
-    if (!kabupaten) return;
-
-    const fetchPeta = async () => {
-      const possibleExtensions = ["png", "jpg", "jpeg", "webp"];
-      let foundUrl: string | null = null;
-
-      for (const ext of possibleExtensions) {
-        const { data } = supabase.storage
-          .from("peta_kabupaten")
-          .getPublicUrl(`${kabupaten}.${ext}`);
-        try {
-          const res = await fetch(data.publicUrl, { method: "HEAD" });
-          if (res.ok) {
-            foundUrl = data.publicUrl;
-            break;
-          }
-        } catch {
-          continue;
-        }
-      }
-      setPetaUrl(foundUrl);
-    };
-
-    fetchPeta();
-  }, [kabupaten]);
 
   // Ambil data awal kabupaten dari API lokal
   useEffect(() => {
@@ -178,105 +142,94 @@ export default function MaosByKabupatenPage() {
       {error && <div className="text-red-500">{error}</div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-10">
-        {/* 🗺️ Gambar Peta Kabupaten */}
-        <div className="flex justify-center">
-          {petaUrl ? (
-            <Image
-              src={petaUrl}
-              width={800}
-              height={800}
-              alt={`Peta ${kabupaten}`}
-              className="w-full max-w-md sm:max-w-lg h-auto object-contain rounded-lg"
-            />
-          ) : (
-            <div className="w-full max-w-md sm:max-w-lg h-[400px] bg-gray-100 border flex items-center justify-center text-gray-500">
-              Peta tidak ditemukan
-            </div>
-          )}
-        </div>
-
         {/* Dropdown Filter */}
-        <div className="flex flex-col gap-4 w-full max-w-md mx-auto lg:mx-0">
-          <h1 className="text-lg font-bold">Tiasa di Filter</h1>
-
+        <div className="flex flex-col lg:flex-row gap-4 w-full mx-auto lg:mx-0 items-end items-center">
           {/* Kecamatan */}
-          <Select
-            onValueChange={(value) => {
-              const selected = kecamatanList.find((k) => k.name === value);
-              if (selected) {
-                setSelectedKecamatan(selected.id);
-                setSelectedDongengKecamatan(selected.name);
-              }
-            }}
-          >
-            <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
-              <SelectValue placeholder="Pilih Kecamatan" />
-            </SelectTrigger>
-            <SelectContent className="bg-white text-black max-h-72 overflow-y-auto p-2">
-              <Input
-                placeholder="Cari Kecamatan..."
-                value={searchKecamatan}
-                onChange={(e) => setSearchKecamatan(e.target.value)}
-                className="mb-2 h-8 text-sm"
-              />
-              {filteredKecamatanList.length > 0 ? (
-                filteredKecamatanList.map((item) => (
-                  <SelectItem key={item.id} value={item.name}>
-                    {item.name}
-                  </SelectItem>
-                ))
-              ) : (
-                <div className="p-2 text-sm text-gray-500">Tidak ditemukan</div>
-              )}
-            </SelectContent>
-          </Select>
+          <div className="w-full lg:w-1/3">
+            <Select
+              onValueChange={(value) => {
+                const selected = kecamatanList.find((k) => k.name === value);
+                if (selected) {
+                  setSelectedKecamatan(selected.id);
+                  setSelectedDongengKecamatan(selected.name);
+                }
+              }}
+            >
+              <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
+                <SelectValue placeholder="Pilih Kecamatan" />
+              </SelectTrigger>
+              <SelectContent className="bg-white text-black max-h-72 overflow-y-auto p-2">
+                <Input
+                  placeholder="Cari Kecamatan..."
+                  value={searchKecamatan}
+                  onChange={(e) => setSearchKecamatan(e.target.value)}
+                  className="mb-2 h-8 text-sm"
+                />
+                {filteredKecamatanList.length > 0 ? (
+                  filteredKecamatanList.map((item) => (
+                    <SelectItem key={item.id} value={item.name}>
+                      {item.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="p-2 text-sm text-gray-500">
+                    Tidak ditemukan
+                  </div>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Desa */}
-          <Select
-            onValueChange={(value) => {
-              const selected = desaList.find((k) => k.name === value);
-              if (selected) setSelectedDesa(selected.name);
-            }}
-          >
-            <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
-              <SelectValue placeholder="Pilih Desa (Opsional)" />
-            </SelectTrigger>
-            <SelectContent className="bg-white text-black max-h-72 overflow-y-auto p-2">
-              <Input
-                placeholder="Cari Desa..."
-                value={searchDesa}
-                onChange={(e) => setSearchDesa(e.target.value)}
-                className="mb-2 h-8 text-sm"
-              />
-              {filteredDesaList.length > 0 ? (
-                filteredDesaList.map((item) => (
-                  <SelectItem key={item.id} value={item.name}>
-                    {item.name}
-                  </SelectItem>
-                ))
-              ) : (
-                <div className="p-2 text-sm text-gray-500">
-                  Pilih kecamatan terlebih dahulu
-                </div>
-              )}
-            </SelectContent>
-          </Select>
+          <div className="w-full lg:w-1/3">
+            <Select
+              onValueChange={(value) => {
+                const selected = desaList.find((k) => k.name === value);
+                if (selected) setSelectedDesa(selected.name);
+              }}
+            >
+              <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
+                <SelectValue placeholder="Pilih Desa (Opsional)" />
+              </SelectTrigger>
+              <SelectContent className="bg-white text-black max-h-72 overflow-y-auto p-2">
+                <Input
+                  placeholder="Cari Desa..."
+                  value={searchDesa}
+                  onChange={(e) => setSearchDesa(e.target.value)}
+                  className="mb-2 h-8 text-sm"
+                />
+                {filteredDesaList.length > 0 ? (
+                  filteredDesaList.map((item) => (
+                    <SelectItem key={item.id} value={item.name}>
+                      {item.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="p-2 text-sm text-gray-500">
+                    Pilih kecamatan terlebih dahulu
+                  </div>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
 
-          {/* Tombol Teangan */}
-          <Button
-            onClick={handleSearchDongeng}
-            className="bg-gray-800 text-white mt-2"
-            disabled={loadingDongeng}
-          >
-            {loadingDongeng ? (
-              <>
-                <Loader2 className="animate-spin w-4 h-4 mr-2" />
-                Teangan...
-              </>
-            ) : (
-              "Teangan"
-            )}
-          </Button>
+          {/* Tombol */}
+          <div className="w-full lg:w-auto">
+            <Button
+              onClick={handleSearchDongeng}
+              className="bg-gray-800 text-white w-full lg:w-auto"
+              disabled={loadingDongeng}
+            >
+              {loadingDongeng ? (
+                <>
+                  <Loader2 className="animate-spin w-4 h-4 mr-2" />
+                  Teangan...
+                </>
+              ) : (
+                "Teangan"
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 
