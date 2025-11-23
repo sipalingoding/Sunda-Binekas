@@ -22,12 +22,11 @@ export default function DetailClientWrapper({
     <>
       {/* Audio + Dropdown */}
       <div className="flex gap-2 absolute top-10 right-10 lg:top-16 lg:right-16">
-        {audio && role === "admin" ? <AudioReader audioUrl={audio} /> : null}
-
         <LanguageSwitcher
           available={!!translate}
           onChange={(l) => setLang(l)}
         />
+        {audio && role === "admin" ? <AudioReader audioUrl={audio} /> : null}
       </div>
 
       {/* Content */}

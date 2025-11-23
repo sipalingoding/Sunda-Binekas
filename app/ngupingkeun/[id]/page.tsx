@@ -1,10 +1,8 @@
 import { cookies } from "next/headers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { GrView } from "react-icons/gr";
 import { FaCamera } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
-import { MdPlace } from "react-icons/md";
 import Image from "next/image";
 import {
   Dialog,
@@ -17,10 +15,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import ButtonDialog from "@/app/maos/detail/[id]/button-dialog-icon";
-import MapViewWrapper from "@/app/maos/detail/MapViewWrapper";
 import SafeHTMLContent from "@/app/maos/detail/[id]/safe-html/SafeHtml";
-import AudioRecorder from "./AudioRecorder/AudioRecorder";
+import ApproveButtonsNgupingkeun from "./ButtonDecisionNgupingkeun";
+import ButtonDialog from "@/app/maos/detail/[id]/button-dialog-icon";
 
 export default async function DetailMaosPage({
   params,
@@ -33,115 +30,54 @@ export default async function DetailMaosPage({
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   const { data, error } = await supabase
-    .from("dongeng")
+    .from("ngupingkeun_list")
     .select(
-      `
+      `id, 
+    dongeng_id (
       id,
       judul,
-      kabupaten,
-      kecamatan,
-      desa,
       eusi,
-      view,
-      status,
-      kamus,
-      sumber,
       photo,
-      lat,
-      lan,
-      created_at,
-      user_id ( 
-        id,
-        username,
-        email,
-        photo,
-        nohp
-      )
-    `
+      audio,
+      kabupaten,
+      sumber
+    ), status, file_audio, user_id (
+      photo, username
+    )`
     )
     .eq("id", dataId)
     .single();
 
-  await supabase
-    .from("dongeng")
-    .update({ view: (data?.view ?? 0) + 1 })
-    .eq("id", dataId);
-
   if (error) return <div>Error ambil dongeng: {error.message}</div>;
-
-  const openInGoogleMaps = () => {
-    if (data?.lat && data?.lan) {
-      const url = `https://www.google.com/maps?q=${data.lat},${data.lan}`;
-      return url;
-    }
-    return null;
-  };
-
-  const mapsUrl = openInGoogleMaps();
 
   return (
     <div className="rounded-lg p-4 md:p-8">
       <Card className="p-4 md:p-6 lg:p-8">
-        <CardHeader>
-          <CardTitle className="flex flex-col gap-6 md:gap-8">
-            <div className="flex justify-between items-center flex-wrap gap-4">
-              <div className="text-2xl md:text-3xl font-bold text-balance">
-                {data.judul}
-              </div>
-            </div>
-
-            <div className="text-sm md:text-base font-light flex flex-col">
-              <span>Dongeng daerah: {data.kabupaten}</span>
-              <span>Sumber: {data?.sumber}</span>
-            </div>
-          </CardTitle>
-        </CardHeader>
-
-        <AudioRecorder dongengId={dataId} userId={(data.user_id as any).id} />
-        <CardContent className="flex flex-col gap-8 md:gap-10">
-          {data?.photo && (
+        <CardHeader className="flex gap-2 justify-around items-center">
+          {(data.dongeng_id as any).photo && (
             <Image
-              src={data.photo}
+              src={(data.dongeng_id as any).photo}
               height={300}
               width={300}
               alt="photo dongeng"
             />
           )}
-
-          <SafeHTMLContent html={data?.eusi} />
-
-          {/* Kamus & View Count */}
-          <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
-            <div className="p-4 border border-black rounded-md flex-1 flex flex-col gap-3">
-              <span className="font-semibold text-sm md:text-base">
-                Kamus Alit:
-              </span>
-              {data?.kamus?.length > 0 ? (
-                data.kamus.map((item: any, index: number) => (
-                  <div className="flex gap-2 items-center" key={index}>
-                    <span className="text-sm font-bold">{item.kata} :</span>
-                    <span className="text-sm italic">{item.pengertian}</span>
-                  </div>
-                ))
-              ) : (
-                <span className="text-sm italic text-gray-500">
-                  Tidak ada kamus alit.
-                </span>
-              )}
-            </div>
-
-            <div className="flex justify-end items-center lg:w-1/4 gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                  <GrView size={15} color="white" />
-                </div>
-                <span className="text-sm md:text-base">{data.view}</span>
+          <CardTitle className="flex flex-col gap-6 md:gap-8">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <div className="text-2xl md:text-3xl font-bold text-balance">
+                {(data.dongeng_id as any).judul}
               </div>
             </div>
-          </div>
 
-          <MapViewWrapper data={data} />
+            <div className="text-sm md:text-base font-light flex flex-col">
+              <span>Dongeng daerah: {(data.dongeng_id as any).kabupaten}</span>
+              <span>Sumber: {(data.dongeng_id as any).sumber}</span>
+            </div>
+          </CardTitle>
+        </CardHeader>
 
+        <CardContent className="flex flex-col gap-8 md:gap-10">
+          <SafeHTMLContent html={(data.dongeng_id as any).eusi} />
           <div className="border border-black w-full"></div>
 
           {/* Kontributor, Hubungi, Tempat */}
@@ -205,27 +141,12 @@ export default async function DetailMaosPage({
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-
-            <a
-              href={mapsUrl ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex items-center gap-2 ${
-                mapsUrl
-                  ? "cursor-pointer hover:opacity-80 transition"
-                  : "opacity-50 cursor-not-allowed"
-              }`}
-            >
-              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                <MdPlace size={18} color="white" />
-              </div>
-              <span className="text-sm md:text-base">
-                Nyalusur Tempat Dongeng
-              </span>
-            </a>
           </div>
         </CardContent>
       </Card>
+      <div className="mt-6">
+        <ApproveButtonsNgupingkeun id={data.id} />
+      </div>
     </div>
   );
 }

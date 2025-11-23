@@ -15,10 +15,12 @@ import React, { useEffect, useState } from "react";
 
 const AdminPage = () => {
   const [dataLokasi, setDataLokasi] = useState<any[]>([]);
+  const [dataNguping, setDataNguping] = useState<any[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     getDataMap();
+    getDataNgupingkeun();
   }, []);
 
   const getDataMap = async () => {
@@ -27,6 +29,14 @@ const AdminPage = () => {
     });
     const { data } = await res.json();
     setDataLokasi(data || []);
+  };
+
+  const getDataNgupingkeun = async () => {
+    const res = await fetch("/api/dongeng/list-nguping", {
+      method: "GET",
+    });
+    const { data } = await res.json();
+    setDataNguping(data || []);
   };
 
   return (
@@ -43,7 +53,6 @@ const AdminPage = () => {
             <TableRow className="bg-gray-50">
               <TableHead>Judul</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Status Audio</TableHead>
               <TableHead>Detail</TableHead>
             </TableRow>
           </TableHeader>
@@ -67,24 +76,68 @@ const AdminPage = () => {
                   </TableCell>
                   <TableCell>
                     <Button
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-md"
+                      onClick={() =>
+                        router.push(`/maos/detail/${btoa(resp.id)}`)
+                      }
+                    >
+                      Detail
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="text-center text-gray-500 py-6"
+                >
+                  Tidak ada data dongeng
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <h1 className="text-2xl sm:text-3xl font-bold">List Ngupingkeun</h1>
+
+      <div className="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-sm bg-white">
+        <Table className="min-w-[600px]">
+          <TableCaption className="text-sm text-gray-500">
+            List Dongeng Nu Aya di Database
+          </TableCaption>
+          <TableHeader>
+            <TableRow className="bg-gray-50">
+              <TableHead>Judul</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Detail</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {dataNguping.length > 0 ? (
+              dataNguping.map((resp, index) => (
+                <TableRow key={index} className="hover:bg-gray-50">
+                  <TableCell className="font-medium">
+                    {resp.dongeng_id.judul}
+                  </TableCell>
+                  <TableCell>
+                    <Button
                       className={`text-white min-w-24 capitalize px-3 py-1 rounded-md ${
-                        resp.status_audio === null
-                          ? "bg-transparent"
-                          : resp.status_audio === "pending"
+                        resp.status === "pending"
                           ? "bg-yellow-500 hover:bg-yellow-600"
                           : resp.status === "rejected"
                           ? "bg-red-500 hover:bg-red-600"
                           : "bg-green-500 hover:bg-green-600"
-                      } cursor-default text-black`}
+                      } cursor-default`}
                     >
-                      {resp.status_audio ?? "Belum Record"}
+                      {resp.status}
                     </Button>
                   </TableCell>
                   <TableCell>
                     <Button
                       className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-md"
                       onClick={() =>
-                        router.push(`/maos/detail/${btoa(resp.id)}`)
+                        router.push(`/maos/detail/${btoa(resp.dongeng_id.id)}`)
                       }
                     >
                       Detail

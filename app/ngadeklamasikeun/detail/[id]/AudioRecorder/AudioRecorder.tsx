@@ -7,7 +7,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Upload, Mic, RefreshCcw } from "lucide-react"; // Import icon baru
 
-export default function AudioRecorder({ dongengId }: { dongengId: string }) {
+export default function AudioRecorder({
+  dongengId,
+  userId,
+}: {
+  dongengId: string;
+  userId: string;
+}) {
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null); // URL untuk hasil rekaman Blob
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null); // Blob untuk hasil rekaman
@@ -142,9 +148,13 @@ export default function AudioRecorder({ dongengId }: { dongengId: string }) {
     const publicUrl = publicUrlData.publicUrl;
 
     const { error: updateError } = await supabase
-      .from("dongeng")
-      .update({ audio: publicUrl, status_audio: "pending" })
-      .eq("id", dongengId);
+      .from("ngupingkeun_list")
+      .insert({
+        file_audio: publicUrl,
+        status: "pending",
+        dongeng_id: dongengId,
+        user_id: userId,
+      });
 
     setIsUploading(false);
     if (updateError) {
