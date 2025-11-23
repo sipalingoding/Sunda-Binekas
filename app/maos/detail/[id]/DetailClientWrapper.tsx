@@ -3,18 +3,13 @@
 import { useState } from "react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ContentViewer from "./ContentViewer";
-import AudioReader from "./audio-reader";
 
 export default function DetailClientWrapper({
   eusi,
   translate,
-  audio,
-  role,
 }: {
   eusi: string;
   translate?: string;
-  audio?: string;
-  role?: string | null;
 }) {
   const [lang, setLang] = useState<"su" | "id">("su");
 
@@ -26,7 +21,6 @@ export default function DetailClientWrapper({
           available={!!translate}
           onChange={(l) => setLang(l)}
         />
-        {audio && role === "admin" ? <AudioReader audioUrl={audio} /> : null}
       </div>
 
       {/* Content */}

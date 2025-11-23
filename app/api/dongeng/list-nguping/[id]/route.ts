@@ -24,7 +24,7 @@ export async function PATCH(request: Request, context: any) {
     const { data, error } = await supabase
       .from("ngupingkeun_list")
       .update({ status: "approved" })
-      .eq("id", id.trim())
+      .eq("id", Number(id))
       .select();
 
     if (error) {

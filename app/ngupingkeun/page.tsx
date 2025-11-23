@@ -66,11 +66,9 @@ const NgupingkeunPage = () => {
   }, []);
 
   const getDataDongeng = async () => {
-    const res = await fetch("/api/dongeng");
+    const res = await fetch("/api/dongeng/list-nguping");
     const { data } = await res.json();
-    const filtered = (data || []).filter(
-      (d: any) => d.audio !== null && d.status_audio === "approved"
-    );
+    const filtered = (data || []).filter((d: any) => d.status === "approved");
     setDataDongeng(filtered);
   };
 
@@ -153,9 +151,7 @@ const NgupingkeunPage = () => {
         }),
       });
       const { data } = await res.json();
-      const filtered = (data || []).filter(
-        (d: any) => d.audio !== null && d.status_audio === "approved"
-      );
+      const filtered = (data || []).filter((d: any) => d.status === "approved");
       setDataDongeng(filtered);
     } catch (err) {
       console.error(err);
@@ -166,7 +162,11 @@ const NgupingkeunPage = () => {
 
   // === 🔹 Audio Controls
   const handlePlay = (item: any) => {
-    if (!item.audio) return;
+    console.log(item);
+    if (!item.file_audio) return;
+
+    console.log(playingId);
+    console.log(item);
 
     if (playingId === item.id) {
       audioRef.current?.pause();
@@ -175,7 +175,7 @@ const NgupingkeunPage = () => {
     }
 
     if (!audioRef.current) audioRef.current = new Audio();
-    audioRef.current.src = item.audio;
+    audioRef.current.src = item.file_audio;
     audioRef.current.play();
     setPlayingId(item.id);
     incrementHearCount(item.id);
@@ -188,7 +188,7 @@ const NgupingkeunPage = () => {
     const res = await fetch("/api/dongeng/playlist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dongeng_id: item.id }),
+      body: JSON.stringify({ dongeng_id: item.dongeng_id.id }),
     });
     if (res.ok) await getPlaylist();
     setAddingId(null);
@@ -224,7 +224,8 @@ const NgupingkeunPage = () => {
       return;
     }
     const dongengItem = dataPlaylist[index].dongeng_id;
-    const audioUrl = typeof dongengItem === "object" ? dongengItem.audio : null;
+    const audioUrl =
+      typeof dongengItem === "object" ? dongengItem.file_audio : null;
     if (!audioUrl) return;
 
     audioRef.current.src = audioUrl;
@@ -265,13 +266,13 @@ const NgupingkeunPage = () => {
   const incrementHearCount = async (id: string) => {
     try {
       const { data: current } = await supabase
-        .from("dongeng")
+        .from("ngupingkeun_list")
         .select("hear")
         .eq("id", id)
         .single();
       const currentHear = current?.hear ?? 0;
       await supabase
-        .from("dongeng")
+        .from("ngupingkeun_list")
         .update({ hear: currentHear + 1 })
         .eq("id", id);
     } catch (err) {
@@ -398,11 +399,11 @@ const NgupingkeunPage = () => {
                   key={item.id}
                   className="flex flex-col bg-white rounded-xl justify-between gap-4 p-5 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-200"
                 >
-                  {item.photo ? (
+                  {item.dongeng_id.photo ? (
                     <Image
                       width={20}
                       height={20}
-                      src={item.photo}
+                      src={item.dongeng_id.photo}
                       alt="photo dongeng"
                       className="rounded-full w-20 h-20 self-center"
                     />
@@ -410,14 +411,24 @@ const NgupingkeunPage = () => {
                     <div className="rounded-full bg-gray-400 w-24 h-24 self-center"></div>
                   )}
                   <span className="text-lg font-semibold text-center text-gray-800">
-                    {item.judul}
+                    {item.dongeng_id.judul}
                   </span>
                   <div className="flex gap-2 items-start text-gray-700 text-sm">
                     <MdPlace size={18} />
                     <div className="flex flex-col">
-                      <span>Kecamatan: {item.kecamatan}</span>
-                      <span>Desa: {item.desa}</span>
+                      <span>Kecamatan: {item.dongeng_id.kecamatan}</span>
+                      <span>Desa: {item.dongeng_id.desa}</span>
                     </div>
+                  </div>
+                  <div className="flex gap-2 items-center text-gray-700 text-sm">
+                    <Image
+                      src={item.user_id.photo}
+                      width={30}
+                      height={30}
+                      alt="profile"
+                      className="rounded-full object-cover w-8 h-8"
+                    />
+                    <span>Versi : {item.user_id.username}</span>
                   </div>
                   <div className="flex items-center justify-between mt-2">
                     <div className="flex gap-2 items-center text-gray-700 text-sm">

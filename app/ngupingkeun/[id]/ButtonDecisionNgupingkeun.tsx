@@ -17,7 +17,11 @@ export default function ApproveButtonsNgupingkeun({ id }: { id: string }) {
       method: "PATCH",
     });
 
+    console.log(res);
+
     const dataApprove = await res.json();
+
+    console.log(dataApprove);
     setLoadingApprove(false);
 
     if (!res.ok) {

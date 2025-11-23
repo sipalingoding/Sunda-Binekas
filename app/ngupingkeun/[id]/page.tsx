@@ -25,7 +25,7 @@ export default async function DetailMaosPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const dataId = atob(id);
+  const dataId = id;
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 

@@ -125,12 +125,7 @@ export default async function DetailMaosPage({
         </CardHeader>
 
         <CardContent className="flex flex-col gap-8 md:gap-10">
-          <DetailClientWrapper
-            eusi={data.eusi}
-            translate={data.translate}
-            audio={data.audio}
-            role={role}
-          />
+          <DetailClientWrapper eusi={data.eusi} translate={data.translate} />
 
           {/* Kamus & View Count */}
           <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
@@ -254,7 +249,7 @@ export default async function DetailMaosPage({
 
       {role === "admin" && (
         <div className="mt-6">
-          <ApproveButtons id={data.id} isAudio={data.audio ? true : false} />
+          <ApproveButtons id={data.id} />
         </div>
       )}
     </div>

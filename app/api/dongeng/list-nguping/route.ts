@@ -23,8 +23,11 @@ export async function GET(req: NextRequest) {
         judul,
         eusi,
         photo,
-        audio
-      ), status`
+        kecamatan,
+        desa
+      ), status, user_id (
+        username, photo
+      ), hear, file_audio`
     )
     .order("id", { ascending: false });
 

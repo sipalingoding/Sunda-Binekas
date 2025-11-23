@@ -32,6 +32,10 @@ export default async function DetailMaosPage({
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { data, error } = await supabase
     .from("dongeng")
     .select(
@@ -97,7 +101,7 @@ export default async function DetailMaosPage({
           </CardTitle>
         </CardHeader>
 
-        <AudioRecorder dongengId={dataId} userId={(data.user_id as any).id} />
+        <AudioRecorder dongengId={dataId} userId={user?.id} />
         <CardContent className="flex flex-col gap-8 md:gap-10">
           {data?.photo && (
             <Image

@@ -12,7 +12,7 @@ export default function AudioRecorder({
   userId,
 }: {
   dongengId: string;
-  userId: string;
+  userId?: string;
 }) {
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null); // URL untuk hasil rekaman Blob

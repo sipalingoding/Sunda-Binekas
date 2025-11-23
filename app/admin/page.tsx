@@ -37,6 +37,7 @@ const AdminPage = () => {
     });
     const { data } = await res.json();
     setDataNguping(data || []);
+    console.log(data);
   };
 
   return (
@@ -136,9 +137,7 @@ const AdminPage = () => {
                   <TableCell>
                     <Button
                       className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-md"
-                      onClick={() =>
-                        router.push(`/maos/detail/${btoa(resp.dongeng_id.id)}`)
-                      }
+                      onClick={() => router.push(`/ngupingkeun/${resp.id}`)}
                     >
                       Detail
                     </Button>
