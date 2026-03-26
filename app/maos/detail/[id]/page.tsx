@@ -101,16 +101,17 @@ export default async function DetailMaosPage({
   return (
     <div className="rounded-lg p-4 md:p-8">
       <Card className="p-4 md:p-6 lg:p-8">
-        <CardHeader className="flex gap-2 justify-around items-center">
+        <CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-start">
           {data?.photo && (
             <Image
               src={data.photo}
               height={300}
               width={300}
               alt="photo dongeng"
+              className="w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 object-cover rounded-lg shrink-0"
             />
           )}
-          <CardTitle className="flex flex-col gap-6 md:gap-8">
+          <CardTitle className="flex flex-col gap-4 md:gap-6 w-full">
             <div className="flex justify-between items-center flex-wrap gap-4">
               <div className="text-2xl md:text-3xl font-bold text-balance">
                 {data.judul}
@@ -128,7 +129,7 @@ export default async function DetailMaosPage({
           <DetailClientWrapper eusi={data.eusi} translate={data.translate} />
 
           {/* Kamus & View Count */}
-          <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-10">
             <div className="p-4 border border-black rounded-md flex-1 flex flex-col gap-3">
               <span className="font-semibold text-sm md:text-base">
                 Kamus Alit:
@@ -147,7 +148,7 @@ export default async function DetailMaosPage({
               )}
             </div>
 
-            <div className="flex justify-end items-center lg:w-1/4 gap-4">
+            <div className="flex justify-start md:justify-end items-center w-full md:w-auto gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
                   <GrView size={15} color="white" />

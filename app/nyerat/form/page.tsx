@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Plus, Trash } from "lucide-react";
+import { Plus, Trash, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
@@ -150,12 +150,17 @@ const FormPage = () => {
   const [kabupatenList, setKabupatenList] = useState<any[]>([]);
   const [kecamatanList, setKecamatanList] = useState<any[]>([]);
   const [desaList, setDesaList] = useState<any[]>([]);
+  const [loadingKab, setLoadingKab] = useState(true);
+  const [loadingKec, setLoadingKec] = useState(false);
+  const [loadingDesa, setLoadingDesa] = useState(false);
 
   useEffect(() => {
+    setLoadingKab(true);
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/regencies/32.json")
       .then((res) => res.json())
       .then(setKabupatenList)
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoadingKab(false));
   }, []);
 
   useEffect(() => {
@@ -165,12 +170,15 @@ const FormPage = () => {
 
     setIdKab(selectedKab?.id);
     if (!selectedKab) return;
+    setLoadingKec(true);
+    setKecamatanList([]);
     fetch(
       `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedKab.id}.json`
     )
       .then((res) => res.json())
       .then(setKecamatanList)
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoadingKec(false));
   }, [form.watch("kabupaten")]);
 
   useEffect(() => {
@@ -179,12 +187,15 @@ const FormPage = () => {
     );
     setIdKec(selectedKec?.id);
     if (!selectedKec) return;
+    setLoadingDesa(true);
+    setDesaList([]);
     fetch(
       `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKec.id}.json`
     )
       .then((res) => res.json())
       .then(setDesaList)
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoadingDesa(false));
   }, [form.watch("kecamatan")]);
 
   useEffect(() => {
@@ -237,7 +248,7 @@ const FormPage = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
           {/* Grid Responsif */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
             {/* Kiri */}
             <div className="space-y-6">
               <FormField
@@ -250,9 +261,17 @@ const FormPage = () => {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={loadingKab}
                       >
                         <SelectTrigger className="w-full min-h-[48px]">
-                          <SelectValue placeholder="Pilih Kabupaten" />
+                          {loadingKab ? (
+                            <span className="flex items-center gap-2 text-muted-foreground">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Ngamuat...
+                            </span>
+                          ) : (
+                            <SelectValue placeholder="Pilih Kabupaten" />
+                          )}
                         </SelectTrigger>
                         <SelectContent className="max-h-60 overflow-y-auto bg-white">
                           {kabupatenList.map((item) => (
@@ -278,10 +297,17 @@ const FormPage = () => {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        disabled={!form.watch("kabupaten")}
+                        disabled={!form.watch("kabupaten") || loadingKec}
                       >
                         <SelectTrigger className="w-full min-h-[48px]">
-                          <SelectValue placeholder="Pilih Kecamatan" />
+                          {loadingKec ? (
+                            <span className="flex items-center gap-2 text-muted-foreground">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Ngamuat...
+                            </span>
+                          ) : (
+                            <SelectValue placeholder="Pilih Kecamatan" />
+                          )}
                         </SelectTrigger>
                         <SelectContent className="max-h-60 overflow-y-auto bg-white">
                           {kecamatanList.map((item) => (
@@ -307,10 +333,17 @@ const FormPage = () => {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        disabled={!form.watch("kecamatan")}
+                        disabled={!form.watch("kecamatan") || loadingDesa}
                       >
                         <SelectTrigger className="w-full min-h-[48px]">
-                          <SelectValue placeholder="Pilih Desa" />
+                          {loadingDesa ? (
+                            <span className="flex items-center gap-2 text-muted-foreground">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Ngamuat...
+                            </span>
+                          ) : (
+                            <SelectValue placeholder="Pilih Desa" />
+                          )}
                         </SelectTrigger>
                         <SelectContent className="max-h-60 overflow-y-auto bg-white">
                           {desaList.map((item) => (

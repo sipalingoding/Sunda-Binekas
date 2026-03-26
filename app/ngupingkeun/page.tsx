@@ -10,6 +10,7 @@ import {
   IoPlayForward,
 } from "react-icons/io5";
 import { FaPlus, FaPlay, FaSpinner, FaPause } from "react-icons/fa6";
+import { Loader2 } from "lucide-react";
 import { CgPlayListRemove } from "react-icons/cg";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
@@ -293,7 +294,7 @@ const NgupingkeunPage = () => {
 
   return (
     <div
-      className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 md:px-10 pt-6 min-h-screen py-10 relative bg-cover bg-center bg-no-repeat"
+      className="flex flex-col md:flex-row gap-6 px-4 sm:px-6 md:px-10 pt-6 min-h-screen py-10 relative bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/images/bghome.png')" }}
     >
       {/* 🔹 Daftar Dongeng */}
@@ -308,7 +309,7 @@ const NgupingkeunPage = () => {
             onValueChange={setSelectedKabupaten}
             value={selectedKabupaten}
           >
-            <SelectTrigger className="w-full lg:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Pilih Kabupaten" />
             </SelectTrigger>
             <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
@@ -337,7 +338,7 @@ const NgupingkeunPage = () => {
             disabled={!selectedKabupaten}
             value={selectedKecamatan}
           >
-            <SelectTrigger className="w-full lg:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Pilih Kecamatan" />
             </SelectTrigger>
             <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
@@ -360,7 +361,7 @@ const NgupingkeunPage = () => {
             disabled={!selectedKecamatan}
             value={selectedDesa}
           >
-            <SelectTrigger className="w-full lg:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Pilih Desa" />
             </SelectTrigger>
             <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
@@ -380,15 +381,19 @@ const NgupingkeunPage = () => {
 
           <Button
             onClick={handleFilter}
-            className="bg-gray-800 text-white hover:bg-gray-700"
+            disabled={loading}
+            className="bg-gray-800 text-white hover:bg-gray-700 flex items-center gap-2"
           >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
             Teangan
           </Button>
         </div>
 
         {/* 🔹 Daftar Dongeng */}
         {loading ? (
-          <p className="text-center text-gray-600">Loading...</p>
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
+          </div>
         ) : dataDongeng.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative">
             {dataDongeng.map((item: any) => {
@@ -481,7 +486,7 @@ const NgupingkeunPage = () => {
       </div>
 
       {/* 🔹 Playlist Sidebar */}
-      <div className="w-full lg:w-1/3 xl:w-1/4 bg-[#fafafa] rounded-xl border border-gray-300 shadow-md flex flex-col mt-6 lg:mt-16 h-fit">
+      <div className="w-full md:w-72 lg:w-1/3 xl:w-1/4 bg-[#fafafa] rounded-xl border border-gray-300 shadow-md flex flex-col md:mt-16 h-fit shrink-0">
         <div className="p-5 border-b border-gray-200 shrink-0">
           <h1 className="text-lg font-semibold">
             Daptar Dongéng anu badé dikupingkeun

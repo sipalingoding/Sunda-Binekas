@@ -33,7 +33,11 @@ export async function GET() {
       })),
     };
 
-    return NextResponse.json(geojson);
+    return NextResponse.json(geojson, {
+      headers: {
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
+      },
+    });
   } catch (err: any) {
     console.error("❌ API error:", err.message);
     return NextResponse.json(
