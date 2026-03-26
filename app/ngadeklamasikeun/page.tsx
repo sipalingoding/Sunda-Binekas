@@ -19,6 +19,8 @@ import { MdPlace } from "react-icons/md";
 const NgadeklamasikeunPage = () => {
   const router = useRouter();
   const [dataDongeng, setDataDongeng] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingFilter, setLoadingFilter] = useState(false);
   const [loadingItem, setLoadingItem] = useState<string>();
   const [selectedKabupaten, setSelectedKabupaten] = useState<string>("");
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
@@ -34,7 +36,9 @@ const NgadeklamasikeunPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all([getDataMap()]);
+      setLoading(true);
+      await getDataMap();
+      setLoading(false);
     };
 
     fetchData();
@@ -114,6 +118,7 @@ const NgadeklamasikeunPage = () => {
   }, [selectedKecamatan]);
 
   const handleFilter = async () => {
+    setLoadingFilter(true);
     try {
       const res = await fetch("/api/dongeng/filter-ngupingkeun", {
         method: "POST",
@@ -128,6 +133,8 @@ const NgadeklamasikeunPage = () => {
       setDataDongeng(data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoadingFilter(false);
     }
   };
 
@@ -151,7 +158,7 @@ const NgadeklamasikeunPage = () => {
       </h1>
       <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
         <Select onValueChange={setSelectedKabupaten} value={selectedKabupaten}>
-          <SelectTrigger className="w-full lg:w-[200px] bg-white">
+          <SelectTrigger className="w-full sm:w-[200px] bg-white">
             <SelectValue placeholder="Pilih Kabupaten" />
           </SelectTrigger>
           <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
@@ -180,7 +187,7 @@ const NgadeklamasikeunPage = () => {
           disabled={!selectedKabupaten}
           value={selectedKecamatan}
         >
-          <SelectTrigger className="w-full lg:w-[200px] bg-white">
+          <SelectTrigger className="w-full sm:w-[200px] bg-white">
             <SelectValue placeholder="Pilih Kecamatan" />
           </SelectTrigger>
           <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
@@ -203,7 +210,7 @@ const NgadeklamasikeunPage = () => {
           disabled={!selectedKecamatan}
           value={selectedDesa}
         >
-          <SelectTrigger className="w-full lg:w-[200px] bg-white">
+          <SelectTrigger className="w-full sm:w-[200px] bg-white">
             <SelectValue placeholder="Pilih Desa" />
           </SelectTrigger>
           <SelectContent className="bg-white max-h-48 overflow-y-auto border border-gray-200">
@@ -223,13 +230,21 @@ const NgadeklamasikeunPage = () => {
 
         <Button
           onClick={handleFilter}
-          className="bg-gray-800 text-white hover:bg-gray-700"
+          disabled={loadingFilter}
+          className="bg-gray-800 text-white hover:bg-gray-700 flex items-center gap-2"
         >
+          {loadingFilter && <Loader2 className="w-4 h-4 animate-spin" />}
           Teangan
         </Button>
       </div>
+      {loading ? (
+        <div className="flex justify-center items-center py-20 w-full">
+          <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
+        </div>
+      ) : null}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {dataDongeng.map((item: any, index: number) => {
+        {!loading && dataDongeng.map((item: any, index: number) => {
           return (
             <div
               key={index}

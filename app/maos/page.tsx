@@ -62,11 +62,7 @@ export default function Maos() {
       </h1>
 
       {/* Peta */}
-      {loading ? (
-        <Skeleton className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg" />
-      ) : (
-        <MapJabar data={dataLokasi} />
-      )}
+      <MapJabar data={dataLokasi} />
 
       {/* Dongeng Populer */}
       <h1 className="font-bold text-lg sm:text-xl mt-4">Dongéng Populer</h1>
@@ -86,7 +82,7 @@ export default function Maos() {
           ? Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="flex flex-col w-full sm:w-64 bg-[#fafafa] rounded-lg p-4 shadow-sm gap-4"
+                className="flex flex-col w-full bg-[#fafafa] rounded-lg p-4 shadow-sm gap-4"
               >
                 <Skeleton className="w-20 h-20 rounded-full self-center" />
                 <Skeleton className="h-4 w-3/4 self-center" />
@@ -108,13 +104,13 @@ export default function Maos() {
               <div
                 key={index}
                 className="
-                  flex flex-col 
-                  w-full sm:w-64 
-                  bg-[#fafafa] 
-                  rounded-lg 
-                  justify-between 
-                  gap-4 
-                  p-4 
+                  flex flex-col
+                  w-full
+                  bg-[#fafafa]
+                  rounded-lg
+                  justify-between
+                  gap-4
+                  p-4
                   shadow-sm
                 "
               >

@@ -11,11 +11,13 @@ export async function POST(request: Request) {
     const { kabupaten, kecamatan, desa } = await request.json();
 
     // 🔹 Query filter dinamis
-    let query = supabase.from("dongeng").select("*");
+    let query = supabase.from("ngupingkeun_list").select("*");
 
-    if (kabupaten) query = query.ilike("kabupaten", `%${kabupaten}%`);
-    if (kecamatan) query = query.ilike("kecamatan", `%${kecamatan}%`);
-    if (desa) query = query.ilike("desa", `%${desa}%`);
+    if (kabupaten)
+      query = query.ilike("dongeng_id.kabupaten", `%${kabupaten}%`);
+    if (kecamatan)
+      query = query.ilike("dongeng_id.kecamatan", `%${kecamatan}%`);
+    if (desa) query = query.ilike("dongeng_id.desa", `%${desa}%`);
 
     const { data, error } = await query;
 

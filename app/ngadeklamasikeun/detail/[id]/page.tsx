@@ -36,18 +36,6 @@ export default async function DetailMaosPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  let role: string | null = null;
-
-  if (user) {
-    const { data: userData } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    role = userData?.role ?? null;
-  }
-
   const { data, error } = await supabase
     .from("dongeng")
     .select(
@@ -113,7 +101,7 @@ export default async function DetailMaosPage({
           </CardTitle>
         </CardHeader>
 
-        <AudioRecorder dongengId={dataId} />
+        <AudioRecorder dongengId={dataId} userId={user?.id} />
         <CardContent className="flex flex-col gap-8 md:gap-10">
           {data?.photo && (
             <Image

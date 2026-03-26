@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function ApproveButtons({ id }: { id: string }) {
+export default function ApproveButtonsNgupingkeun({ id }: { id: string }) {
   const router = useRouter();
   const { toast } = useToast();
   const [loadingApprove, setLoadingApprove] = useState(false);
@@ -13,11 +13,15 @@ export default function ApproveButtons({ id }: { id: string }) {
 
   const handleApprove = async () => {
     setLoadingApprove(true);
-    const res = await fetch(`/api/dongeng/${id}`, {
+    const res = await fetch(`/api/dongeng/list-nguping/${id}`, {
       method: "PATCH",
     });
 
+    console.log(res);
+
     const dataApprove = await res.json();
+
+    console.log(dataApprove);
     setLoadingApprove(false);
 
     if (!res.ok) {
@@ -38,7 +42,7 @@ export default function ApproveButtons({ id }: { id: string }) {
 
   const handleReject = async () => {
     setLoadingReject(true);
-    const res = await fetch(`/api/dongeng/${id}/reject`, {
+    const res = await fetch(`/api/dongeng/list-ngupingkeun/${id}/reject`, {
       method: "PATCH",
     });
 
@@ -65,9 +69,6 @@ export default function ApproveButtons({ id }: { id: string }) {
     <div className="flex justify-end items-end gap-2 mt-4">
       <Button disabled={loadingReject} onClick={handleReject}>
         {loadingReject ? "Memproses..." : "Tolak"}
-      </Button>
-      <Button onClick={() => router.push(`/nyerat/form/edit/${id}`)}>
-        Edit
       </Button>
       <Button
         variant="default"

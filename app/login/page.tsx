@@ -162,7 +162,7 @@ const LoginPage = () => {
             <div className="flex justify-center items-center">
               <Button
                 type="submit"
-                className="bg-[#fafafa] rounded-full px-6 py-2 w-[155px] font-semibold gap-3 h-[44px]"
+                className="bg-[#fafafa] rounded-full px-6 py-2 w-full sm:w-[155px] font-semibold gap-3 h-[44px]"
               >
                 <span className="text-lg font-semibold">Lebet</span>
                 {loading ? (

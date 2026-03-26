@@ -22,16 +22,17 @@ const WartaPage = () => {
         Sementawis ieu website masih kénéh dikembangkeun, kukituna fitur-fiturna
         can lengkep sakabéhna.
       </p>
-      <div className="flex justify-between items-center mt-28">
-        <Image src={"/images/logo1.png"} width="150" height="150" alt="logo1" />
-        <Image src={"/images/logo3.png"} width="150" height="150" alt="logo3" />
-        <Image src={"/images/logo4.png"} width="150" height="150" alt="logo4" />
-        <div className="w-fit rounded-lg shadow-md bg-gray-500">
+      <div className="flex flex-wrap justify-center items-center gap-8 sm:gap-12 mt-8 sm:mt-16">
+        <Image src={"/images/logo1.png"} width={100} height={100} alt="logo1" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain" />
+        <Image src={"/images/logo3.png"} width={100} height={100} alt="logo3" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain" />
+        <Image src={"/images/logo4.png"} width={100} height={100} alt="logo4" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain" />
+        <div className="rounded-lg shadow-md bg-gray-500 p-1">
           <Image
             src={"/images/logo5.png"}
-            width="100"
-            height="100"
+            width={80}
+            height={80}
             alt="logo5"
+            className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
           />
         </div>
       </div>

@@ -21,6 +21,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaEyeSlash } from "react-icons/fa";
 import { IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
@@ -195,12 +196,17 @@ const Register = () => {
             <div className="flex justify-center items-center">
               <Button
                 type="submit"
-                className="bg-[#fafafa] rounded-full px-6 py-2 w-[155px] font-semibold gap-3 h-[44px]"
+                disabled={loading}
+                className="bg-[#fafafa] rounded-full px-6 py-2 w-full sm:w-[155px] font-semibold gap-3 h-[44px]"
               >
-                <span className="text-lg font-semibold">
-                  {loading ? "Ngantosan..." : "Lebet"}
-                </span>
-                {!loading && <FaArrowRight />}
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <span className="text-lg font-semibold">Daptar</span>
+                    <FaArrowRight />
+                  </>
+                )}
               </Button>
             </div>
 
