@@ -13,7 +13,6 @@ import {
   AlignCenter,
   AlignRight,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
 export default function TipTapEditor({
@@ -28,15 +27,11 @@ export default function TipTapEditor({
       StarterKit,
       Underline,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Placeholder.configure({
-        placeholder: "Lebetkeun Eusi Dongeng...",
-      }),
+      Placeholder.configure({ placeholder: "Lebetkeun Eusi Dongeng..." }),
     ],
     content: value || "<p></p>",
     immediatelyRender: false,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
-    },
+    onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
 
   useEffect(() => {
@@ -47,74 +42,58 @@ export default function TipTapEditor({
 
   if (!editor) return null;
 
-  return (
-    <div className="space-y-3">
-      {/* Toolbar */}
-      <div className="flex gap-2 border-b pb-2">
-        <Button
-          type="button"
-          size="sm"
-          variant={editor.isActive("bold") ? "default" : "outline"}
-          onClick={() => editor.chain().focus().toggleBold().run()}
-        >
-          <Bold className="w-4 h-4" />
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant={editor.isActive("italic") ? "default" : "outline"}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-        >
-          <Italic className="w-4 h-4" />
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant={editor.isActive("underline") ? "default" : "outline"}
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-        >
-          <UnderlineIcon className="w-4 h-4" />
-        </Button>
+  const ToolBtn = ({
+    active,
+    onClick,
+    children,
+    title,
+  }: {
+    active: boolean;
+    onClick: () => void;
+    children: React.ReactNode;
+    title: string;
+  }) => (
+    <button
+      type="button"
+      title={title}
+      onClick={onClick}
+      className={`sb-tt-btn${active ? " sb-tt-btn-active" : ""}`}
+    >
+      {children}
+    </button>
+  );
 
-        {/* Alignments */}
-        <Button
-          type="button"
-          size="sm"
-          variant={
-            editor.isActive({ textAlign: "left" }) ? "default" : "outline"
-          }
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-        >
-          <AlignLeft className="w-4 h-4" />
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant={
-            editor.isActive({ textAlign: "center" }) ? "default" : "outline"
-          }
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        >
-          <AlignCenter className="w-4 h-4" />
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant={
-            editor.isActive({ textAlign: "right" }) ? "default" : "outline"
-          }
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        >
-          <AlignRight className="w-4 h-4" />
-        </Button>
+  return (
+    <div className="sb-tt-wrap">
+      {/* Toolbar */}
+      <div className="sb-tt-toolbar">
+        <div className="sb-tt-group">
+          <ToolBtn title="Bold" active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()}>
+            <Bold size={15} />
+          </ToolBtn>
+          <ToolBtn title="Italic" active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()}>
+            <Italic size={15} />
+          </ToolBtn>
+          <ToolBtn title="Underline" active={editor.isActive("underline")} onClick={() => editor.chain().focus().toggleUnderline().run()}>
+            <UnderlineIcon size={15} />
+          </ToolBtn>
+        </div>
+        <div className="sb-tt-divider" />
+        <div className="sb-tt-group">
+          <ToolBtn title="Align left" active={editor.isActive({ textAlign: "left" })} onClick={() => editor.chain().focus().setTextAlign("left").run()}>
+            <AlignLeft size={15} />
+          </ToolBtn>
+          <ToolBtn title="Align center" active={editor.isActive({ textAlign: "center" })} onClick={() => editor.chain().focus().setTextAlign("center").run()}>
+            <AlignCenter size={15} />
+          </ToolBtn>
+          <ToolBtn title="Align right" active={editor.isActive({ textAlign: "right" })} onClick={() => editor.chain().focus().setTextAlign("right").run()}>
+            <AlignRight size={15} />
+          </ToolBtn>
+        </div>
       </div>
 
-      {/* Editor */}
-      <div
-        className={`border rounded-lg p-3 min-h-[200px] ${
-          editor.isFocused ? "ring-2 ring-gray-400" : "hover:border-gray-400"
-        }`}
-      >
+      {/* Editor area */}
+      <div className="sb-tt-content">
         <EditorContent editor={editor} />
       </div>
     </div>
