@@ -6,11 +6,9 @@ const ProfilePage = async () => {
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  let dataUser: any = [];
+  let dataUser: any = null;
 
   if (user) {
     const { data: userData } = await supabase
@@ -18,17 +16,10 @@ const ProfilePage = async () => {
       .select("*")
       .eq("id", user.id)
       .single();
-
     dataUser = userData;
   }
 
-  return (
-    <div className="rounded-lg p-4 flex flex-col justify-start items-start gap-6">
-      <span className="font-bold text-2xl mb-4">Edit Profile</span>
-
-      <ProfileFormClient userData={dataUser} />
-    </div>
-  );
+  return <ProfileFormClient userData={dataUser} />;
 };
 
 export default ProfilePage;
