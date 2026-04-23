@@ -1,24 +1,28 @@
 import { NextResponse } from "next/server";
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  // Buat response awal agar bisa dipakai oleh Supabase client
-  const res = NextResponse.next();
+  const cookieStore = cookies();
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-  // Buat Supabase client
-  const supabase = createMiddlewareClient({ req, res });
-
-  // Ambil query params dari URL
   const { searchParams } = new URL(req.url);
   const kabupaten = searchParams.get("kabupaten");
+
+  // Konversi format REGIONS ("Kab. Ciamis") ke format DB ("KABUPATEN CIAMIS")
+  function toDbFormat(name: string): string {
+    const s = name.trim();
+    if (s.startsWith("Kab. ")) return "KABUPATEN " + s.slice(5).toUpperCase();
+    if (s.startsWith("Kota ")) return "KOTA " + s.slice(5).toUpperCase();
+    return s.toUpperCase();
+  }
 
   try {
     let query = supabase.from("dongeng").select("*").eq("status", "approved");
 
-    // Jika ada filter kabupaten, tambahkan where clause
     if (kabupaten) {
-      query = query.eq("kabupaten", kabupaten);
+      query = query.eq("kabupaten", toDbFormat(kabupaten));
     }
 
     const { data, error } = await query.order("created_at", {

@@ -1,28 +1,13 @@
 import { cookies } from "next/headers";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { GrView } from "react-icons/gr";
-import { FaCamera } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
-import { MdPlace } from "react-icons/md";
 import Image from "next/image";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import ButtonDialog from "@/app/maos/detail/[id]/button-dialog-icon";
+import Link from "next/link";
 import MapViewWrapper from "@/app/maos/detail/MapViewWrapper";
 import SafeHTMLContent from "@/app/maos/detail/[id]/safe-html/SafeHtml";
 import AudioRecorder from "./AudioRecorder/AudioRecorder";
+import ContactButton from "./ContactButton";
 
-export default async function DetailMaosPage({
+export default async function DetailNgadeklamasikeunPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -54,7 +39,7 @@ export default async function DetailMaosPage({
       lat,
       lan,
       created_at,
-      user_id ( 
+      user_id (
         id,
         username,
         email,
@@ -73,163 +58,164 @@ export default async function DetailMaosPage({
 
   if (error) return <div>Error ambil dongeng: {error.message}</div>;
 
-  const openInGoogleMaps = () => {
-    if (data?.lat && data?.lan) {
-      const url = `https://www.google.com/maps?q=${data.lat},${data.lan}`;
-      return url;
-    }
-    return null;
-  };
+  const mapsUrl =
+    data?.lat && data?.lan
+      ? `https://www.google.com/maps?q=${data.lat},${data.lan}`
+      : null;
 
-  const mapsUrl = openInGoogleMaps();
+  const contributor = data.user_id as any;
 
   return (
-    <div className="rounded-lg p-4 md:p-8">
-      <Card className="p-4 md:p-6 lg:p-8">
-        <CardHeader>
-          <CardTitle className="flex flex-col gap-6 md:gap-8">
-            <div className="flex justify-between items-center flex-wrap gap-4">
-              <div className="text-2xl md:text-3xl font-bold text-balance">
-                {data.judul}
-              </div>
-            </div>
+    <div className="nd-page">
+      <div className="nd-inner">
+        {/* Back */}
+        <Link href="/ngadeklamasikeun" className="nd-back">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Balik ka daptar
+        </Link>
 
-            <div className="text-sm md:text-base font-light flex flex-col">
-              <span>Dongeng daerah: {data.kabupaten}</span>
-              <span>Sumber: {data?.sumber}</span>
-            </div>
-          </CardTitle>
-        </CardHeader>
-
-        <AudioRecorder dongengId={dataId} userId={user?.id} />
-        <CardContent className="flex flex-col gap-8 md:gap-10">
-          {data?.photo && (
+        {/* Hero */}
+        <div className="nd-hero">
+          {data?.photo ? (
             <Image
               src={data.photo}
-              height={300}
-              width={300}
-              alt="photo dongeng"
+              width={100}
+              height={100}
+              alt={data.judul}
+              className="nd-hero-photo"
             />
+          ) : (
+            <div className="nd-hero-photo-ph">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M9 18V5l12-2v13" />
+                <circle cx="6" cy="18" r="3" />
+                <circle cx="18" cy="16" r="3" />
+              </svg>
+            </div>
           )}
 
-          <SafeHTMLContent html={data?.eusi} />
+          <div className="nd-hero-info">
+            <span className="nd-hero-eyebrow">Ngadeklamasikeun</span>
+            <h1 className="nd-hero-title">{data.judul}</h1>
 
-          {/* Kamus & View Count */}
-          <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
-            <div className="p-4 border border-black rounded-md flex-1 flex flex-col gap-3">
-              <span className="font-semibold text-sm md:text-base">
-                Kamus Alit:
-              </span>
-              {data?.kamus?.length > 0 ? (
-                data.kamus.map((item: any, index: number) => (
-                  <div className="flex gap-2 items-center" key={index}>
-                    <span className="text-sm font-bold">{item.kata} :</span>
-                    <span className="text-sm italic">{item.pengertian}</span>
-                  </div>
-                ))
-              ) : (
-                <span className="text-sm italic text-gray-500">
-                  Tidak ada kamus alit.
+            <div className="nd-hero-meta">
+              {data.kabupaten && (
+                <span className="nd-meta-chip">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {data.kabupaten}
                 </span>
+              )}
+              {data.kecamatan && (
+                <span className="nd-meta-chip">{data.kecamatan}</span>
+              )}
+              {data.desa && (
+                <span className="nd-meta-chip">{data.desa}</span>
+              )}
+              {data.sumber && (
+                <span className="nd-meta-chip">Sumber: {data.sumber}</span>
               )}
             </div>
 
-            <div className="flex justify-end items-center lg:w-1/4 gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                  <GrView size={15} color="white" />
-                </div>
-                <span className="text-sm md:text-base">{data.view}</span>
-              </div>
+            <div className="nd-hero-stats">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              {data.view ?? 0} ditingali
             </div>
           </div>
+        </div>
 
+        {/* Audio Recorder */}
+        <AudioRecorder dongengId={dataId} userId={user?.id} />
+
+        {/* Content */}
+        <div className="nd-content-card">
+          <div>
+            <span className="nd-section-label">Eusi Dongéng</span>
+            <SafeHTMLContent html={data?.eusi} />
+          </div>
+
+          <div className="nd-divider" />
+
+          {/* Kamus */}
+          <div>
+            <span className="nd-section-label">Kamus Alit</span>
+            {data?.kamus?.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {data.kamus.map((item: any, index: number) => (
+                  <div key={index} className="nd-kamus-item">
+                    <span className="nd-kamus-word">{item.kata}</span>
+                    <span style={{ color: "var(--sb-muted)" }}>—</span>
+                    <span className="nd-kamus-def">{item.pengertian}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <span style={{ fontSize: 13, color: "var(--sb-muted)", fontStyle: "italic" }}>
+                Teu acan aya kamus alit.
+              </span>
+            )}
+          </div>
+
+          <div className="nd-divider" />
+
+          {/* Map */}
           <MapViewWrapper data={data} />
 
-          <div className="border border-black w-full"></div>
+          <div className="nd-divider" />
 
-          {/* Kontributor, Hubungi, Tempat */}
-          <div className="flex flex-col sm:flex-row sm:flex-wrap justify-between gap-4 md:gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                {(data.user_id as any).photo ? (
-                  <Image
-                    src={(data.user_id as any).photo}
-                    height={40}
-                    width={40}
-                    alt="foto_user"
-                    className="object-cover w-full h-full"
-                  />
-                ) : (
-                  <FaCamera size={18} className="text-white" />
-                )}
-              </div>
-              <span className="text-sm md:text-base">
-                Kontributor: {(data.user_id as any).username}
-              </span>
+          {/* Footer */}
+          <div className="nd-footer">
+            {/* Kontributor */}
+            <div className="nd-footer-item" style={{ cursor: "default" }}>
+              {contributor?.photo ? (
+                <Image
+                  src={contributor.photo}
+                  width={32}
+                  height={32}
+                  alt={contributor.username}
+                  className="nd-footer-avatar"
+                />
+              ) : (
+                <div className="nd-footer-avatar-ph">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                  </svg>
+                </div>
+              )}
+              Kontributor: {contributor?.username}
             </div>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                    <IoCall size={15} color="white" />
-                  </div>
-                  <span className="text-sm md:text-base">
-                    Hubungi Kontributor
-                  </span>
-                </div>
-              </DialogTrigger>
-              <DialogContent
-                className="sm:max-w-[425px]  bg-white 
-          dark:bg-neutral-900 
-          text-black 
-          dark:text-white 
-          rounded-2xl 
-          shadow-lg 
-          border border-gray-200"
-              >
-                <DialogHeader>
-                  <DialogTitle className="text-lg font-semibold">
-                    Kontak Kontributor
-                  </DialogTitle>
-                  <DialogDescription className="text-sm text-gray-600 dark:text-gray-300">
-                    Mangga tiasa ngahubungi kontributor ngangge :
-                  </DialogDescription>
-                </DialogHeader>
+            {/* Hubungi */}
+            <ContactButton
+              email={contributor?.email ?? ""}
+              nohp={contributor?.nohp ?? ""}
+            />
 
-                <ButtonDialog
-                  email={(data.user_id as any).email}
-                  nohp={(data.user_id as any).nohp}
-                />
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Close</Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
+            {/* Tempat */}
             <a
               href={mapsUrl ?? "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-2 ${
-                mapsUrl
-                  ? "cursor-pointer hover:opacity-80 transition"
-                  : "opacity-50 cursor-not-allowed"
-              }`}
+              className="nd-footer-item"
+              style={!mapsUrl ? { opacity: 0.45, pointerEvents: "none" } : {}}
             >
-              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-                <MdPlace size={18} color="white" />
-              </div>
-              <span className="text-sm md:text-base">
-                Nyalusur Tempat Dongeng
-              </span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Nyalusur Tempat Dongeng
             </a>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

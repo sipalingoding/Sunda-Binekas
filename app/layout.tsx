@@ -1,7 +1,6 @@
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Poppins } from "next/font/google";
+import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { SidebarLayout } from "./sidebar-layout";
 
 const poppins = Poppins({
@@ -20,6 +19,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
 export const metadata = {
   title: "Pukis Dongeng Sunda",
   description: "Hiji Website anu Eusina Dongeng Sunda",
@@ -32,6 +32,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="su" className={poppins.variable}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased font-poppins min-h-screen`}
       >
