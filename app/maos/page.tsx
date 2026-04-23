@@ -136,6 +136,20 @@ function JabarMapView({
   );
 }
 
+function normalizeKabupaten(raw: string): string {
+  const s = raw.trim();
+  const up = s.toUpperCase();
+  if (up.startsWith("KABUPATEN ")) {
+    const name = s.slice("KABUPATEN ".length);
+    return "Kab. " + name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+  if (up.startsWith("KOTA ")) {
+    const name = s.slice("KOTA ".length);
+    return "Kota " + name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+  return s;
+}
+
 export default function MaosPage() {
   const router = useRouter();
   const [selected, setSelected] = useState<number | null>(null);
@@ -150,7 +164,10 @@ export default function MaosPage() {
       .then(({ data }) => {
         const map: Record<string, number> = {};
         (data || []).forEach((d: { kabupaten: string }) => {
-          if (d.kabupaten) map[d.kabupaten] = (map[d.kabupaten] || 0) + 1;
+          if (d.kabupaten) {
+            const key = normalizeKabupaten(d.kabupaten);
+            map[key] = (map[key] || 0) + 1;
+          }
         });
         setCounts(map);
       })
@@ -233,7 +250,7 @@ export default function MaosPage() {
                 <button
                   className="btn-sb-primary"
                   style={{ padding: "10px 18px", fontSize: 13 }}
-                  onClick={() => router.push(`/maos/${encodeURIComponent(selRegion.name)}`)}
+                  onClick={() => router.push(`/maos/detail/kabupaten?kabupaten=${encodeURIComponent(selRegion.name)}`)}
                 >
                   Baca dongéng
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

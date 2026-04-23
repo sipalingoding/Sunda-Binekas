@@ -281,19 +281,8 @@
 }
 .brand-mark {
   width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--terracotta);
   display: grid; place-items: center;
-  color: var(--paper);
-  position: relative;
   flex-shrink: 0;
-}
-.brand-mark::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border: 1.5px dashed color-mix(in oklch, var(--paper) 70%, transparent);
-  border-radius: 50%;
 }
 .brand-text { line-height: 1.1; }
 .brand-text .name { font-family: var(--font-lora), 'Lora', serif; font-size: 20px; font-weight: 600; color: var(--ink); }
@@ -496,6 +485,97 @@
   color: var(--sb-muted);
   line-height: 1.3;
 }
+
+/* Kontak dropdown */
+.nav-kontak-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  background: var(--paper);
+  border: 1px solid var(--sb-line);
+  border-radius: 18px;
+  box-shadow: 0 8px 40px oklch(0.2 0.05 60 / 0.18);
+  padding: 8px;
+  z-index: 200;
+  animation: nav-dropdown-in 0.15s ease;
+}
+.nav-kontak-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s;
+  cursor: pointer;
+}
+.nav-kontak-item:hover { background: var(--paper-2); }
+.nav-kontak-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--sb-line);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.nav-kontak-icon--email {
+  background: color-mix(in oklch, var(--sb-indigo) 10%, var(--paper-2));
+  color: var(--sb-indigo);
+}
+.nav-kontak-icon--wa {
+  background: color-mix(in oklch, oklch(0.55 0.14 155) 12%, var(--paper-2));
+  color: oklch(0.45 0.14 155);
+}
+.nav-kontak-item:hover .nav-kontak-icon--email {
+  background: color-mix(in oklch, var(--sb-indigo) 18%, var(--paper-2));
+}
+.nav-kontak-item:hover .nav-kontak-icon--wa {
+  background: color-mix(in oklch, oklch(0.55 0.14 155) 20%, var(--paper-2));
+}
+.nav-kontak-info { display: flex; flex-direction: column; gap: 1px; }
+.nav-kontak-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sb-muted);
+}
+.nav-kontak-value {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* Mobile drawer kontak section */
+.sb-drawer-kontak {
+  padding: 10px 0 6px;
+  border-top: 1px solid var(--sb-line);
+  margin-top: 4px;
+}
+.sb-drawer-kontak-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sb-muted);
+  padding: 0 4px 8px;
+}
+.sb-drawer-kontak-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  font-size: 13px;
+  color: var(--ink-2);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color 0.15s;
+}
+.sb-drawer-kontak-item:hover { color: var(--ink); }
 
 /* Mobile drawer fitur section */
 .sb-drawer-fitur-toggle {
@@ -1682,11 +1762,8 @@
 }
 .sf-brand { display: flex; align-items: center; gap: 12px; }
 .sf-mark {
-  width: 40px; height: 40px;
-  border-radius: 12px;
-  background: var(--terracotta-soft);
+  width: 36px; height: 36px;
   display: grid; place-items: center;
-  color: var(--terracotta);
   flex-shrink: 0;
 }
 .sf-brand-name {
@@ -2008,45 +2085,50 @@
   background: var(--sb-card);
   border: 1px solid var(--sb-line);
   border-radius: 20px;
-  padding: 20px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 12px;
   box-shadow: var(--sb-shadow);
   transition: box-shadow 0.2s, transform 0.2s;
 }
 .ng-card:hover { box-shadow: 0 4px 24px oklch(0.3 0.05 60 / 0.14); transform: translateY(-2px); }
-.ng-card-photo {
-  width: 72px; height: 72px;
-  border-radius: 50%;
+.ng-card-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
-  align-self: center;
-  border: 2px solid var(--sb-line);
+  display: block;
 }
-.ng-card-photo-placeholder {
-  width: 72px; height: 72px;
-  border-radius: 50%;
+.ng-card-thumb-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
   background: var(--paper-2);
-  align-self: center;
-  border: 2px solid var(--sb-line);
-  display: grid;
-  place-items: center;
-  color: var(--sb-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--terracotta-soft);
+}
+.ng-card-body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 .ng-card-title {
   font-family: var(--font-lora), 'Lora', serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--ink);
-  text-align: center;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 .ng-card-loc {
-  font-size: 12px;
-  color: var(--ink-2);
+  font-size: 11px;
+  color: var(--sb-muted);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .ng-card-contrib {
   display: flex;
@@ -2074,6 +2156,8 @@
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--sb-line);
 }
 .ng-card-hear {
   display: flex;
@@ -2084,18 +2168,23 @@
 }
 .ng-card-actions { display: flex; gap: 8px; }
 .ng-btn-play {
-  width: 36px; height: 36px;
-  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 10px;
   border: none;
   background: var(--terracotta);
   color: var(--paper);
-  display: grid;
-  place-items: center;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
+  white-space: nowrap;
 }
-.ng-btn-play:hover { opacity: 0.85; transform: scale(1.08); }
+.ng-btn-play:hover { opacity: 0.85; transform: scale(1.04); }
 .ng-btn-playlist {
   width: 36px; height: 36px;
   border-radius: 50%;
@@ -2575,6 +2664,94 @@
   .ar-panel:first-child { border-right: none; border-bottom: 1px solid var(--sb-line); }
   .nd-content-card { padding: 20px; }
 }
+
+/* Language Switcher pill */
+.ls-wrap {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  background: var(--paper-2);
+  border: 1px solid var(--sb-line);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+.ls-btn {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 9px;
+  border: none;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.ls-btn.ls-active {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 1px 4px oklch(0 0 0 / 0.1);
+}
+
+/* Admin decision buttons */
+.md-admin {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.md-admin-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--sb-line);
+  background: var(--paper-2);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.md-admin-btn:hover { background: var(--sb-line); color: var(--ink); }
+.md-admin-btn-approve { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.md-admin-btn-approve:hover { opacity: 0.85; background: var(--ink); }
+.md-admin-btn-danger { color: var(--terracotta); border-color: var(--terracotta-soft); }
+.md-admin-btn-danger:hover { background: color-mix(in oklch, var(--terracotta) 10%, transparent); }
+.md-admin-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+/* Share input row */
+.nd-share-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.nd-share-input {
+  flex: 1;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--sb-line);
+  background: var(--paper-2);
+  color: var(--ink-2);
+  outline: none;
+}
+.nd-share-copy {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  transition: opacity 0.18s;
+  white-space: nowrap;
+}
+.nd-share-copy:hover { opacity: 0.85; }
 
 /* ===== Profile Page ===== */
 .profile-page {

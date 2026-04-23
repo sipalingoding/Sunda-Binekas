@@ -138,48 +138,49 @@ const NgadeklamasikeunPage = () => {
           ) : dataDongeng.map((item: any) => (
             <div key={item.id} className="ng-card">
               {item.photo ? (
-                <Image src={item.photo} alt={item.judul} width={72} height={72} className="ng-card-photo" />
+                <Image src={item.photo} alt={item.judul} width={400} height={225} className="ng-card-thumb" />
               ) : (
-                <div className="ng-card-photo-placeholder">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <div className="ng-card-thumb-placeholder">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
                   </svg>
                 </div>
               )}
 
-              <div className="ng-card-title">{item.judul}</div>
+              <div className="ng-card-body">
+                <div className="ng-card-title">{item.judul}</div>
 
-              <div className="ng-card-loc">
-                <span>{item.kecamatan}</span>
-                <span style={{ color: "var(--sb-muted)" }}>{item.desa}</span>
-              </div>
-
-              <div className="ng-card-footer">
-                <div className="ng-card-hear">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  {item.view ?? 0}
+                <div className="ng-card-loc">
+                  <span>{item.kecamatan}</span>
+                  <span>{item.desa}</span>
                 </div>
 
-                <button
-                  className="ng-btn-play"
-                  onClick={() => handlePilih(item.id)}
-                  disabled={loadingItem === item.id}
-                  style={{ width: "auto", borderRadius: 10, padding: "6px 14px", gap: 6, fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
-                >
-                  {loadingItem === item.id ? (
-                    <span style={{ width: 14, height: 14, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "lf-spin 0.8s linear infinite" }} />
-                  ) : (
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                      <line x1="12" y1="19" x2="12" y2="23" />
+                <div className="ng-card-footer">
+                  <div className="ng-card-hear">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
                     </svg>
-                  )}
-                  Pilih
-                </button>
+                    {item.view ?? 0}
+                  </div>
+
+                  <button
+                    className="ng-btn-play"
+                    onClick={() => handlePilih(item.id)}
+                    disabled={loadingItem === item.id}
+                  >
+                    {loadingItem === item.id ? (
+                      <span style={{ width: 12, height: 12, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "lf-spin 0.8s linear infinite" }} />
+                    ) : (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <line x1="12" y1="19" x2="12" y2="23" />
+                      </svg>
+                    )}
+                    Pilih
+                  </button>
+                </div>
               </div>
             </div>
           ))}

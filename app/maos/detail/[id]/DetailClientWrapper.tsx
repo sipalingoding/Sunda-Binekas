@@ -14,17 +14,9 @@ export default function DetailClientWrapper({
   const [lang, setLang] = useState<"su" | "id">("su");
 
   return (
-    <>
-      {/* Audio + Dropdown */}
-      <div className="flex gap-2 absolute top-10 right-10 lg:top-16 lg:right-16">
-        <LanguageSwitcher
-          available={!!translate}
-          onChange={(l) => setLang(l)}
-        />
-      </div>
-
-      {/* Content */}
+    <div>
+      <LanguageSwitcher available={!!translate} onChange={(l) => setLang(l)} />
       <ContentViewer eusi={eusi} translate={translate} lang={lang} />
-    </>
+    </div>
   );
 }
