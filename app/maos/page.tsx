@@ -210,6 +210,14 @@ export default function MaosPage() {
             counts={counts}
           />
 
+          {/* Mobile scroll hint */}
+          <div className="maos-scroll-hint">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M5 12l4-4M5 12l4 4M19 12l-4-4M19 12l-4 4" />
+            </svg>
+            Geser kénca-katuhu pikeun ningali peta
+          </div>
+
           {/* Legend */}
           <div className="maos-legend">
             <div className="maos-leg-item">

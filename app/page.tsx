@@ -219,7 +219,7 @@ export default function HomePage() {
           </p>
 
           <div className="sb-hero-actions">
-            <Link href="/rereongan" className="btn-sb-primary">
+            <Link href="/maos" className="btn-sb-primary">
               Mimitian baca
               <svg
                 width="16"
