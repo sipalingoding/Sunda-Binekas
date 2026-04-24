@@ -63,11 +63,7 @@ const LoginPage = () => {
       <div className="login-left">
         <div className="login-brand">
           <div className="lb-mark">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <path d="M4 6 Q12 2 20 6 L20 18 Q12 22 4 18 Z" stroke="currentColor" strokeWidth="1.5" fill="none" />
-              <path d="M12 4 L12 20" stroke="currentColor" strokeWidth="1.5" />
-              <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" fill="none" />
-            </svg>
+            <img src="/images/LOGO.png" alt="Sunda Binekas" width={28} height={28} style={{ objectFit: "contain" }} />
           </div>
           <div>
             <div className="lb-name">Sunda Binekas</div>

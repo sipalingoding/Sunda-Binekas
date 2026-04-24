@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,9 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
-import { MdPlace } from "react-icons/md";
-import { GrView } from "react-icons/gr";
 
 export default function MaosByKabupatenPage() {
   const router = useRouter();
@@ -28,38 +24,28 @@ export default function MaosByKabupatenPage() {
   const [kecamatanList, setKecamatanList] = useState<any[]>([]);
   const [desaList, setDesaList] = useState<any[]>([]);
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
-  const [selectedDongengKecamatan, setSelectedDongengKecamatan] =
-    useState<string>("");
+  const [selectedDongengKecamatan, setSelectedDongengKecamatan] = useState<string>("");
   const [selectedDesa, setSelectedDesa] = useState<string>("");
   const [dongengList, setDongengList] = useState<any[]>([]);
-
-  // search filter
   const [searchKecamatan, setSearchKecamatan] = useState("");
   const [searchDesa, setSearchDesa] = useState("");
-
   const [loadingDongeng, setLoadingDongeng] = useState(false);
 
-  // Ambil data awal kabupaten dari API lokal
   useEffect(() => {
     if (!kabupaten) return;
     setLoading(true);
-
-    fetch(
-      `/api/dongeng/by-kabupaten?kabupaten=${encodeURIComponent(kabupaten)}`
-    )
+    fetch(`/api/dongeng/by-kabupaten?kabupaten=${encodeURIComponent(kabupaten)}`)
       .then((r) => r.json())
       .then((json) => {
         setData(json.data || []);
-        setDongengList(json.data || []); // tampilkan dongeng kabupaten langsung
+        setDongengList(json.data || []);
       })
       .catch(() => setError("Gagal memuat data"))
       .finally(() => setLoading(false));
   }, [kabupaten]);
 
-  // Ambil daftar kecamatan
   useEffect(() => {
     if (!data[0]?.kabupaten) return;
-
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/regencies/32.json")
       .then((res) => res.json())
       .then((kabupatenList) => {
@@ -68,11 +54,8 @@ export default function MaosByKabupatenPage() {
             .toLowerCase()
             .includes(data[0].kabupaten.replace("KABUPATEN ", "").toLowerCase())
         );
-
         if (found) {
-          fetch(
-            `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${found.id}.json`
-          )
+          fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${found.id}.json`)
             .then((res) => res.json())
             .then((result) => setKecamatanList(result))
             .catch((err) => console.error("Gagal ambil kecamatan:", err));
@@ -81,31 +64,22 @@ export default function MaosByKabupatenPage() {
       .catch((err) => console.error("Gagal ambil kabupaten:", err));
   }, [data]);
 
-  // Ambil desa berdasarkan kecamatan
   useEffect(() => {
     if (!selectedKecamatan) return;
-
-    fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKecamatan}.json`
-    )
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKecamatan}.json`)
       .then((res) => res.json())
       .then((data) => setDesaList(data))
       .catch((err) => console.error("Gagal ambil desa:", err));
   }, [selectedKecamatan]);
 
-  // 🔍 Fungsi pencarian manual
   const handleSearchDongeng = async () => {
     setLoadingDongeng(true);
     try {
       const res = await fetch("/api/dongeng/by-wilayah", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kecamatan: selectedDongengKecamatan,
-          desa: selectedDesa,
-        }),
+        body: JSON.stringify({ kecamatan: selectedDongengKecamatan, desa: selectedDesa }),
       });
-
       const json = await res.json();
       setDongengList(json.data || []);
     } catch (err) {
@@ -121,31 +95,59 @@ export default function MaosByKabupatenPage() {
   };
 
   if (!kabupaten) {
-    return <div className="p-8">Kabupaten tidak ditentukan.</div>;
+    return <div className="sb-section paper-bg">Kabupaten tidak ditentukan.</div>;
   }
 
   const filteredKecamatanList = kecamatanList.filter((item) =>
     item.name.toLowerCase().includes(searchKecamatan.toLowerCase())
   );
-
   const filteredDesaList = desaList.filter((item) =>
     item.name.toLowerCase().includes(searchDesa.toLowerCase())
   );
 
   return (
-    <div className="p-4 sm:p-8 min-h-screen flex flex-col">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center sm:text-left">
-        Dongéng di {kabupaten}
-      </h1>
+    <div className="sb-section paper-bg fade-enter">
+      {/* Back */}
+      <button className="nd-back" onClick={() => router.back()}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Balik ka peta
+      </button>
 
-      {loading && <div>Loading...</div>}
-      {error && <div className="text-red-500">{error}</div>}
+      {/* Header */}
+      <div className="sb-section-head" style={{ marginTop: 24 }}>
+        <div>
+          <span className="sb-breadcrumb handwritten">Maos → {kabupaten}</span>
+          <h2>Dongéng di {kabupaten}.</h2>
+        </div>
+        <p>
+          {loading ? (
+            <span style={{ opacity: 0.5 }}>Nuju ngamuat…</span>
+          ) : (
+            <>
+              <strong>{dongengList.length}</strong> dongéng kapendak. Saring dumasar kecamatan atanapi desa pikeun ngahususkeun pilarian.
+            </>
+          )}
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-10">
-        {/* Dropdown Filter */}
-        <div className="flex flex-col lg:flex-row gap-4 w-full mx-auto lg:mx-0 items-end items-center">
+      {error && (
+        <div style={{ color: "var(--terracotta)", fontSize: 14, marginBottom: 16 }}>{error}</div>
+      )}
+
+      {/* Filter bar */}
+      <div className="sb-form-section" style={{ marginBottom: 40 }}>
+        <div className="sb-form-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 6h18M7 12h10M11 18h2" />
+          </svg>
+          Saring Wilayah
+        </div>
+        <div className="kab-filter-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 16, alignItems: "end" }}>
           {/* Kecamatan */}
-          <div className="w-full lg:w-1/3">
+          <div>
+            <label className="sb-form-label">Kecamatan</label>
             <Select
               onValueChange={(value) => {
                 const selected = kecamatanList.find((k) => k.name === value);
@@ -155,12 +157,12 @@ export default function MaosByKabupatenPage() {
                 }
               }}
             >
-              <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
+              <SelectTrigger className="sb-form-select">
                 <SelectValue placeholder="Pilih Kecamatan" />
               </SelectTrigger>
-              <SelectContent className="bg-white text-black max-h-72 overflow-y-auto p-2">
+              <SelectContent className="sb-form-select-content">
                 <Input
-                  placeholder="Cari Kecamatan..."
+                  placeholder="Cari Kecamatan…"
                   value={searchKecamatan}
                   onChange={(e) => setSearchKecamatan(e.target.value)}
                   className="mb-2 h-8 text-sm"
@@ -172,8 +174,8 @@ export default function MaosByKabupatenPage() {
                     </SelectItem>
                   ))
                 ) : (
-                  <div className="p-2 text-sm text-gray-500">
-                    Tidak ditemukan
+                  <div style={{ padding: "8px 12px", fontSize: 13, color: "var(--sb-muted)" }}>
+                    Teu kapendak
                   </div>
                 )}
               </SelectContent>
@@ -181,19 +183,20 @@ export default function MaosByKabupatenPage() {
           </div>
 
           {/* Desa */}
-          <div className="w-full lg:w-1/3">
+          <div>
+            <label className="sb-form-label">Desa <span style={{ color: "var(--sb-muted)", fontWeight: 400 }}>(Opsional)</span></label>
             <Select
               onValueChange={(value) => {
                 const selected = desaList.find((k) => k.name === value);
                 if (selected) setSelectedDesa(selected.name);
               }}
             >
-              <SelectTrigger className="bg-white text-black border border-gray-300 w-full min-h-[50px]">
-                <SelectValue placeholder="Pilih Desa (Opsional)" />
+              <SelectTrigger className="sb-form-select">
+                <SelectValue placeholder="Pilih Desa" />
               </SelectTrigger>
-              <SelectContent className="bg-white text-black max-h-72 overflow-y-auto p-2">
+              <SelectContent className="sb-form-select-content">
                 <Input
-                  placeholder="Cari Desa..."
+                  placeholder="Cari Desa…"
                   value={searchDesa}
                   onChange={(e) => setSearchDesa(e.target.value)}
                   className="mb-2 h-8 text-sm"
@@ -205,8 +208,8 @@ export default function MaosByKabupatenPage() {
                     </SelectItem>
                   ))
                 ) : (
-                  <div className="p-2 text-sm text-gray-500">
-                    Pilih kecamatan terlebih dahulu
+                  <div style={{ padding: "8px 12px", fontSize: 13, color: "var(--sb-muted)" }}>
+                    {selectedKecamatan ? "Teu kapendak" : "Pilih kecamatan heula"}
                   </div>
                 )}
               </SelectContent>
@@ -214,101 +217,134 @@ export default function MaosByKabupatenPage() {
           </div>
 
           {/* Tombol */}
-          <div className="w-full lg:w-auto">
-            <Button
-              onClick={handleSearchDongeng}
-              className="bg-gray-800 text-white w-full lg:w-auto"
-              disabled={loadingDongeng}
-            >
-              {loadingDongeng ? (
-                <>
-                  <Loader2 className="animate-spin w-4 h-4 mr-2" />
-                  Teangan...
-                </>
-              ) : (
-                "Teangan"
-              )}
-            </Button>
-          </div>
+          <button
+            className="btn-sb-primary"
+            onClick={handleSearchDongeng}
+            disabled={loadingDongeng}
+            style={{ height: 42, paddingInline: 20, fontSize: 14 }}
+          >
+            {loadingDongeng ? (
+              <>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}>
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                Teangan…
+              </>
+            ) : (
+              <>
+                Teangan
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+                </svg>
+              </>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* 🧾 List Dongeng */}
-      <div className="mt-6">
-        {loadingDongeng ? (
-          <div className="flex items-center gap-2 text-gray-600">
-            <Loader2 className="animate-spin w-4 h-4" /> Memuat...
-          </div>
-        ) : dongengList.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {dongengList.map((item, index) => (
-              <div
-                key={index}
-                className="
-                         flex flex-col 
-                         w-full sm:w-64 
-                         bg-[#fafafa] 
-                         rounded-lg 
-                         justify-between 
-                         gap-4 
-                         p-4 
-                         shadow-sm
-                       "
-              >
+      {/* Card grid */}
+      {loading ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20 }}>
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="sb-dcard sb-dcard-skeleton">
+              <div className="sb-dcard-img" />
+              <div className="sb-dcard-body">
+                <div className="sb-dcard-loading" style={{ height: 14, marginBottom: 8 }} />
+                <div className="sb-dcard-loading" style={{ height: 10, width: "60%" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : dongengList.length > 0 ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20 }}>
+          {dongengList.map((item, index) => (
+            <div key={index} className="sb-dcard">
+              <div className="sb-dcard-img">
                 {item?.photo ? (
-                  <div className="self-center">
-                    <Image
-                      width={20}
-                      height={20}
-                      src={item?.photo}
-                      alt="photo dongeng"
-                      className="rounded-full w-20 h-20"
-                    />
-                  </div>
+                  <Image
+                    src={item.photo}
+                    alt={item.judul}
+                    fill
+                    style={{ objectFit: "cover" }}
+                  />
                 ) : (
-                  <div className="rounded-full bg-gray-500 w-20 h-20 self-center"></div>
+                  <div style={{ display: "grid", placeItems: "center", height: "100%", color: "var(--sb-muted)" }}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M9 18V5l12-2v13" />
+                      <circle cx="6" cy="18" r="3" />
+                      <circle cx="18" cy="16" r="3" />
+                    </svg>
+                  </div>
                 )}
+              </div>
 
-                <span className="text-base font-semibold text-center">
-                  {item.judul}
-                </span>
-
-                <div className="flex gap-2 items-start text-xs">
-                  <MdPlace className="mt-[2px]" />
-                  <div className="flex flex-col">
-                    <span>Kecamatan: {item.kecamatan}</span>
-                    <span>Desa: {item.desa}</span>
+              <div className="sb-dcard-body">
+                {item.kecamatan && (
+                  <div className="sb-dcard-meta">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: "inline", marginRight: 3 }}>
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    {item.kecamatan}{item.desa ? ` · ${item.desa}` : ""}
                   </div>
-                </div>
+                )}
+                <div className="sb-dcard-title">{item.judul}</div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-2 items-center text-xs">
-                    <GrView />
-                    <span>{item.view}</span>
-                  </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+                  <span style={{ fontSize: 11, color: "var(--sb-muted)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    {item.view ?? 0}
+                  </span>
 
-                  <Button
-                    className="w-fit px-3 py-1 bg-gray-600 text-white text-xs sm:text-sm flex items-center justify-center gap-2"
+                  <button
+                    className="sb-dcard-link"
                     onClick={() => handleMaca(item.id)}
                     disabled={loadingItem === item.id}
+                    style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}
                   >
                     {loadingItem === item.id ? (
-                      <>
-                        <Loader2 className="animate-spin w-4 h-4" />
-                        <span>Maos</span>
-                      </>
+                      "Muka…"
                     ) : (
-                      "Maos"
+                      <>
+                        Maos
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </>
                     )}
-                  </Button>
+                  </button>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{
+          textAlign: "center",
+          padding: "64px 24px",
+          color: "var(--sb-muted)",
+          background: "var(--sb-card)",
+          border: "1px solid var(--sb-line)",
+          borderRadius: 20,
+        }}>
+          <div style={{ fontFamily: "var(--font-caveat)", fontSize: 22, marginBottom: 8, color: "var(--terracotta)" }}>
+            Teu acan aya dongéng
           </div>
-        ) : (
-          <div className="text-gray-500 italic">Teu acan aya dongéng.</div>
-        )}
-      </div>
+          <div style={{ fontSize: 14 }}>
+            Teu acan aya dongéng nu kadaptar di wewengkon ieu.
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 640px) {
+          .kab-filter-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
 }
