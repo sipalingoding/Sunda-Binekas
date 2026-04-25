@@ -51,14 +51,25 @@ export default function MapView({ data }: MapViewType) {
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
       />
 
-      {/* 🟢 Satu marker saja */}
       <Marker position={[data.lat, data.lan]}>
         <Popup>
-          <div className="flex flex-col items-center text-center gap-2">
-            <h3 className="font-bold">{data.kabupaten}</h3>
-            <div className="flex flex-col items-start -space-y-4">
-              <p className="text-sm">Kecamatan : {data.kecamatan}</p>
-              <p className="text-sm">Desa : {data.desa}</p>
+          <div className="lf-popup">
+            <span className="lf-popup-label">Lokasi Dongéng</span>
+            <h3 className="lf-popup-title">{data.kabupaten}</h3>
+            <div className="lf-popup-divider" />
+            <div className="lf-popup-meta">
+              {data.kecamatan && (
+                <div className="lf-popup-row">
+                  <span className="lf-popup-key">Kecamatan</span>
+                  <span className="lf-popup-val">{data.kecamatan}</span>
+                </div>
+              )}
+              {data.desa && (
+                <div className="lf-popup-row">
+                  <span className="lf-popup-key">Desa</span>
+                  <span className="lf-popup-val">{data.desa}</span>
+                </div>
+              )}
             </div>
           </div>
         </Popup>
