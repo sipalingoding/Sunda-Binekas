@@ -898,6 +898,27 @@
 }
 .jabar-map { display: block; }
 .maos-scroll-hint { display: none; }
+
+/* Map zoom controls */
+.map-zoom-ctrl {
+  display: none; /* hidden on desktop */
+}
+.map-zoom-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--sb-card);
+  border: 1px solid var(--sb-line);
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.12);
+  display: grid; place-items: center;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.map-zoom-btn:hover { background: var(--paper-2); border-color: var(--terracotta-soft); }
+.map-zoom-btn:active { background: color-mix(in oklch, var(--terracotta) 10%, var(--paper)); }
+.map-zoom-reset { color: var(--terracotta); border-color: var(--terracotta-soft); }
+
 .maos-legend {
   position: absolute;
   top: 24px;
@@ -1026,24 +1047,29 @@
 }
 
 @media (max-width: 768px) {
-  /* Stage: scroll horizontal agar peta tidak dipaksa menyusut */
   .maos-stage {
-    padding: 12px 0 0;
-    overflow-x: auto;
-    overflow-y: visible;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    padding: 12px;
     min-height: unset;
     border-radius: 20px;
   }
-  .maos-stage::-webkit-scrollbar { display: none; }
 
-  /* SVG peta: lebar minimum agar cell tetap terbaca */
+  /* SVG peta: biarkan scale otomatis, tidak perlu scroll */
   .jabar-map {
-    min-width: 580px;
-    width: 580px;
+    min-width: unset;
+    width: 100%;
     max-height: unset;
     height: auto;
+  }
+
+  /* Zoom controls: visible on mobile, bottom-right corner */
+  .map-zoom-ctrl {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    z-index: 20;
   }
 
   /* Legend: ikut scroll di dalam stage */
@@ -1054,16 +1080,7 @@
     font-size: 11px;
   }
 
-  /* Scroll hint */
-  .maos-scroll-hint {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--sb-muted);
-    padding: 8px 14px 12px;
-    justify-content: center;
-  }
+  .maos-scroll-hint { display: none; }
 
   /* Region card: bottom sheet di mobile */
   .region-card {
@@ -2728,6 +2745,37 @@
   display: block;
 }
 .nd-divider { height: 1px; background: var(--sb-line); }
+.nd-eusi-content {
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.85;
+  text-align: justify;
+}
+.nd-eusi-content p { margin: 0 0 1em; }
+.nd-eusi-content p:last-child { margin-bottom: 0; }
+.nd-eusi-content h1, .nd-eusi-content h2, .nd-eusi-content h3 {
+  font-family: var(--font-lora), 'Lora', serif;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 1.2em 0 0.4em;
+}
+.nd-eusi-content h1 { font-size: 1.4em; }
+.nd-eusi-content h2 { font-size: 1.2em; }
+.nd-eusi-content h3 { font-size: 1.05em; }
+.nd-eusi-content strong { font-weight: 700; color: var(--ink); }
+.nd-eusi-content em { font-style: italic; }
+.nd-eusi-content u { text-decoration: underline; }
+.nd-eusi-content mark { background: oklch(0.9 0.12 85); border-radius: 3px; padding: 0 2px; color: var(--ink); }
+.nd-eusi-content ul { list-style: disc; padding-left: 1.4em; margin: 0.6em 0; }
+.nd-eusi-content ol { list-style: decimal; padding-left: 1.4em; margin: 0.6em 0; }
+.nd-eusi-content li { margin-bottom: 0.3em; }
+.nd-eusi-content blockquote {
+  border-left: 3px solid var(--terracotta);
+  padding-left: 1em;
+  margin: 1em 0;
+  color: var(--ink-2);
+  font-style: italic;
+}
 .nd-kamus-item {
   display: flex;
   gap: 8px;
@@ -2839,6 +2887,80 @@
   .ar-body { grid-template-columns: 1fr; }
   .ar-panel:first-child { border-right: none; border-bottom: 1px solid var(--sb-line); }
   .nd-content-card { padding: 20px; }
+}
+
+/* ===== Leaflet Popup Design System Override ===== */
+.leaflet-popup-content-wrapper {
+  background: var(--sb-card) !important;
+  border: 1px solid var(--sb-line) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px oklch(0 0 0 / 0.18) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.leaflet-popup-content {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+.leaflet-popup-tip-container .leaflet-popup-tip {
+  background: var(--sb-card) !important;
+  box-shadow: none !important;
+}
+.leaflet-popup-close-button {
+  color: var(--ink-2) !important;
+  font-size: 18px !important;
+  top: 10px !important;
+  right: 12px !important;
+  line-height: 1 !important;
+}
+.leaflet-popup-close-button:hover { color: var(--ink) !important; }
+.lf-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 16px;
+  min-width: 180px;
+}
+.lf-popup-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sb-muted);
+}
+.lf-popup-title {
+  font-family: var(--font-lora), 'Lora', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+  margin: 0;
+}
+.lf-popup-divider { height: 1px; background: var(--sb-line); }
+.lf-popup-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.lf-popup-row {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.lf-popup-key {
+  font-weight: 600;
+  color: var(--sb-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.lf-popup-val {
+  color: var(--ink);
+  font-weight: 500;
 }
 
 /* Language Switcher pill */

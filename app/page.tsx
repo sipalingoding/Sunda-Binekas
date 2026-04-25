@@ -88,12 +88,6 @@ function DongengIllustration({ index }: { index: number }) {
   );
 }
 
-const BADGE_COLORS: Record<string, string> = {
-  FABEL: "var(--terracotta)",
-  DONGÉNG: "var(--sb-indigo)",
-  KETUHANAN: "var(--ochre)",
-};
-
 function FeaturedSection() {
   const [dongeng, setDongeng] = useState<any[]>([]);
 
@@ -128,7 +122,6 @@ function FeaturedSection() {
           const eusi = item?.eusi
             ? item.eusi.replace(/<[^>]*>/g, "").slice(0, 90) + "…"
             : "";
-          const badge = ["FABEL", "DONGÉNG", "KETUHANAN", "FABEL"][i];
           return (
             <div
               key={i}
@@ -149,14 +142,6 @@ function FeaturedSection() {
                 ) : (
                   <DongengIllustration index={i} />
                 )}
-                <span
-                  className="sb-dcard-badge"
-                  style={{
-                    background: BADGE_COLORS[badge] ?? "var(--terracotta)",
-                  }}
-                >
-                  {badge}
-                </span>
               </div>
               <div className="sb-dcard-body">
                 {item ? (

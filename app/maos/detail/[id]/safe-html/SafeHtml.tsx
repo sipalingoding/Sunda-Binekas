@@ -19,7 +19,7 @@ export default function SafeHTMLContent({ html }: SafeHTMLContentProps) {
 
   return (
     <div
-      className="prose prose-sm md:prose-base lg:prose-lg leading-relaxed text-justify max-w-none"
+      className="nd-eusi-content"
       dangerouslySetInnerHTML={{ __html: cleanHTML }}
     />
   );

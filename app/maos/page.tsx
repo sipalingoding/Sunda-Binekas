@@ -1,47 +1,63 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 const REGIONS = [
-  { n: 1,  name: "Kota Bogor",         type: "kota", col: 2, row: 3, w: 1, h: 1 },
-  { n: 2,  name: "Kab. Bogor",         type: "kab",  col: 1, row: 3, w: 1, h: 2 },
-  { n: 3,  name: "Kota Depok",         type: "kota", col: 3, row: 2, w: 1, h: 1 },
-  { n: 4,  name: "Kota Bekasi",        type: "kota", col: 4, row: 2, w: 1, h: 1 },
-  { n: 5,  name: "Kab. Bekasi",        type: "kab",  col: 5, row: 2, w: 1, h: 1 },
-  { n: 6,  name: "Kab. Karawang",      type: "kab",  col: 6, row: 2, w: 1, h: 1 },
-  { n: 7,  name: "Kab. Purwakarta",    type: "kab",  col: 5, row: 3, w: 1, h: 1 },
-  { n: 8,  name: "Kab. Subang",        type: "kab",  col: 6, row: 3, w: 1, h: 1 },
-  { n: 9,  name: "Kab. Indramayu",     type: "kab",  col: 7, row: 2, w: 2, h: 1 },
-  { n: 10, name: "Kota Cirebon",       type: "kota", col: 9, row: 2, w: 1, h: 1 },
-  { n: 11, name: "Kab. Cirebon",       type: "kab",  col: 9, row: 3, w: 1, h: 1 },
-  { n: 12, name: "Kab. Kuningan",      type: "kab",  col: 9, row: 4, w: 1, h: 1 },
-  { n: 13, name: "Kab. Majalengka",    type: "kab",  col: 8, row: 3, w: 1, h: 1 },
-  { n: 14, name: "Kab. Sumedang",      type: "kab",  col: 7, row: 3, w: 1, h: 1 },
-  { n: 15, name: "Kota Bandung",       type: "kota", col: 5, row: 4, w: 1, h: 1 },
-  { n: 16, name: "Kota Cimahi",        type: "kota", col: 4, row: 4, w: 1, h: 1 },
-  { n: 17, name: "Kab. Bandung Barat", type: "kab",  col: 3, row: 4, w: 1, h: 1 },
-  { n: 18, name: "Kab. Bandung",       type: "kab",  col: 5, row: 5, w: 2, h: 1 },
-  { n: 19, name: "Kab. Sukabumi",      type: "kab",  col: 1, row: 5, w: 2, h: 1 },
-  { n: 20, name: "Kota Sukabumi",      type: "kota", col: 2, row: 4, w: 1, h: 1 },
-  { n: 21, name: "Kab. Cianjur",       type: "kab",  col: 3, row: 5, w: 1, h: 1 },
-  { n: 22, name: "Kab. Garut",         type: "kab",  col: 4, row: 5, w: 1, h: 1 },
-  { n: 23, name: "Kab. Tasikmalaya",   type: "kab",  col: 7, row: 4, w: 1, h: 1 },
-  { n: 24, name: "Kota Tasikmalaya",   type: "kota", col: 7, row: 5, w: 1, h: 1 },
-  { n: 25, name: "Kab. Ciamis",        type: "kab",  col: 8, row: 4, w: 1, h: 1 },
-  { n: 26, name: "Kota Banjar",        type: "kota", col: 8, row: 5, w: 1, h: 1 },
-  { n: 27, name: "Kab. Pangandaran",   type: "kab",  col: 9, row: 5, w: 1, h: 1 },
+  { n: 1,  name: "Kota Bogor",         type: "kota" },
+  { n: 2,  name: "Kab. Bogor",         type: "kab" },
+  { n: 3,  name: "Kota Depok",         type: "kota" },
+  { n: 4,  name: "Kota Bekasi",        type: "kota" },
+  { n: 5,  name: "Kab. Bekasi",        type: "kab" },
+  { n: 6,  name: "Kab. Karawang",      type: "kab" },
+  { n: 7,  name: "Kab. Purwakarta",    type: "kab" },
+  { n: 8,  name: "Kab. Subang",        type: "kab" },
+  { n: 9,  name: "Kab. Indramayu",     type: "kab" },
+  { n: 10, name: "Kota Cirebon",       type: "kota" },
+  { n: 11, name: "Kab. Cirebon",       type: "kab" },
+  { n: 12, name: "Kab. Kuningan",      type: "kab" },
+  { n: 13, name: "Kab. Majalengka",    type: "kab" },
+  { n: 14, name: "Kab. Sumedang",      type: "kab" },
+  { n: 15, name: "Kota Bandung",       type: "kota" },
+  { n: 16, name: "Kota Cimahi",        type: "kota" },
+  { n: 17, name: "Kab. Bandung Barat", type: "kab" },
+  { n: 18, name: "Kab. Bandung",       type: "kab" },
+  { n: 19, name: "Kab. Sukabumi",      type: "kab" },
+  { n: 20, name: "Kota Sukabumi",      type: "kota" },
+  { n: 21, name: "Kab. Cianjur",       type: "kab" },
+  { n: 22, name: "Kab. Garut",         type: "kab" },
+  { n: 23, name: "Kab. Tasikmalaya",   type: "kab" },
+  { n: 24, name: "Kota Tasikmalaya",   type: "kota" },
+  { n: 25, name: "Kab. Ciamis",        type: "kab" },
+  { n: 26, name: "Kota Banjar",        type: "kota" },
+  { n: 27, name: "Kab. Pangandaran",   type: "kab" },
 ];
 
-const CELL = 90;
+type GeoFeature = {
+  n: number;
+  name: string;
+  type: string;
+  d: string;
+  cx: number;
+  cy: number;
+};
 
-function regionRect(r: typeof REGIONS[0]) {
-  return {
-    x: r.col * CELL + 10,
-    y: r.row * CELL + 10,
-    w: r.w * CELL - 20,
-    h: r.h * CELL - 20,
-  };
+function normalizeKabupaten(raw: string): string {
+  const s = raw.trim();
+  const up = s.toUpperCase();
+  const titleCase = (str: string) =>
+    str.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+  if (up.startsWith("KABUPATEN ")) return "Kab. " + titleCase(s.slice("KABUPATEN ".length));
+  if (up.startsWith("KOTA ")) return "Kota " + titleCase(s.slice("KOTA ".length));
+  return s;
+}
+
+/* ─── Map View ─── */
+const MIN_SCALE = 1;
+const MAX_SCALE = 5;
+
+function clamp(val: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, val));
 }
 
 function JabarMapView({
@@ -57,99 +73,273 @@ function JabarMapView({
   setHovered: (n: number | null) => void;
   counts: Record<string, number>;
 }) {
+  const [features, setFeatures] = useState<GeoFeature[]>([]);
+  const [mapLoading, setMapLoading] = useState(true);
+
+  // Zoom/pan state
+  const [tx, setTx] = useState(0);
+  const [ty, setTy] = useState(0);
+  const [scale, setScale] = useState(1);
+  const [gesturing, setGesturing] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isPinching = useRef(false);
+  const isDragging = useRef(false);
+  const lastDist = useRef(0);
+  const lastPan = useRef({ x: 0, y: 0 });
+  const panMoved = useRef(false); // distinguish tap vs drag
+  const scaleRef = useRef(1);
+  const txRef = useRef(0);
+  const tyRef = useRef(0);
+
+  // Keep refs in sync so imperative handlers can read latest values
+  useEffect(() => { scaleRef.current = scale; }, [scale]);
+  useEffect(() => { txRef.current = tx; }, [tx]);
+  useEffect(() => { tyRef.current = ty; }, [ty]);
+
+  useEffect(() => {
+    fetch("/jabar-paths.json")
+      .then((r) => r.json())
+      .then(setFeatures)
+      .catch(console.error)
+      .finally(() => setMapLoading(false));
+  }, []);
+
+  // Clamp translation so SVG never leaves viewport
+  function clampedTranslate(s: number, x: number, y: number) {
+    const el = containerRef.current;
+    if (!el) return { x, y };
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    const svgH = w * (560 / 900); // natural SVG aspect ratio
+    return {
+      x: clamp(x, w - w * s, 0),
+      y: clamp(y, svgH - svgH * s, 0),
+    };
+  }
+
+  // Attach non-passive touchmove so we can preventDefault
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onMove = (e: TouchEvent) => {
+      if (isPinching.current || (isDragging.current && scaleRef.current > 1)) {
+        e.preventDefault();
+      }
+    };
+    el.addEventListener("touchmove", onMove, { passive: false });
+    return () => el.removeEventListener("touchmove", onMove);
+  }, []);
+
+  function getTouchDist(t: TouchList) {
+    return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  }
+  function getTouchMid(t: TouchList) {
+    return { x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 };
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    if (e.touches.length === 2) {
+      isPinching.current = true;
+      isDragging.current = false;
+      lastDist.current = getTouchDist(e.touches);
+      setGesturing(true);
+    } else if (e.touches.length === 1) {
+      isDragging.current = true;
+      panMoved.current = false;
+      lastPan.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    if (e.touches.length === 2 && isPinching.current) {
+      const newDist = getTouchDist(e.touches);
+      const mid = getTouchMid(e.touches);
+      const rect = containerRef.current!.getBoundingClientRect();
+      const midX = mid.x - rect.left;
+      const midY = mid.y - rect.top;
+
+      const delta = newDist / lastDist.current;
+      const newScale = clamp(scaleRef.current * delta, MIN_SCALE, MAX_SCALE);
+      const actualDelta = newScale / scaleRef.current;
+      const raw = clampedTranslate(
+        newScale,
+        midX - (midX - txRef.current) * actualDelta,
+        midY - (midY - tyRef.current) * actualDelta,
+      );
+      setScale(newScale);
+      setTx(raw.x);
+      setTy(raw.y);
+      lastDist.current = newDist;
+    } else if (e.touches.length === 1 && isDragging.current && scaleRef.current > 1) {
+      const dx = e.touches[0].clientX - lastPan.current.x;
+      const dy = e.touches[0].clientY - lastPan.current.y;
+      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) panMoved.current = true;
+      lastPan.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      const clamped = clampedTranslate(scaleRef.current, txRef.current + dx, tyRef.current + dy);
+      setTx(clamped.x);
+      setTy(clamped.y);
+    }
+  }
+
+  function handleTouchEnd() {
+    isPinching.current = false;
+    isDragging.current = false;
+    setGesturing(false);
+    // Snap back to min scale if user pinched below 1
+    if (scaleRef.current <= 1.05) {
+      setScale(1); setTx(0); setTy(0);
+    }
+  }
+
+  function zoomStep(factor: number) {
+    const el = containerRef.current;
+    const cx = el ? el.clientWidth / 2 : 0;
+    const cy = el ? el.clientHeight / 2 : 0;
+    const newScale = clamp(scaleRef.current * factor, MIN_SCALE, MAX_SCALE);
+    const actualDelta = newScale / scaleRef.current;
+    const raw = clampedTranslate(
+      newScale,
+      cx - (cx - txRef.current) * actualDelta,
+      cy - (cy - tyRef.current) * actualDelta,
+    );
+    setScale(newScale); setTx(raw.x); setTy(raw.y);
+  }
+
+  function resetZoom() { setScale(1); setTx(0); setTy(0); }
+
+  const isZoomed = scale > 1.05;
+
+  if (mapLoading) {
+    return (
+      <div style={{ minHeight: 320, display: "grid", placeItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+          <span style={{
+            width: 36, height: 36,
+            border: "3px solid var(--sb-line)",
+            borderTopColor: "var(--terracotta)",
+            borderRadius: "50%",
+            display: "inline-block",
+            animation: "maos-spin 0.8s linear infinite",
+          }} />
+          <span style={{ fontSize: 13, color: "var(--sb-muted)", fontFamily: "var(--font-caveat)" }}>
+            Ngamuat peta…
+          </span>
+        </div>
+        <style>{`@keyframes maos-spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
   return (
-    <svg
-      viewBox="80 160 820 450"
-      preserveAspectRatio="xMidYMid meet"
-      className="jabar-map"
-      style={{ width: "100%", height: "auto", display: "block", maxHeight: "68vh" }}
-    >
-      <defs>
-        <pattern id="batik-map" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-          <circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
-        </pattern>
-      </defs>
-      <text x="490" y="185" textAnchor="middle" fontFamily="'Caveat', cursive" fontSize="18" fill="var(--sb-muted)" opacity="0.5">Laut Jawa</text>
-      <text x="490" y="605" textAnchor="middle" fontFamily="'Caveat', cursive" fontSize="18" fill="var(--sb-muted)" opacity="0.5">Samudra Hindia</text>
+    <div style={{ position: "relative" }}>
+      {/* Zoom controls — mobile only via CSS */}
+      <div className="map-zoom-ctrl">
+        <button className="map-zoom-btn" onClick={() => zoomStep(1.5)} aria-label="Zoom in">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        {isZoomed && (
+          <button className="map-zoom-btn map-zoom-reset" onClick={resetZoom} aria-label="Reset zoom">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 8v4l3 3"/></svg>
+          </button>
+        )}
+        <button className="map-zoom-btn" onClick={() => zoomStep(1 / 1.5)} aria-label="Zoom out">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14"/></svg>
+        </button>
+      </div>
 
-      {REGIONS.map((r) => {
-        const { x, y, w, h } = regionRect(r);
-        const isHover = hovered === r.n;
-        const isSel = selected === r.n;
-        return (
-          <g
-            key={r.n}
-            onMouseEnter={() => setHovered(r.n)}
-            onMouseLeave={() => setHovered(null)}
-            onClick={() => onSelect(r.n)}
-            style={{ cursor: "pointer" }}
-          >
-            <rect
-              x={x} y={y} width={w} height={h}
-              rx="10"
-              fill={
-                isSel
-                  ? "var(--terracotta)"
-                  : isHover
-                  ? "color-mix(in oklch, var(--terracotta) 25%, var(--paper-2))"
-                  : "var(--paper-2)"
-              }
-              stroke={isSel || isHover ? "var(--terracotta)" : "var(--line-strong)"}
-              strokeWidth={isSel ? 2 : 1}
-              style={{ transition: "all 0.25s" }}
-            />
-            {isHover && !isSel && (
-              <rect x={x} y={y} width={w} height={h} rx="10" fill="url(#batik-map)" style={{ color: "var(--terracotta)" }} pointerEvents="none" />
-            )}
-          </g>
-        );
-      })}
+      <div
+        ref={containerRef}
+        style={{ overflow: "hidden", touchAction: "none" }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <svg
+          viewBox="0 0 900 560"
+          preserveAspectRatio="xMidYMid meet"
+          className="jabar-map"
+          style={{
+            width: "100%",
+            height: "auto",
+            display: "block",
+            transform: `translate(${tx}px, ${ty}px) scale(${scale})`,
+            transformOrigin: "0 0",
+            transition: gesturing ? "none" : "transform 0.2s ease-out",
+            willChange: "transform",
+          }}
+        >
+          {/* Fills */}
+          {features.map((f) => {
+            const isHover = hovered === f.n;
+            const isSel = selected === f.n;
+            return (
+              <path
+                key={f.n}
+                d={f.d}
+                fill={
+                  isSel
+                    ? "var(--terracotta)"
+                    : isHover
+                    ? "color-mix(in oklch, var(--terracotta) 25%, var(--paper-2))"
+                    : "var(--paper-2)"
+                }
+                stroke={isSel || isHover ? "var(--terracotta)" : "var(--line-strong)"}
+                strokeWidth={isSel ? 1.5 : 0.6}
+                strokeLinejoin="round"
+                style={{ cursor: "pointer", transition: "fill 0.2s, stroke 0.2s" }}
+                onMouseEnter={() => setHovered(f.n)}
+                onMouseLeave={() => setHovered(null)}
+                onClick={() => { if (!panMoved.current) onSelect(f.n); }}
+              />
+            );
+          })}
 
-      {REGIONS.map((r) => {
-        const { x, y, w, h } = regionRect(r);
-        const cx = x + w / 2;
-        const cy = y + h / 2;
-        const isHover = hovered === r.n;
-        const isSel = selected === r.n;
-        return (
-          <g key={`m-${r.n}`} pointerEvents="none" style={{ transition: "all 0.25s" }}>
-            <circle
-              cx={cx} cy={cy - 6}
-              r={isSel || isHover ? 17 : 15}
-              fill={r.type === "kota" ? "var(--sb-indigo)" : "var(--terracotta)"}
-              stroke="var(--paper)"
-              strokeWidth="2.5"
-            />
-            <text x={cx} y={cy - 2} textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui" fontSize="13" fontWeight="700" fill="var(--paper)">{r.n}</text>
-            <text x={cx} y={cy + 20} textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui" fontSize="9" fill="var(--ink-2)" opacity={isSel || isHover ? 1 : 0.7}>
-              {r.name.replace("Kab. ", "").replace("Kota ", "").slice(0, 10)}
-            </text>
-            {(counts[r.name] ?? 0) > 0 && (
-              <text x={cx} y={cy + 30} textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui" fontSize="8" fill="var(--terracotta)" opacity={isSel || isHover ? 1 : 0.6}>
-                {counts[r.name]}
-              </text>
-            )}
-          </g>
-        );
-      })}
-    </svg>
+          {/* Number badges */}
+          {features.map((f) => {
+            const isHover = hovered === f.n;
+            const isSel = selected === f.n;
+            const count = counts[f.name] ?? 0;
+            const r = isSel || isHover ? 13 : 11;
+            return (
+              <g key={`l-${f.n}`} pointerEvents="none">
+                <circle
+                  cx={f.cx} cy={f.cy} r={r}
+                  fill={f.type === "kota" ? "var(--sb-indigo)" : "var(--terracotta)"}
+                  stroke="var(--paper)" strokeWidth="1.5"
+                />
+                <text
+                  x={f.cx} y={f.cy + 3.5}
+                  textAnchor="middle"
+                  fontFamily="'Plus Jakarta Sans', system-ui"
+                  fontSize={r > 11 ? "8.5" : "7.5"}
+                  fontWeight="700"
+                  fill="var(--paper)"
+                >
+                  {f.n}
+                </text>
+                {count > 0 && (isSel || isHover) && (
+                  <text
+                    x={f.cx} y={f.cy + r + 11}
+                    textAnchor="middle"
+                    fontFamily="'Plus Jakarta Sans', system-ui"
+                    fontSize="8"
+                    fontWeight="600"
+                    fill="var(--terracotta)"
+                  >
+                    {count}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    </div>
   );
 }
 
-function normalizeKabupaten(raw: string): string {
-  const s = raw.trim();
-  const up = s.toUpperCase();
-  if (up.startsWith("KABUPATEN ")) {
-    const name = s.slice("KABUPATEN ".length);
-    return "Kab. " + name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  }
-  if (up.startsWith("KOTA ")) {
-    const name = s.slice("KOTA ".length);
-    return "Kota " + name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  }
-  return s;
-}
-
+/* ─── Page ─── */
 export default function MaosPage() {
   const router = useRouter();
   const [selected, setSelected] = useState<number | null>(null);
@@ -183,17 +373,13 @@ export default function MaosPage() {
       {/* Section head */}
       <div className="sb-section-head">
         <div>
-          <span className="sb-breadcrumb handwritten">Haus → peta dongéng</span>
+          <span className="sb-breadcrumb handwritten">maos → peta dongeng</span>
           <h2>Maos Dongéng sa-Jawa Barat.</h2>
         </div>
         <p>
           Klik wewengkon dina peta kanggo ningali sabaraha dongéng nu parantos dicatet ti daérah éta.{" "}
           <strong>{REGIONS.length}</strong> kabupatén/kota ·{" "}
-          {loading ? (
-            <span style={{ opacity: 0.5 }}>…</span>
-          ) : (
-            <strong>{total}</strong>
-          )}{" "}
+          {loading ? <span style={{ opacity: 0.5 }}>…</span> : <strong>{total}</strong>}{" "}
           dongéng.
         </p>
       </div>
@@ -209,14 +395,6 @@ export default function MaosPage() {
             setHovered={setHovered}
             counts={counts}
           />
-
-          {/* Mobile scroll hint */}
-          <div className="maos-scroll-hint">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M5 12l4-4M5 12l4 4M19 12l-4-4M19 12l-4 4" />
-            </svg>
-            Geser kénca-katuhu pikeun ningali peta
-          </div>
 
           {/* Legend */}
           <div className="maos-legend">
@@ -252,13 +430,21 @@ export default function MaosPage() {
                 {loading ? "…" : (counts[selRegion.name] ?? 0)}
               </div>
               <div className="rc-actions">
-                <button className="btn-sb-ghost" style={{ padding: "10px 18px", fontSize: 13 }} onClick={() => setSelected(null)}>
+                <button
+                  className="btn-sb-ghost"
+                  style={{ padding: "10px 18px", fontSize: 13 }}
+                  onClick={() => setSelected(null)}
+                >
                   Tutup
                 </button>
                 <button
                   className="btn-sb-primary"
                   style={{ padding: "10px 18px", fontSize: 13 }}
-                  onClick={() => router.push(`/maos/detail/kabupaten?kabupaten=${encodeURIComponent(selRegion.name)}`)}
+                  onClick={() =>
+                    router.push(
+                      `/maos/detail/kabupaten?kabupaten=${encodeURIComponent(selRegion.name)}`
+                    )
+                  }
                 >
                   Baca dongéng
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

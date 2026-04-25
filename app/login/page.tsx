@@ -52,7 +52,7 @@ const LoginPage = () => {
   const handleGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${location.origin}/auth/callback` },
+      options: { redirectTo: `${location.origin}/api/auth/callback` },
     });
     if (error) toast({ title: "Login gagal", description: error.message, variant: "destructive" });
   };

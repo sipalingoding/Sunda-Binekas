@@ -70,7 +70,7 @@ type UserProfile = {
 
 const KONTAK_INFO = {
   email: "sundabinekas@gmail.com",
-  whatsapp: "6281234567890", // format: kode negara tanpa +
+  whatsapp: "6281221808959",
 };
 
 /* ─── Kontak Dropdown ─── */
