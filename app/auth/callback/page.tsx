@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-async function ensureUserProfile(supabase: ReturnType<typeof createClientComponentClient>, user: { id: string; email?: string; user_metadata?: { full_name?: string } }) {
+async function ensureUserProfile(supabase: ReturnType<typeof createClientComponentClient<any>>, user: { id: string; email?: string; user_metadata?: { full_name?: string } }) {
   const { data: existing } = await supabase
     .from("users")
     .select("id")
