@@ -1,5 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import FormEditPage from "./FormEditPage";
 
 export default async function EditPage({
@@ -10,8 +9,7 @@ export default async function EditPage({
   const resolvedParams = await params; // ✅ handle Promise or object safely
   const { id } = resolvedParams;
 
-  const cookieStore = cookies();
-  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("dongeng")

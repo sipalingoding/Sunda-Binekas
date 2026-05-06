@@ -1,23 +1,16 @@
-// /app/api/dongeng/by-wilayah/route.ts
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = await createClient();
 
   try {
     const { kecamatan, desa } = await request.json();
 
     if (!kecamatan && !desa) {
-      return NextResponse.json(
-        { error: "Kecamatan atau desa harus diisi." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Kecamatan atau desa harus diisi." }, { status: 400 });
     }
 
-    // 🔹 Query filter dinamis
     let query = supabase.from("dongeng").select("*");
 
     if (kecamatan) query = query.ilike("kecamatan", `%${kecamatan}%`);
@@ -30,9 +23,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ data });
   } catch (err: any) {
     console.error("Error get dongeng:", err);
-    return NextResponse.json(
-      { error: "Gagal mengambil data dongeng." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Gagal mengambil data dongeng." }, { status: 500 });
   }
 }

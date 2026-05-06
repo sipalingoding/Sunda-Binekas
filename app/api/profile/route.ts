@@ -1,15 +1,10 @@
-// app/api/profile/route.ts
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
-export async function GET(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+export async function GET() {
+  const supabase = await createClient();
 
-  const {
-    data: { user },
-    error: getUserError,
-  } = await supabase.auth.getUser();
+  const { data: { user }, error: getUserError } = await supabase.auth.getUser();
 
   if (getUserError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -29,18 +24,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
-
+  const supabase = await createClient();
   const body = await req.json();
   const { username, umur, pekerjaan, alamat, nohp, photo } = body;
 
   console.log(username, umur);
 
-  const {
-    data: { user },
-    error: getUserError,
-  } = await supabase.auth.getUser();
+  const { data: { user }, error: getUserError } = await supabase.auth.getUser();
 
   if (getUserError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -49,7 +39,7 @@ export async function PATCH(req: NextRequest) {
   const { error: userError } = await supabase
     .from("users")
     .update({ username, umur, pekerjaan, alamat, nohp, photo })
-    .eq("id", user?.id);
+    .eq("id", user.id);
 
   if (userError) {
     return NextResponse.json({ error: userError.message }, { status: 400 });

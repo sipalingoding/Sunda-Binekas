@@ -1,38 +1,45 @@
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  let supabaseResponse = NextResponse.next({ request: req });
 
-  // 🔹 Buat Supabase middleware client
-  const supabase = createMiddlewareClient({ req, res });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return req.cookies.getAll(); },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
+          supabaseResponse = NextResponse.next({ request: req });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
 
   const { pathname } = req.nextUrl;
 
   const protectedPaths = ["/nyerat", "/ngadeklamasikeun", "/profile", "/admin"];
-  const isProtectedPath = protectedPaths.some((path) =>
-    pathname.startsWith(path)
-  );
+  const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path));
 
-  // 🔒 Kalau bukan halaman publik & belum login → redirect ke /login
   if (isProtectedPath && !session) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = "/login";
     return NextResponse.redirect(redirectUrl);
   }
 
-  // ✅ Cek halaman admin
   if (pathname.startsWith("/admin") && session?.user?.id) {
-    // Ambil data role dari table "user"
     const { data: userRole } = await supabase
       .from("users")
       .select("role")
-      .eq("id", session?.user.id)
+      .eq("id", session.user.id)
       .single();
 
     if (userRole?.role !== "admin") {
@@ -42,8 +49,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // 🔁 Kembalikan response (biar session tersimpan di cookies)
-  return res;
+  return supabaseResponse;
 }
 
 export const config = {

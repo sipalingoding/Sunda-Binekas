@@ -83,7 +83,7 @@
   position: relative;
   padding: 40px;
   background: var(--sb-indigo);
-  color: var(--paper);
+  color: oklch(0.97 0.01 80);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -136,7 +136,7 @@
 
 .login-form-wrap { width: 100%; max-width: 400px; }
 .lf-eyebrow { font-size: 28px; color: var(--terracotta); margin-bottom: 2px; }
-.lf-title { font-family: var(--font-lora), 'Lora', serif; font-size: 36px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 10px; font-weight: 500; }
+.lf-title { font-family: var(--font-lora), 'Lora', serif; font-size: 36px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 10px; font-weight: 500; color: var(--ink); }
 .lf-sub { color: var(--ink-2); font-size: 14px; line-height: 1.5; margin: 0 0 28px; }
 
 .lf-form { display: flex; flex-direction: column; gap: 16px; }

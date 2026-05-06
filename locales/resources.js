@@ -2,7 +2,7 @@ export const resources = {
   su: {
     translation: {
       welcome: "Wilujeng Sumping",
-      subtitle1_home: "Nyukcruk Sasakala Lembur",
+      subtitle1_home: "Nyukcruk sasakala Lembur, ngahudang  carita karuhun dina jagat digital",
       subtitle2_home: "Dongéng Tatar Sunda",
       desc_p1_home:
         "PUKIS mangrupa platform digital berbasis peta interaktif pikeun maluruh cerita rakyat ti unggal daérah di Jawa Barat. Ieu sistem website dirancang sacara partisipatif saperti Wikipedia, hartina ti mimiti guru, siswa, nepika masyarakat umum bisa milu ilubiung nuliskeun cerita rakyat dina PUKIS.",
