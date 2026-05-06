@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-
+  const supabase = await createClient();
   const formData = await req.formData();
   const file = formData.get("file") as File;
 
@@ -16,18 +13,13 @@ export async function POST(req: Request) {
   const fileName = `${Date.now()}-${file.name}`;
   const { data, error } = await supabase.storage
     .from("dongeng")
-    .upload(fileName, file, {
-      cacheControl: "3600",
-      upsert: false,
-    });
+    .upload(fileName, file, { cacheControl: "3600", upsert: false });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from("dongeng").getPublicUrl(data.path);
+  const { data: { publicUrl } } = supabase.storage.from("dongeng").getPublicUrl(data.path);
 
   return NextResponse.json({ url: publicUrl });
 }

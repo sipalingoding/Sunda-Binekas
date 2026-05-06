@@ -1,24 +1,20 @@
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET() {
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = await createClient();
 
   try {
-    // 1️⃣ Total user
     const { count: totalUsers, error: userError } = await supabase
       .from("users")
       .select("*", { count: "exact", head: true });
     if (userError) throw userError;
 
-    // 2️⃣ Total dongeng
     const { count: totalDongeng, error: dongengError } = await supabase
       .from("dongeng")
       .select("*", { count: "exact", head: true });
     if (dongengError) throw dongengError;
 
-    // 3️⃣ Ambil semua user_id dari tabel dongeng, lalu ambil yang unik
     const { data: dongengUsers, error: contributorError } = await supabase
       .from("dongeng")
       .select("user_id");
@@ -29,16 +25,13 @@ export async function GET() {
       : [];
     const totalContributors = uniqueUserIds.length;
 
-    // 4️⃣ Hitung total view
     const { data: viewData, error: viewError } = await supabase
       .from("dongeng")
       .select("view");
     if (viewError) throw viewError;
 
-    const totalViews =
-      viewData?.reduce((sum, item) => sum + (item.view || 0), 0) || 0;
+    const totalViews = viewData?.reduce((sum, item) => sum + (item.view || 0), 0) || 0;
 
-    // ✅ Return hasil
     return NextResponse.json({
       total_users: totalUsers || 0,
       total_dongeng: totalDongeng || 0,

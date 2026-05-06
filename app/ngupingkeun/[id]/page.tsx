@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
 import Link from "next/link";
 import SafeHTMLContent from "@/app/maos/detail/[id]/safe-html/SafeHtml";
@@ -13,8 +12,7 @@ export default async function DetailNgupingkeunPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const cookieStore = cookies();
-  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("ngupingkeun_list")

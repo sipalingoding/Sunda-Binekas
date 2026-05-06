@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
 import Link from "next/link";
 import MapViewWrapper from "@/app/maos/detail/MapViewWrapper";
@@ -14,8 +13,7 @@ export default async function DetailNgadeklamasikeunPage({
 }) {
   const { id } = await params;
   const dataId = atob(id);
-  const cookieStore = cookies();
-  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+  const supabase = await createClient();
 
   const {
     data: { user },

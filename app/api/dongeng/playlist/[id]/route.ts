@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 
 export async function DELETE(req: NextRequest, context: any) {
-  const supabase = createRouteHandlerClient({ cookies });
-
+  const supabase = await createClient();
   const id = context?.params?.id;
 
   if (!id) {
@@ -22,16 +20,9 @@ export async function DELETE(req: NextRequest, context: any) {
 
     if (error) throw error;
 
-    return NextResponse.json({
-      success: true,
-      message: "Playlist dihapus",
-      data,
-    });
+    return NextResponse.json({ success: true, message: "Playlist dihapus", data });
   } catch (err: any) {
     console.error("❌ Error delete playlist:", err.message);
-    return NextResponse.json(
-      { success: false, message: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
   }
 }
