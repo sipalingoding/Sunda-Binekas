@@ -9,7 +9,7 @@ import { logout } from "@/services/authService";
 import type { User } from "@supabase/supabase-js";
 
 const NAV_LINKS = [
-  { href: "/", label: "Beranda", exact: true },
+  { href: "/", label: "Tepas", exact: true },
   { href: "/warta", label: "Warta", exact: false },
 ];
 
@@ -215,7 +215,7 @@ function FiturDropdown({ pathname }: { pathname: string }) {
         aria-expanded={open}
         aria-haspopup="true"
       >
-        Fitur Utami
+        Fitur Utama
         <svg
           className="nav-fitur-chevron"
           width="12"
@@ -231,7 +231,7 @@ function FiturDropdown({ pathname }: { pathname: string }) {
 
       {open && (
         <div className="nav-fitur-dropdown">
-          <div className="nav-fitur-dropdown-label">Fitur Utami</div>
+          <div className="nav-fitur-dropdown-label">Fitur Utama</div>
           {FITUR_LINKS.map((f) => (
             <Link
               key={f.href}
@@ -474,15 +474,15 @@ function SiteHeader() {
             <div className="brand-mark" aria-hidden>
               <img
                 src="/images/LOGO.png"
-                alt="Sunda Binekas"
+                alt="Pukis"
                 width={28}
                 height={28}
                 style={{ objectFit: "contain" }}
               />
             </div>
             <div className="brand-text">
-              <div className="name">Sunda Binekas</div>
-              <div className="tag">Dongéng pikeun urang</div>
+              <div className="name">Pukis</div>
+              <div className="tag">Peta dongeng sunda digital</div>
             </div>
           </Link>
 
@@ -586,12 +586,12 @@ function SiteHeader() {
               >
                 <img
                   src="/images/LOGO.png"
-                  alt="Sunda Binekas"
+                  alt="Pukis"
                   width={28}
                   height={28}
                   style={{ objectFit: "contain" }}
                 />
-                <span className="sb-drawer-brand-name">Sunda Binekas</span>
+                <span className="sb-drawer-brand-name">Pukis</span>
               </Link>
               <button
                 className="sb-drawer-close"
@@ -627,12 +627,12 @@ function SiteHeader() {
                 </Link>
               ))}
 
-              {/* Fitur Utami accordion */}
+              {/* Fitur Utama accordion */}
               <button
                 className={`sb-drawer-fitur-toggle${isFiturActive ? " active" : ""}`}
                 onClick={() => setFiturOpen((v) => !v)}
               >
-                Fitur Utami
+                Fitur Utama
                 <svg
                   style={{
                     transition: "transform 0.2s",
@@ -859,13 +859,13 @@ function SiteFooter() {
             <div className="sf-mark" aria-hidden>
               <img
                 src="/images/LOGO.png"
-                alt="Sunda Binekas"
+                alt="Pukis"
                 width={24}
                 height={24}
                 style={{ objectFit: "contain" }}
               />
             </div>
-            <span className="sf-brand-name">Sunda Binekas</span>
+            <span className="sf-brand-name">Pukis</span>
           </div>
           <p className="sf-desc">
             Proyék amatir ngalestarikeun dongéng Sunda dina jagat digital.
