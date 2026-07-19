@@ -2,7 +2,9 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
+
+const supabase = createClient();
 
 const NgupingkeunPage = () => {
   const [dataDongeng, setDataDongeng] = useState<any[]>([]);
@@ -168,8 +170,8 @@ const NgupingkeunPage = () => {
         {/* Header */}
         <div className="ng-head">
           <span className="ng-eyebrow">Ngupingkeun</span>
-          <h1 className="ng-title">Dongéng pikeun di Upingkeun</h1>
-          <p className="ng-sub">Piliheun dongéng anu badé di kupingkeun, tambihkeun kana daptar putar, teras nikmatan.</p>
+          <h1 className="ng-title">Dongéng pikeun di Kupingkeun</h1>
+          <p className="ng-sub">Pilih dongeng anu bade diputer, tambihkeun kana playlist, nembe dikupingkeun.</p>
         </div>
 
         {/* Filter */}

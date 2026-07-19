@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 
 const LoginPage = () => {
   const { toast } = useToast();
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [mode, setMode] = useState<"login" | "daftar">("login");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);

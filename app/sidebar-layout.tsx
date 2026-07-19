@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import "../i18n";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/services/authService";
 import type { User } from "@supabase/supabase-js";
 
@@ -397,7 +397,7 @@ function SiteHeader() {
   const [fiturOpen, setFiturOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   useEffect(() => {
     const saved = localStorage.getItem("sb-theme") as "light" | "dark" | null;

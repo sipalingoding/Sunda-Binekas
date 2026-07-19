@@ -23,7 +23,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
 const formSchema = registerSchema;
@@ -62,7 +62,7 @@ const Register = () => {
   }
 
   const handleLoginGoogle = async () => {
-    const supabase = createClientComponentClient();
+    const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${location.origin}/api/auth/callback` },
