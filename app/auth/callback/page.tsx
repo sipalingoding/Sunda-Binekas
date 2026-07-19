@@ -2,9 +2,9 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 
-async function ensureUserProfile(supabase: ReturnType<typeof createClientComponentClient<any>>, user: { id: string; email?: string; user_metadata?: { full_name?: string } }) {
+async function ensureUserProfile(supabase: ReturnType<typeof createClient>, user: { id: string; email?: string; user_metadata?: { full_name?: string } }) {
   const { data: existing } = await supabase
     .from("users")
     .select("id")
@@ -25,7 +25,7 @@ export default function AuthCallbackPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const supabase = createClientComponentClient();
+    const supabase = createClient();
 
     async function handleCallback() {
       const params = new URLSearchParams(window.location.search);

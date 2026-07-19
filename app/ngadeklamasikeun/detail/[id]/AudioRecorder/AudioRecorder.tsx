@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +14,7 @@ export default function AudioRecorder({ dongengId, userId }: { dongengId: string
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { toast } = useToast();
   const router = useRouter();
 

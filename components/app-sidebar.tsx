@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 // 1. Import hook dari i18next
@@ -34,7 +34,7 @@ import { useTranslation } from "react-i18next";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const [user, setUser] = React.useState<any>(null);
   const [dataUser, setDataUser] = React.useState<any>(null);
   const { t } = useTranslation();
