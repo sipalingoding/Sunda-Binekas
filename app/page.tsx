@@ -109,9 +109,9 @@ function FeaturedSection() {
           <em>khidmat.</em>
         </h2>
         <p>
-          Tiap dongéng nyimpen <mark className="sb-highlight">hikmah</mark>{" "}
-          jeung ajaran anu tiasa dicandak kana kahirupan sapopoé — pikeun
-          barudak sareng kolot.
+          Unggal dongéng miboga ajén tur{" "}
+          <mark className="sb-highlight">hikmah</mark> anu bisa dilarapkeun
+          dina kahirupan sapopoé.
         </p>
       </div>
       <div className="sb-featured-grid">

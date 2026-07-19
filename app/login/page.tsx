@@ -63,11 +63,11 @@ const LoginPage = () => {
       <div className="login-left">
         <div className="login-brand">
           <div className="lb-mark">
-            <img src="/images/LOGO.png" alt="Sunda Binekas" width={28} height={28} style={{ objectFit: "contain" }} />
+            <img src="/images/LOGO.png" alt="Pukis" width={28} height={28} style={{ objectFit: "contain" }} />
           </div>
           <div>
-            <div className="lb-name">Sunda Binekas</div>
-            <div className="lb-tag">Peta Dongéng · Karuhun Sunda</div>
+            <div className="lb-name">Pukis</div>
+            <div className="lb-tag">Peta dongeng sunda digital</div>
           </div>
         </div>
 
@@ -130,7 +130,7 @@ const LoginPage = () => {
         </div>
 
         <div className="login-quote handwritten">
-          "Sampurasun — wilujeng sumping di tempat dongéng urang."
+          "Sampurasun - wilujeng maos dongeng tatar sunda"
         </div>
       </div>
 
